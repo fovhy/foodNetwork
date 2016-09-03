@@ -8,11 +8,9 @@ package foodnetwork.serialization;
  ************************************************/
 
 public class FoodNetWorkException extends Exception {
-    //TODO: constructs food network exception
     public FoodNetWorkException(String message, Throwable cause){
         super(message, cause);
     }
-    //TODO: constructs food network excpetion with null case
     public FoodNetWorkException(String message){
         super(message);
     }
