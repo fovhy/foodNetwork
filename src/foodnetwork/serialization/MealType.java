@@ -8,17 +8,25 @@
 package foodnetwork.serialization;
 
 /**
- * MealType
+ * classname MealType
  * @version 1.0
  * 9/1/2016
  * @author Dean He
  */
 public enum MealType {
-    Breakfast,
-    Lunch,
-    Dinner,
-    Snack;
+    Breakfast('B'),
+    Lunch('L'),
+    Dinner('D'),
+    Snack('S');
 
+    private char type;    // type of the meal in char form
+
+    /** A private constructor that store MealType as char.
+     * @param type a MealType represented by a char
+     */
+    private MealType(char type){
+        this.type = type;
+    }
     /**
      * A static method that returns a MealType based on the type code(char). If the type code does not
      * match any of the meal type. It will throw a FoodNetWorkException.
@@ -51,22 +59,7 @@ public enum MealType {
      * @return a char that represents a MealType. One of {'B', 'L', 'D', 'S'}.
      */
     public char getMealTypeCode(){
-        /*Because the interface does not allow public constructor, null case is impossible*/
-        char MealTypeCode = '\u0000';
-        switch(this){
-            case Breakfast:
-                MealTypeCode = 'B';
-                break;
-            case Lunch:
-                MealTypeCode = 'L';
-                break;
-            case Dinner:
-                MealTypeCode = 'D';
-                break;
-            case Snack:
-                MealTypeCode = 'S';
-                break;
-        }
-        return MealTypeCode;
+        return type;
     }
+
 }
