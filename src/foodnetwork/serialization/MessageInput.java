@@ -22,7 +22,7 @@ import java.util.Scanner;
  */
 class MessageInput {
     /**
-     * The buffer that stores data from the InputStream
+     * The scanner that will do the scanning and buffer handling
      */
     private Scanner MessageScanner;
     /**
@@ -38,18 +38,38 @@ class MessageInput {
     public MessageInput(InputStream in) {
     }
 
+    /**
+     * Read a name from the InputStream.
+     * @return the name String which should be in pattern of
+     * @throws FoodNetWorkException the name String format is wrong
+     */
     String getNextName() throws FoodNetWorkException {
         return null;
     }
 
-    String getNextMealType() throws FoodNetWorkException {
+    /**
+     * Read a MealType from the InputStream
+     * @return a MealType based on the char
+     * @throws FoodNetWorkException if the char does not relate to any MealType
+     */
+    MealType getNextMealType() throws FoodNetWorkException {
         return null;
     }
 
+    /**
+     * Get the calories of the FoodItem from the InputStream
+     * @return a String that represents calories amount
+     * @throws FoodNetWorkException if the String format is not the format of calories
+     */
     String getNextCalories() throws FoodNetWorkException {
         return null;
     }
 
+    /**
+     * Get the fat stat from the InputStream
+     * @return a String that represents amount of fat in the FoodItem
+     * @throws FoodNetWorkException if the String format is not the format of fat
+     */
     String getNextFat() throws FoodNetWorkException {
         return null;
     }
