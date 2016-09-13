@@ -6,6 +6,10 @@
  *
  ************************************************/
 package foodnetwork.serialization;
+
+import java.io.EOFException;
+import java.io.IOException;
+
 public class FoodItem {
     /**
      * name is represented by a String with pattern "^[0-9]+$" followed by a space then followed by a 1+ ASCII
@@ -33,34 +37,37 @@ public class FoodItem {
      * @param mealType the type of the food item.
      * @param calories how much the food item contains
      * @param fat      how much fat the food item contains
-     * @throws FoodNetWorkException
+     * @throws FoodNetworkException if one of the fields does not follow the FoodItem pattern
      */
     public FoodItem(String name, MealType mealType, long calories, String fat)
-            throws FoodNetWorkException {
-        this.name = name;
-        this.mealType = mealType;
-        this.calories = calories;
-        this.fat = fat;
+            throws FoodNetworkException {
+        setName(name);
+        setMealType(mealType);
+        setCalories(calories);
+        setFat(fat);
     }
 
     /**
      * Construct a food item from an MessageInput object.
      *
+     *
      * @param in MessageInput object that should wraps around a InputStream
-     * @throws FoodNetWorkException FoodItem fail to construct due do incomplete data stream
+     * @throws FoodNetworkException FoodItem fail to construct due do incomplete data stream
+     * @throws EOFException if the stream prematurely ends
      */
-    public FoodItem(MessageInput in) throws FoodNetWorkException {
-
+    public FoodItem(MessageInput in) throws FoodNetworkException, EOFException {
+        this(in.getNextName(), in.getNextMealType(),
+                in.getNextCalories(), in.getNextFat());
     }
 
     /**
      * encode the FoodItem object into a string, and hook the string to an MessageOutput object.
      *
      * @param out an MessageOutput object that should wraps around a data outputStream
-     * @throws FoodNetWorkException FoodItem has incomplete field
+     * @throws FoodNetworkException FoodItem has incomplete field, stream closes unexpected
      */
-    public void encode(MessageOutput out) throws FoodNetWorkException {
-
+    public void encode(MessageOutput out) throws FoodNetworkException {
+        out.writeObject(this);
     }
 
     /**
@@ -69,7 +76,7 @@ public class FoodItem {
      */
     @Override
     public String toString(){
-        return null;
+        return name.length() + " " + name + mealType.getMealTypeCode() + calories + " " + fat + " ";
     }
 
     /**
@@ -78,17 +85,22 @@ public class FoodItem {
      * @return name of the foodItem which should look like 5_apple
      */
     public String getName(){
-        return null;
+        return name;
     }
 
     /**
      * Set the name of FoodITem to some String
      *
-     * @param name a string with the pattern of (an unsigned int)count + (space) + (count amount >= 1)ASCII character
-     * @throws FoodNetWorkException throws if the String name does not follow the pattern
+     * @param aName a string with the pattern of (an unsigned int)count + (space) + one or
+     *              more than 1 ASCII character
+     * @throws FoodNetworkException throws if the String name does not follow the pattern
      */
-    public void setName(String name) throws FoodNetWorkException {
-
+    public void setName(String aName) throws FoodNetworkException {
+        if(validateName(aName)){
+            name = aName;
+        }else{
+            throw new FoodNetworkException(aName + " is a invalid name");
+        }
     }
 
     /**
@@ -96,17 +108,21 @@ public class FoodItem {
      * @return MealType of the food item. Should be one of {Breakfast, Lunch, Dinner, Snack}
      */
     public final MealType getMealType(){
-        return null;
+        return mealType;
     }
 
     /**
      * Set the mealType of some FoodItem into certain type
      *
-     * @param mealType an enum mealType that represents the mealType going to be set
-     * @throws FoodNetWorkException invalid MealType
+     * @param aMealType an enum mealType that represents the mealType going to be set
+     * @throws FoodNetworkException invalid MealType
      */
-    public final void setMealType(MealType mealType) throws FoodNetWorkException {
-
+    public final void setMealType(MealType aMealType) throws FoodNetworkException {
+        if(validateMealType(aMealType)){
+            mealType = aMealType;
+        }else{
+            throw new FoodNetworkException("Null MealType");
+        }
     }
 
     /**
@@ -115,17 +131,21 @@ public class FoodItem {
      * @return a long that represents the calories
      */
     public final long getCalories() {
-        return 0L;
+        return calories;
     }
 
     /**
      * Set the calories for this FoodItem
      *
-     * @param calories a long that should be non-negative
-     * @throws FoodNetWorkException if the calories is negative
+     * @param aCalories a long that should be non-negative
+     * @throws FoodNetworkException if the calories is negative
      */
-    public final void setCalories(long calories) throws FoodNetWorkException {
-
+    public final void setCalories(long aCalories) throws FoodNetworkException {
+        if(validateCaloires(aCalories)){
+            calories = aCalories;
+        }else{
+            throw new FoodNetworkException("Negative calories");
+        }
     }
 
     /**
@@ -134,17 +154,21 @@ public class FoodItem {
      * @return a String that has the pattern of (unsigned double) + (sp)
      */
     public final String getFat() {
-        return null;
+        return fat;
     }
 
     /**
      * Set the fat of the FoodItem to specific amount
      *
-     * @param fat a String that has the pattern of (unsigned double) + (sp)
-     * @throws FoodNetWorkException if the String does not follow the pattern
+     * @param aFat a String that has the pattern of (unsigned double) + (sp)
+     * @throws FoodNetworkException if the String does not follow the pattern
      */
-    public final void setFat(String fat) throws FoodNetWorkException {
-
+    public final void setFat(String aFat) throws FoodNetworkException {
+        if(validateFat(aFat)){
+            fat = aFat;
+        }else{
+            throw new FoodNetworkException(aFat + " is not a valid fat");
+        }
     }
 
     /**
@@ -154,19 +178,93 @@ public class FoodItem {
      */
     @Override
     public int hashCode() {
-        return 0;
+        return 23 * mealType.hashCode() * name.hashCode() +
+                (int)calories *  fat.hashCode() + 13;
     }
 
 
+        /**
+         * Compare if 2 object is the same
+         *
+         * @param obj another FoodItem object
+         * @return true if the 2 object equals
+         */
+        @Override
+        public boolean equals(Object obj) {
+            if(obj == null){
+                return false;
+            }
+            if(obj == this){
+                return true;
+            }
+            if(!(obj instanceof FoodItem)){
+                return false;
+            }
+            boolean results = false;
+            FoodItem testObj = (FoodItem) obj;
+            if(testObj.name.equals(name) &&
+                    testObj.mealType.equals(mealType) &&
+                    (testObj.calories == calories) &&
+                    testObj.fat.equals(fat)){
+                results = true;
+            }
+            return results;
+        }
+
+        /**
+         * Check if the name is valid based on the pattern of name
+         * @param aName a String represents a name for FoodItem
+         * @return whether the name is valid
+         */
+    private boolean validateName(String aName){
+        boolean result = false;
+        /*String parts[] = aName.split(" ");
+        if(parts.length >= 2){
+            if(parts[0].matches("[0-9]+")){
+                int count = Integer.parseInt(parts[0]);
+                int totalLength = 0;
+                for(int i = 1; i < parts.length ; i++){
+                    totalLength += parts[i].length();
+                }
+                if((totalLength + parts.length - 2) == count){
+                    result = true;
+                }
+            }
+        }*/
+        if(aName != null && aName != ""){
+            result = true;
+        }
+        return result;
+    }
+
     /**
-     * Compare if 2 object is the same
-     *
-     * @param obj another FoodItem object
-     * @return if the 2 object equals
+     * Check if MealType is valid based on the MealTypes out there
+     * @param aMealType a MealType
+     * @return whether the MealType is valid
      */
-    @Override
-    public boolean equals(Object obj) {
-        return false;
+    private boolean validateMealType(MealType aMealType){
+        return aMealType != null;
+    }
+
+    /**
+     * Check if Calories is a non negative long number
+     * @param aCalories a long represents calories
+     * @return whether calories is negative or not
+     */
+    private boolean validateCaloires(long aCalories){
+        return aCalories >= 0;
+    }
+
+    /**
+     * Check if fat String follows the pattern of fat
+     * @param aFat a String represents fat
+     * @return whether fat follows the pattern or not
+     */
+    private boolean validateFat(String aFat){
+        if(aFat == null) {
+            return false;
+        }
+        return aFat.matches("^[0-9]*\\.?[0-9]+$");
     }
 }
 

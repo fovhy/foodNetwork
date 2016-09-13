@@ -29,12 +29,12 @@ public enum MealType {
     }
     /**
      * A static method that returns a MealType based on the type code(char). If the type code does not
-     * match any of the meal type. It will throw a FoodNetWorkException.
+     * match any of the meal type. It will throw a FoodNetworkException.
      * @param code a char that is supposed to be one of {'B', 'L', 'D', 'B'}
      * @return a type of Meal
-     * @throws FoodNetWorkException if code is null or fails validate
+     * @throws FoodNetworkException if code is null or fails validate
      */
-    public static MealType getMealType(char code) throws FoodNetWorkException{
+    public static MealType getMealType(char code) throws FoodNetworkException {
         MealType mealTypeToReturn;
         switch(code){
             case 'B':
@@ -50,7 +50,7 @@ public enum MealType {
                 mealTypeToReturn = Snack;
                 break;
             default:
-                throw new FoodNetWorkException(code + " is not a valid type code for meal.");
+                throw new FoodNetworkException(code + " is not a valid type code for meal.");
         }
         return mealTypeToReturn;
     }
