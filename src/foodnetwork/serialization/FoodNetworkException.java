@@ -27,7 +27,7 @@ package foodnetwork.serialization;
      * FoodNetworkException constructor with only a String message.
      * @param message what to print out when Exception happens
      */
-     FoodNetworkException(String message){
+     public FoodNetworkException(String message){
         super(message);
     }
 

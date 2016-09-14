@@ -10,6 +10,13 @@ package foodnetwork.serialization;
 import java.io.EOFException;
 import java.io.IOException;
 
+/**
+ * FoodItem is a class that can encode and decode all the attributes of a foodItem. In short,
+ * it is a class that wraps around some data about a food, and will be used to pass message over
+ * the foodNetwork
+ * @version 1.1 9/13/2016
+ * @author Dean He
+ */
 public class FoodItem {
     /**
      * name is represented by a String with pattern "^[0-9]+$" followed by a space then followed by a 1+ ASCII
