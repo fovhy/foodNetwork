@@ -2,7 +2,7 @@ package foodnetwork.serialization;
 /************************************************
  *
  * Author: Dean He
- * Assignment: Assignment 1
+ * Assignment: Assignment 0
  * Class: CSI 4321
  *
  ************************************************/

@@ -1,15 +1,15 @@
+/************************************************
+ *
+ * Author: Dean He
+ * Assignment: Assignment 0
+ * Class: CSI 4321
+ *
+ ************************************************/
 package foodnetwork.serialization;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-/************************************************
- *
- * Author: Dean He
- * Assignment: Assignment 1
- * Class: CSI 4321
- *
- ************************************************/
 public class MessageOutput {
 
     private OutputStream out;

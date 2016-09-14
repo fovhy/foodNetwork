@@ -1,7 +1,7 @@
 /************************************************
  *
  * Author: Dean He, Nicholas Hopper
- * Assignment: Assignment 1
+ * Assignment: Assignment 0
  * Class: CSI 4321
  *
  ************************************************/
