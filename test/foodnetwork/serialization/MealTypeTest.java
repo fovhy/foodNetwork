@@ -11,7 +11,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ * MealTypeTest test if user can get correct mealType from right code and vice versa.
+ * @version 1.1
+ * @author Dean He
+ */
 public class MealTypeTest {
+    /**
+     * Test for getMealType with correct food codes
+     * @throws FoodNetworkException if the food code is invalid
+     */
     @Test
     public void testGetRightMealType() throws FoodNetworkException {
             assertEquals(MealType.Breakfast, MealType.getMealType('B'));
@@ -21,6 +30,10 @@ public class MealTypeTest {
     }
 
     @Test(expected = FoodNetworkException.class)
+    /**
+     * Test for getMealType with wrong food codes
+     * @throws FoodNetworkException if the food code is invalid
+     */
     public void invalidCharType() throws FoodNetworkException {
         MealType.getMealType('T');
         MealType.getMealType('K');
@@ -28,6 +41,10 @@ public class MealTypeTest {
         fail("Get invalid char type did not throw");
     }
 
+    /**
+     * Test for mealCode actually matches with correct mealType
+     * @throws FoodNetworkException if the food code is invalid
+     */
     @Test
     public void testMealTypeCode() throws FoodNetworkException {
         assertEquals('B', MealType.getMealType('B').getMealTypeCode());
