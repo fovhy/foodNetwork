@@ -39,27 +39,44 @@ public class MessageInput {
 
     /**
      * Read a name from the InputStream.
+     *
      * @return the name String which should be in pattern of
      * @throws FoodNetworkException the name String format is wrong
+     * @throws EOFException         if stream ends prematurely
+     */
+   public char getNextSpace() throws FoodNetworkException, EOFException {
+        char space;
+        messageScanner.useDelimiter("");
+        if (messageScanner.hasNext(".")) {
+            space = messageScanner.next(".").charAt(0);
+            if (space != ' ') {
+                throw new FoodNetworkException("Expecting a space");
+            }
+        } else {
+            throw new EOFException("Premature string termination, expecting a space");
+        }
+        messageScanner.useDelimiter(" ");
+        return space;
+    }
+
+    /**
+     * get fixed amount of bytes from a stream
+     * @param count how many bytes you want
+     * @return bytes in String
+     * @throws FoodNetworkException if the count is not greater than 0
      * @throws EOFException if stream ends prematurely
      */
-    String getNextName() throws FoodNetworkException, EOFException {
-        String UN = "[0-9]+";
-        int count;
-        if(messageScanner.hasNext(UN)){
-            count = Integer.parseUnsignedInt(messageScanner.next(UN));
-        }else{
-            throw new FoodNetworkException("Invalid Count");
+    public String getNextFixedBytes(int count) throws FoodNetworkException, EOFException {
+        if(count <= 0){
+            throw new FoodNetworkException("Invalid count");
         }
-        char space;
-        space = getNextSpace();
         messageScanner.useDelimiter("");
         char[] characterList = new char[count];
         for(int i = 0; i < count; i++){
             if(messageScanner.hasNext(".")){
                 characterList[i] = messageScanner.next(".").charAt(0);
             }else{
-                throw new FoodNetworkException("Invalid Name");
+                throw new EOFException("Expecting more bytes when reading fixing length token");
             }
         }
         messageScanner.useDelimiter(" ");
@@ -67,90 +84,21 @@ public class MessageInput {
     }
 
     /**
-     * Read a MealType from the InputStream
-     * @return a MealType based on the char
-     * @throws FoodNetworkException if the char does not relate to any MealType
-     * @throws EOFException stream ends prematurely
-     */
-    MealType getNextMealType() throws FoodNetworkException, EOFException {
-        char type;
-        messageScanner.useDelimiter("");
-        if(messageScanner.hasNext(".")){
-            type = messageScanner.next(".").charAt(0);
-        }else{
-            throw new EOFException("premature stream ending when reading for MealType");
-        }
-        messageScanner.useDelimiter(" ");
-        return MealType.getMealType(type);
-    }
-
-    /**
-     * Get the calories of the FoodItem from the InputStream
-     * Warning: Do not put more digits than what a Java long can handle. It will throw an parse exception and
-     * it is not handled here.
-     * @return a String that represents calories amount
-     * @throws FoodNetworkException if the String format is not the format of calories
-     * @throws EOFException if stream prematurely ends
-     */
-    long getNextCalories() throws FoodNetworkException, EOFException {
-        String unsignedInt = "[0-9]+";
-        long calories = -1L;
-        if(!messageScanner.hasNext()){
-            throw new EOFException("Premature stream ending when trying to read for Calories");
-        }
-        if(messageScanner.hasNext(unsignedInt)){
-            try {
-                calories = Long.parseLong(messageScanner.next(unsignedInt));
-            }catch(NumberFormatException e){
-                throw new FoodNetworkException("Too long of stream for long", e);
-            }
-        }else{
-            throw new FoodNetworkException("Invalid unsigned int pattern");
-        }
-        getNextSpace();
-        return calories;
-    }
-
-    /**
-     * Get the fat stat from the InputStream
-     * @return a String that represents amount of fat in the FoodItem
-     * @throws FoodNetworkException if the String format is not the format of fat
+     * get the next string from the stream that contains a certain pattern.
+     * @param pattern the pattern you want to search in string format. A Java regex.
+     * @return the String it found
      * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException Cannot find such pattern in the stream
      */
-    String getNextFat() throws FoodNetworkException, EOFException {
+    public String getNextStringWithPattern(String pattern) throws EOFException, FoodNetworkException {
         if(!messageScanner.hasNext()){
-            throw new EOFException("Stream prematurely ends when reading for next fat");
+            throw new EOFException("Expecting more bytes when trying to read nex pattern");
         }
-        String unsignedDouble = "[0-9]*\\.?[0-9]+";
-        String fat;
-        if(messageScanner.hasNext(unsignedDouble)){
-            fat = messageScanner.next(unsignedDouble);
+        if(messageScanner.hasNext(pattern)){
+            return messageScanner.next(pattern);
         }else{
-            throw new FoodNetworkException("Invalid fat pattern");
+            throw new FoodNetworkException("Failed to find the pattern :" + pattern);
         }
-        getNextSpace();
-        return fat;
-    }
-
-    /**
-     * Check if there is one space after the reading position
-     * @return a space char
-     * @throws FoodNetworkException throws if the byte next is not a space or there is no next byte
-     * @throws EOFException if the stream ends up without a space
-     */
-    char getNextSpace() throws FoodNetworkException, EOFException {
-        char space;
-        messageScanner.useDelimiter("");
-        if(messageScanner.hasNext(".")){
-            space = messageScanner.next(".").charAt(0);
-            if(space != ' '){
-                throw new FoodNetworkException("Expecting a space");
-            }
-        }else{
-            throw new EOFException("Premature string termination, expecting a space");
-        }
-        messageScanner.useDelimiter(" ");
-        return space;
     }
 }
 
