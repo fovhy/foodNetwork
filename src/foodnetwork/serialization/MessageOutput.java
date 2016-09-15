@@ -25,11 +25,17 @@ public class MessageOutput {
 
 
     /**
+     * write byte array to output stream, in the same time store it outPutValue
+     * @param output the byte array to write out
+     * @throws IOException if outputStream closes unexpectedly
+     */
+    /*/**
      * Turns a foodItem object into a String and write it to the OutputStream
      * @param foodItem take a food item and encode it to a String of data
      * @throws FoodNetworkException if trying to write a null FoodItem
      * @throws IOException if outputStream closes
      */
+    /*
     public void writeObject(FoodItem foodItem) throws FoodNetworkException {
         if(foodItem != null) {
             outputValue = foodItem.toString();
@@ -41,13 +47,17 @@ public class MessageOutput {
         }else{
             throw new FoodNetworkException("Writing a null FoodItem");
         }
+    }*/
+    public void writeAndStore(String output) throws IOException {
+        outputValue = output;
+        out.write(output.getBytes("ASCII"));
     }
 
     /**
-     * return what is inside the outputStream
+     * return what outputMessage just wrote out
      * @return String stored in the buffer
      */
-    public String toString(){
+    public String justWrote(){
         return outputValue;
     }
 }

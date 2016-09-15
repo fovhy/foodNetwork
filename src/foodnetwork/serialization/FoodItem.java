@@ -93,23 +93,26 @@ public class FoodItem {
      * @throws FoodNetworkException FoodItem has incomplete field, stream closes unexpected
      */
     public void encode(MessageOutput out) throws FoodNetworkException {
-        out.writeObject(this);
+        try {
+            out.writeAndStore(toCodeString());
+        } catch (IOException e) {
+            throw new FoodNetworkException("OutputStream prematurely closes", e);
+        }
     }
 
-    /**
-     * encode the object into a String follow the grammar.
-     * @return the encoded String
-     */
-    @Override
-    public String toString(){
-        return name.length() + " " + name + mealType.getMealTypeCode() + calories + " " + fat + " ";
-    }
+        /**
+         * encode the object into a String follow the grammar.
+         * @return the encoded String
+         */
+        public String toCodeString(){
+            return name.length() + " " + name + mealType.getMealTypeCode() + calories + " " + fat + " ";
+        }
 
-    /**
-     * Get the name of the FoodItem
-     *
-     * @return name of the foodItem which should look like 5_apple
-     */
+        /**
+         * Get the name of the FoodItem
+         *
+         * @return name of the foodItem which should look like 5_apple
+         */
     public String getName(){
         return name;
     }
@@ -209,39 +212,39 @@ public class FoodItem {
     }
 
 
-        /**
-         * Compare if 2 object is the same
-         *
-         * @param obj another FoodItem object
-         * @return true if the 2 object equals
-         */
-        @Override
-        public boolean equals(Object obj) {
-            if(obj == null){
-                return false;
-            }
-            if(obj == this){
-                return true;
-            }
-            if(!(obj instanceof FoodItem)){
-                return false;
-            }
-            boolean results = false;
-            FoodItem testObj = (FoodItem) obj;
-            if(testObj.name.equals(name) &&
-                    testObj.mealType.equals(mealType) &&
-                    (testObj.calories == calories) &&
-                    testObj.fat.equals(fat)){
-                results = true;
-            }
-            return results;
+    /**
+     * Compare if 2 object is the same
+     *
+     * @param obj another FoodItem object
+     * @return true if the 2 object equals
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null){
+            return false;
         }
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof FoodItem)){
+            return false;
+        }
+        boolean results = false;
+        FoodItem testObj = (FoodItem) obj;
+        if(testObj.name.equals(name) &&
+                testObj.mealType.equals(mealType) &&
+                (testObj.calories == calories) &&
+                testObj.fat.equals(fat)){
+            results = true;
+        }
+        return results;
+    }
 
-        /**
-         * Check if the name is valid based on the pattern of name
-         * @param aName a String represents a name for FoodItem
-         * @return whether the name is valid
-         */
+    /**
+     * Check if the name is valid based on the pattern of name
+     * @param aName a String represents a name for FoodItem
+     * @return whether the name is valid
+     */
     private boolean validateName(String aName){
         boolean result = false;
         /*String parts[] = aName.split(" ");

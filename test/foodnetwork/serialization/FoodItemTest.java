@@ -65,7 +65,7 @@ public class FoodItemTest {
         FoodItem foodItem = new FoodItem("orange", MealType.Lunch, 12L, "0.42" );
         MessageOutput messageOutput = new MessageOutput(new ByteArrayOutputStream());
         foodItem.encode(messageOutput);
-        assertEquals("6 orangeL12 0.42 ", messageOutput.toString());
+        assertEquals("6 orangeL12 0.42 ", messageOutput.justWrote());
     }
 
     /**

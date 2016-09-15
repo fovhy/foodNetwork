@@ -34,7 +34,7 @@ public class MessageInput {
      * @param in The InputStream MessageInput has
      */
     public MessageInput(InputStream in) {
-        messageScanner = new Scanner(in);
+        messageScanner = new Scanner(in, "ASCII");
     }
 
     /**
