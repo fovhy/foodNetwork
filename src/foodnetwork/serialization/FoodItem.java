@@ -63,26 +63,22 @@ public class FoodItem {
      * @throws EOFException if the stream prematurely ends
      */
     public FoodItem(MessageInput in) throws FoodNetworkException, EOFException {
-        String foodCountString = in.getNextStringWithPattern("[0-9]+");
-        int foodCount;
-        try{
-            foodCount = Integer.parseInt(foodCountString);
-        }catch(NumberFormatException e){
-            throw new FoodNetworkException("Invalid name", e);
-        }
+        int foodCount = in.getNextUnsignedInt();
         in.getNextSpace();
-        String name = in.getNextFixedBytes(foodCount);
-        setName(name);
+        setName(in.getNextFixedBytes(foodCount));               // set name as fixed bytes of counts
         char mealTypeCode = in.getNextFixedBytes(1).charAt(0);  // get next char in the inputStream
         setMealType(MealType.getMealType(mealTypeCode));
-        String caloriesString = in.getNextStringWithPattern("[0-9]+");
         try{
-            setCalories(Long.parseLong(caloriesString));
-        }catch(NumberFormatException e){
+            setCalories(in.getNextUnsignedLong());
+        }catch(FoodNetworkException e){
             throw new FoodNetworkException("Invalid calories", e);
         }
         in.getNextSpace();
-        setFat(in.getNextStringWithPattern("[0-9]*\\.?[0-9]+"));
+        try {
+            setFat(in.getNextUnsignedDouble());
+        } catch(FoodNetworkException e){
+            throw new FoodNetworkException("Invalid fat", e);
+        }
         in.getNextSpace();
     }
 

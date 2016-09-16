@@ -44,7 +44,7 @@ public class MessageInput {
      * @throws FoodNetworkException the name String format is wrong
      * @throws EOFException         if stream ends prematurely
      */
-   public char getNextSpace() throws FoodNetworkException, EOFException {
+    public char getNextSpace() throws FoodNetworkException, EOFException {
         char space;
         messageScanner.useDelimiter("");
         if (messageScanner.hasNext(".")) {
@@ -98,6 +98,62 @@ public class MessageInput {
             return messageScanner.next(pattern);
         }else{
             throw new FoodNetworkException("Failed to find the pattern :" + pattern);
+        }
+    }
+
+    /**
+     * Get next unsigned int in the stream
+     * @return a unsigned int
+     * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException if the int is too long or negative
+     */
+    public int getNextUnsignedInt() throws EOFException, FoodNetworkException {
+        String unsignedIntString = getNextStringWithPattern("[0-9]+");
+        int unsignedInt;
+        try{
+            unsignedInt = Integer.parseInt(unsignedIntString);
+        }catch(NumberFormatException e){
+            throw new FoodNetworkException("Failed to parse the String as an int");
+        }
+        if(unsignedInt >= 0){
+            return unsignedInt;
+        }else{
+            throw new FoodNetworkException("Negative unsigned integer");
+        }
+    }
+
+    /**
+     * Get next unsigned long
+     * @return unsigned long
+     * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException long string is negative or too long
+     */
+    public long getNextUnsignedLong() throws EOFException, FoodNetworkException {
+        String unsignedLongString = getNextStringWithPattern("[0-9]+");
+        long unsignedLong;
+        try{
+            unsignedLong = Long.parseLong(unsignedLongString);
+        }catch(NumberFormatException e){
+            throw new FoodNetworkException("Failed to parse the String as a long");
+        }
+        if(unsignedLong >= 0){
+            return unsignedLong;
+        }else{
+            throw new FoodNetworkException("Negative unsigned long");
+        }
+    }
+
+    /**
+     * Get next unsigned double string
+     * @return a string that represents a unsigned double
+     * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException if the pattern does not match
+     */
+    public String getNextUnsignedDouble() throws EOFException, FoodNetworkException {
+        try {
+            return getNextStringWithPattern("[0-9]*\\.?[0-9]+");
+        } catch(FoodNetworkException e){
+            throw new FoodNetworkException("Failed to parse a unsigned double", e);
         }
     }
 }

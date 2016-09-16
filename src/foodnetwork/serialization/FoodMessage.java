@@ -8,9 +8,25 @@
 package foodnetwork.serialization;
 
 abstract public class FoodMessage {
-    abstract public void encode();
-    abstract public void decode();
+    public void encode(MessageInput in){
+
+    }
+    public void decode(MessageOutput out){
+
+    }
     public String getTimeStamp(){
         return null;
     }
+    public long getMessageTimestamp(){
+        return 0L;
+    }
+    abstract public String getRequest();
+    public int hashCode(){
+        return 0;
+    }
+    public String toString(){
+        return null;
+    }
+
+
 }
