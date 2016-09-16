@@ -8,8 +8,6 @@
 package foodnetwork.serialization;
 
 abstract public class FoodMessage {
-    abstract public void encode();
-    abstract public void decode();
     public String getTimeStamp(){
         return null;
     }
