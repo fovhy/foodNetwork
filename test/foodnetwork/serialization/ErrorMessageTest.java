@@ -41,8 +41,8 @@ public class ErrorMessageTest {
         timestamp2 = 123L;
         message1 = new ErrorMessage(timestamp1, error1);
         message2 = new ErrorMessage(timestamp2, error2);
-        message1Decode = "FN1.0 " + timestamp1 + " ERROR " + error1;
-        message2Decode = "FN1.0 " + timestamp2 + " ERROR " + error2;
+        message1Decode = "FN1.0 " + timestamp1 + " ERROR " + error1 + "\n";
+        message2Decode = "FN1.0 " + timestamp2 + " ERROR " + error2 + "\n";
     }
 
     /**
@@ -87,8 +87,8 @@ public class ErrorMessageTest {
 
     /**
      * Test encode function for ErrorMessage. (Test getRequest)
-     * @throws FoodNetworkException
-     * @throws UnsupportedEncodingException
+     * @throws FoodNetworkException if ErrorMessage is null
+     * @throws UnsupportedEncodingException wrong encoding
      */
     @Test
     public void testEncode() throws FoodNetworkException, UnsupportedEncodingException {

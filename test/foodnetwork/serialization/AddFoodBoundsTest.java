@@ -50,7 +50,7 @@ public class AddFoodBoundsTest {
      * @return decoding String
      */
     private String getCodeString(){
-        return "FN1.0 " + expTimeStamp + " " + "ADD " + foodItem1.toCodeString();
+        return "FN1.0 " + expTimeStamp + " " + "ADD " + foodItem1.toCodeString() + "\n";
     }
 
     /**

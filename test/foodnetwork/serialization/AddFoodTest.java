@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.junit.runners.Parameterized.Parameter;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,14 +32,20 @@ public class AddFoodTest {
     private Long expTimeStamp;
     private FoodItem expFoodItem;
     private AddFood expAddFood;
+
+    /**
+     * Populate parameters
+     * @return collection of parameters
+     * @throws FoodNetworkException fails to construct a foodItem
+     */
     @Parameters
     public static Collection<Object[]> data() throws FoodNetworkException {
         ArrayList list = new ArrayList();
-        list.add(new Object[]{"FN1.0 200 ADD 5 AppleB32 0.7", 200L,
+        list.add(new Object[]{"FN1.0 200 ADD 5 AppleB32 0.7\n", 200L,
                 new FoodItem("Apple", MealType.Breakfast, 32L, "0.7")});
-        list.add(new Object[]{"FN1.0 0 ADD 4 PearL23 0.12", 0L,
+        list.add(new Object[]{"FN1.0 0 ADD 4 PearL23 0.12\n", 0L,
                 new FoodItem("Pear", MealType.Lunch, 23L, "0.12")});
-        list.add(new Object[]{"FN1.0 300000 ADD 3 AxeD12 0.45", 23L,
+        list.add(new Object[]{"FN1.0 300000 ADD 3 AxeD12 0.45\n", 23L,
                 new FoodItem("Axe", MealType.Dinner, 12L, "0.45")});
         return list;
     }
@@ -52,9 +57,9 @@ public class AddFoodTest {
      * @param foodItem a FoodItem
      * @throws FoodNetworkException if it fails to construct an AddFood object
      */
-    public AddFoodTest(String code, long timeStamp, FoodItem foodItem) throws FoodNetworkException {
+    public AddFoodTest(String code, long timestamp, FoodItem foodItem) throws FoodNetworkException {
         this.expDecode = code;
-        this.expTimeStamp = timeStamp;
+        this.expTimeStamp = timestamp;
         this.expFoodItem = foodItem;
         this.expAddFood = new AddFood(expTimeStamp, expFoodItem);
     }
