@@ -7,10 +7,5 @@
  ************************************************/
 package foodnetwork.serialization;
 
-public class AddFoodBoundsTest {
-    private static final String CHARSET = "ASCII";
-    private long expTimeStamp = 1000L;
-    private FoodItem foodItem1;
-    private FoodItem foodItem2;
-
+public class FoodListBoundsTest {
 }
