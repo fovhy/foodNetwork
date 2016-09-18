@@ -96,19 +96,26 @@ public class FoodItem {
         }
     }
 
-        /**
-         * encode the object into a String follow the grammar.
-         * @return the encoded String
-         */
-        public String toCodeString(){
-            return name.length() + " " + name + mealType.getMealTypeCode() + calories + " " + fat + " ";
-        }
+    /**
+     * encode the object into a String follow the grammar.
+     * @return the encoded String
+     */
+    public String toCodeString(){
+        return name.length() + " " + name + mealType.getMealTypeCode() + calories + " " + fat + " ";
+    }
 
-        /**
-         * Get the name of the FoodItem
-         *
-         * @return name of the foodItem which should look like 5_apple
-         */
+    public String toString(){
+        return "Name: " + name + "\n" +
+                "MealType: " + mealType.getMealTypeCode() + "\n" +
+                "Calories: " + calories + "\n" +
+                "Fat: " + fat + "\n";
+    }
+
+    /**
+     * Get the name of the FoodItem
+     *
+     * @return name of the foodItem which should look like 5_apple
+     */
     public String getName(){
         return name;
     }
@@ -243,19 +250,6 @@ public class FoodItem {
      */
     private boolean validateName(String aName){
         boolean result = false;
-        /*String parts[] = aName.split(" ");
-        if(parts.length >= 2){
-            if(parts[0].matches("[0-9]+")){
-                int count = Integer.parseInt(parts[0]);
-                int totalLength = 0;
-                for(int i = 1; i < parts.length ; i++){
-                    totalLength += parts[i].length();
-                }
-                if((totalLength + parts.length - 2) == count){
-                    result = true;
-                }
-            }
-        }*/
         if(aName != null && aName != ""){
             result = true;
         }
