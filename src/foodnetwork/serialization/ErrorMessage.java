@@ -13,6 +13,14 @@ package foodnetwork.serialization;
 public class ErrorMessage extends FoodMessage{
 
     /**
+     * Constructor for ErrorMessage
+     * @param timestamp when message is created
+     * @param errorMessage what is the error
+     */
+    public ErrorMessage(long timestamp, String errorMessage)throws FoodNetworkException {
+    }
+
+    /**
      * Return the errorMessage stored in ErrorMessage class
      * @return error message
      */

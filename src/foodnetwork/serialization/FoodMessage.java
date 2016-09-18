@@ -77,5 +77,4 @@ abstract public class FoodMessage {
         return null;
     }
 
-
 }
