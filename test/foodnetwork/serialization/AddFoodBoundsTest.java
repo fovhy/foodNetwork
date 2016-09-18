@@ -40,8 +40,8 @@ public class AddFoodBoundsTest {
      * @param timestamp a timestamp that supposed to equal to the AddFood's timestamp
      * @param foodItem a foodItem that should be equal to the AddFood's foodItem
      */
-    private void testValues(AddFood addFood, Long timestamp, FoodItem foodItem){
-        assertEquals(timestamp, new Long(addFood.getMessageTimestamp()));
+    private void testValues(AddFood addFood, long timestamp, FoodItem foodItem){
+        assertEquals(timestamp, addFood.getMessageTimestamp());
         assertEquals(foodItem, addFood.getFoodItem());
     }
 

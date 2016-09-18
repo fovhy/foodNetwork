@@ -29,7 +29,7 @@ public class AddFoodTest {
     private final String CHARSET = "ASCII";
 
     private String expDecode;
-    private Long expTimeStamp;
+    private long expTimeStamp;
     private FoodItem expFoodItem;
     private AddFood expAddFood;
 
@@ -69,7 +69,7 @@ public class AddFoodTest {
      * @param addFood
      */
     public void checkAddFood(AddFood addFood){
-        assertEquals(expTimeStamp, new Long(addFood.getMessageTimestamp()));
+        assertEquals(expTimeStamp, addFood.getMessageTimestamp());
         assertEquals(expFoodItem, addFood.getFoodItem());
     }
 
