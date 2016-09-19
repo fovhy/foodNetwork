@@ -88,7 +88,7 @@ public class FoodListBoundsTest {
      */
     @Test
     public void testConstructor(){
-        testValues(foodList1, expTimestamp, expModifiedTimestamp, null);
+        testValues(foodList1, expTimestamp, expModifiedTimestamp, new ArrayList<FoodItem>());
     }
 
     /**
