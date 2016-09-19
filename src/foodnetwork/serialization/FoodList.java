@@ -23,7 +23,7 @@ public class FoodList extends FoodMessage{
      * @throws FoodNetworkException if long are null or negative
      */
     public FoodList(long messageTimestamp, long modifiedTimestamp) throws FoodNetworkException{
-        setModifiedTimestamp(messageTimestamp);
+        setMessageTimestamp(messageTimestamp);
         setModifiedTimestamp(modifiedTimestamp);
     }
 
@@ -95,9 +95,12 @@ public class FoodList extends FoodMessage{
         boolean results = false;
         FoodList testObj = (FoodList) obj;
         if(this.hashCode()== testObj.hashCode() &&
-                this.timestamp == testObj.timestamp &&
-                this.foodItemList.equals(testObj.foodItemList)){
-            results = true;
+                this.timestamp == testObj.timestamp) {
+            if(this.foodItemList != null){
+                results = this.foodItemList.equals(testObj.foodItemList);
+            }else if (this.foodItemList == null && testObj.foodItemList == null){
+                results = true;
+            }
         }
         return results;
     }
