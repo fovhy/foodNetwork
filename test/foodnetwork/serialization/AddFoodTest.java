@@ -54,7 +54,7 @@ public class AddFoodTest {
     /**
      * Construct a test
      * @param code serialization String
-     * @param timeStamp when message is created
+     * @param timestamp when message is created
      * @param foodItem a FoodItem
      * @throws FoodNetworkException if it fails to construct an AddFood object
      */

@@ -22,6 +22,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Parameterized test on FoodList
+ */
 @RunWith(Parameterized.class)
 public class FoodListTest {
     private final String CHARSET = "ASCII";
@@ -32,11 +35,16 @@ public class FoodListTest {
     private List<FoodItem> expFoodItemList;
     private FoodList expFoodList;
 
-    @Parameters
+    /**
+     * Parameters set up
+     * @return parameters
+     * @throws FoodNetworkException fails to construct foodItem
+     */
+    @Parameterized.Parameters
     public static Collection<Object[]> data() throws FoodNetworkException {
-        List<FoodItem> foodItemList1 = new ArrayList<FoodItem>();
-        List<FoodItem> foodItemList2 = new ArrayList<FoodItem>();
-        List<FoodItem> foodItemList3 = new ArrayList<FoodItem>();
+        List<FoodItem> foodItemList1 = new ArrayList<>();
+        List<FoodItem> foodItemList2 = new ArrayList<>();
+        List<FoodItem> foodItemList3 = new ArrayList<>();
         FoodItem item1 = new FoodItem("Apple", MealType.Breakfast, 120L, "0");
         FoodItem item2 = new FoodItem("Orange", MealType.Lunch, 10L, "1.2");
         FoodItem item3 = new FoodItem("Pickle", MealType.Snack, 123L, "0.42");
@@ -53,7 +61,7 @@ public class FoodListTest {
         for(FoodItem foodItem : foodItemList1){
             itemCodestring1 += foodItem.toCodeString();
         }
-        itemCodestring2 += "\n";
+        itemCodestring1 += "\n";
         for(FoodItem foodItem : foodItemList2){
             itemCodestring2 += foodItem.toCodeString();
         }
@@ -64,7 +72,7 @@ public class FoodListTest {
         itemCodestring3 += "\n";
         ArrayList list = new ArrayList();
         list.add(new Object[]{itemCodestring1, 123L, 342L, foodItemList1});
-        list.add(new Object[]{itemCodestring2, 0L, 13L, foodItemList2});
+        list.add(new Object[]{itemCodestring2, 13L, 0L, foodItemList2});
         list.add(new Object[]{itemCodestring3, 8L, 122L, foodItemList3});
         return list;
     }
@@ -74,7 +82,7 @@ public class FoodListTest {
         this.expTimestamp = timestamp;
         this.expModifiedTimestamp = modifiedTimestamp;
         this.expFoodItemList = list;
-        expFoodList = new FoodList(expTimestamp, expModifiedTimestamp);
+        this.expFoodList = new FoodList(expTimestamp, expModifiedTimestamp);
         for(FoodItem foodItem : expFoodItemList) {
             expFoodList.addFoodItem(foodItem);
         }

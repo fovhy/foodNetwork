@@ -7,6 +7,7 @@
  ************************************************/
 package foodnetwork.serialization;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class FoodList extends FoodMessage{
     public FoodList(long messageTimestamp, long modifiedTimestamp) throws FoodNetworkException{
         setMessageTimestamp(messageTimestamp);
         setModifiedTimestamp(modifiedTimestamp);
+        foodItemList = new ArrayList<>();
     }
 
     /**
@@ -125,7 +127,7 @@ public class FoodList extends FoodMessage{
      */
     @Override
     public String getRequest() {
-        String temp = "LIST " + modifiedTimestamp + foodItemList.size() + " ";
+        String temp = "LIST " + modifiedTimestamp + " " + foodItemList.size() + " ";
         for(FoodItem foodItem : foodItemList){
             temp += foodItem.toCodeString();
         }
