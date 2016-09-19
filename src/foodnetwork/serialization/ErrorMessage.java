@@ -17,6 +17,7 @@ public class ErrorMessage extends FoodMessage{
      * Constructor for ErrorMessage
      * @param timestamp when message is created
      * @param errorMessage what is the error
+     * @throws FoodNetworkException if the message is negative
      */
     public ErrorMessage(long timestamp, String errorMessage)throws FoodNetworkException {
         setMessageTimestamp(timestamp);

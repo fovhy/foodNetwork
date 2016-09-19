@@ -67,7 +67,7 @@ public class AddFoodTest {
 
     /**
      * Check an AddFood works correctly
-     * @param addFood
+     * @param addFood the AddFood object to be tested
      */
     public void checkAddFood(AddFood addFood){
         assertEquals(expTimeStamp, addFood.getMessageTimestamp());
@@ -87,6 +87,7 @@ public class AddFoodTest {
      * Test decode function for AddFood
      * @throws UnsupportedEncodingException wrong encoding
      * @throws FoodNetworkException if decode fails
+     * @throws EOFException if stream prematurally ends
      */
     @Test
     public void testDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
@@ -97,8 +98,8 @@ public class AddFoodTest {
 
     /**
      * Test ADDFood encoding. (test getRequest)
-     * @throws FoodNetworkException
-     * @throws UnsupportedEncodingException
+     * @throws FoodNetworkException if fails to construct a FoodMessage from the stream
+     * @throws UnsupportedEncodingException the encoding is not supported
      */
     @Test
     public void testEncode() throws FoodNetworkException, UnsupportedEncodingException {

@@ -80,6 +80,7 @@ public class GetFoodTest {
      * Test decode function of GetFood
      * @throws FoodNetworkException fails to construct a GetFood object
      * @throws UnsupportedEncodingException wrong encoding
+     * @throws EOFException if stream ends prematurally
      */
     @Test
     public void testDecode() throws FoodNetworkException, UnsupportedEncodingException, EOFException {

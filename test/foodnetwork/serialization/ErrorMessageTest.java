@@ -103,6 +103,7 @@ public class ErrorMessageTest {
      * Test Decode of the ErrorMessage
      * @throws FoodNetworkException if fails to construct a new ErrorMessage object
      * @throws UnsupportedEncodingException wrong encoding
+     * @throws EOFException if the stream ends prematurally
      */
     @Test
     public void testDecode() throws FoodNetworkException, UnsupportedEncodingException, EOFException {

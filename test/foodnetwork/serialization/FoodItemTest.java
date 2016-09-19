@@ -159,7 +159,7 @@ public class FoodItemTest {
 
     /**
      * Test setFat with invalid string
-     * @throws FoodNetworkException
+     * @throws FoodNetworkException expected
      */
     @Test(expected = FoodNetworkException.class)
     public void testForSetFatWithWrongString() throws FoodNetworkException {

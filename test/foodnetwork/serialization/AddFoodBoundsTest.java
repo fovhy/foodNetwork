@@ -103,6 +103,7 @@ public class AddFoodBoundsTest {
      * Test decode method with negative timestamp
      * @throws UnsupportedEncodingException encoding is wrong
      * @throws FoodNetworkException expected
+     * @throws EOFException if stream prematurally ends
      */
     @Test(expected = FoodNetworkException.class)
     public void testNegativeDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {

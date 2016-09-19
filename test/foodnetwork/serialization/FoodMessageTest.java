@@ -21,7 +21,7 @@ public class FoodMessageTest {
 
     /**
      * Set up GetFood as the concrete class to test setters for messageTimestamp
-     * @throws FoodNetworkException
+     * @throws FoodNetworkException the construction of getFood fails
      */
     @Before
     public void SetUp() throws FoodNetworkException {

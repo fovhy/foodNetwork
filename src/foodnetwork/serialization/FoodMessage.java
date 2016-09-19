@@ -36,6 +36,7 @@ abstract public class FoodMessage {
      * @return a FoodMessage that constructs that based on the MessageInput
      * @param in MessageInput object that wraps around a input stream
      * @throws FoodNetworkException if fails to construct the foodMessage item
+     * @throws EOFException if the stream prematurally closes
      */
     public static FoodMessage decode(MessageInput in) throws FoodNetworkException, EOFException {
         String version =  in.getNextFixedBytes("FN1.0".length());
