@@ -44,18 +44,11 @@ public class MessageInput {
      * @throws FoodNetworkException the name String format is wrong
      * @throws EOFException         if stream ends prematurely
      */
-   public char getNextSpace() throws FoodNetworkException, EOFException {
-        char space;
-        messageScanner.useDelimiter("");
-        if (messageScanner.hasNext(".")) {
-            space = messageScanner.next(".").charAt(0);
-            if (space != ' ') {
-                throw new FoodNetworkException("Expecting a space");
-            }
-        } else {
-            throw new EOFException("Premature string termination, expecting a space");
+    public char getNextSpace() throws FoodNetworkException, EOFException {
+        char space = getNextFixedBytes(1).charAt(0); // read one char
+        if (space != ' ') {
+            throw new FoodNetworkException("Expecting a space");
         }
-        messageScanner.useDelimiter(" ");
         return space;
     }
 
@@ -73,10 +66,10 @@ public class MessageInput {
         messageScanner.useDelimiter("");
         char[] characterList = new char[count];
         for(int i = 0; i < count; i++){
-            if(messageScanner.hasNext(".")){
-                characterList[i] = messageScanner.next(".").charAt(0);
+            if(messageScanner.hasNext()){
+                characterList[i] = messageScanner.next().charAt(0);
             }else{
-                throw new EOFException("Expecting more bytes when reading fixing length token");
+                throw new EOFException("Expecting more bytes when reading fixed length token");
             }
         }
         messageScanner.useDelimiter(" ");
@@ -92,13 +85,101 @@ public class MessageInput {
      */
     public String getNextStringWithPattern(String pattern) throws EOFException, FoodNetworkException {
         if(!messageScanner.hasNext()){
-            throw new EOFException("Expecting more bytes when trying to read nex pattern");
+            throw new EOFException("Expecting more bytes when trying to read next pattern");
         }
         if(messageScanner.hasNext(pattern)){
             return messageScanner.next(pattern);
         }else{
             throw new FoodNetworkException("Failed to find the pattern :" + pattern);
         }
+    }
+
+    /**
+     * Get next unsigned int in the stream
+     * @return a unsigned int
+     * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException if the int is too long or negative
+     */
+    public int getNextUnsignedInt() throws EOFException, FoodNetworkException {
+        String unsignedIntString = getNextStringWithPattern("[0-9]+");
+        int unsignedInt;
+        try{
+            unsignedInt = Integer.parseInt(unsignedIntString);
+        }catch(NumberFormatException e){
+            throw new FoodNetworkException("Failed to parse the String as an int");
+        }
+        if(unsignedInt >= 0){
+            return unsignedInt;
+        }else{
+            throw new FoodNetworkException("Negative unsigned integer");
+        }
+    }
+
+    /**
+     * Get next unsigned long
+     * @return unsigned long
+     * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException long string is negative or too long
+     */
+    public long getNextUnsignedLong() throws EOFException, FoodNetworkException {
+        String unsignedLongString = getNextStringWithPattern("[0-9]+");
+        long unsignedLong;
+        try{
+            unsignedLong = Long.parseLong(unsignedLongString);
+        }catch(NumberFormatException e){
+            throw new FoodNetworkException("Failed to parse the String as a long");
+        }
+        if(unsignedLong >= 0){
+            return unsignedLong;
+        }else{
+            throw new FoodNetworkException("Negative unsigned long");
+        }
+    }
+
+    /**
+     * Get next unsigned double string
+     * @return a string that represents a unsigned double
+     * @throws EOFException if stream ends prematurely
+     * @throws FoodNetworkException if the pattern does not match
+     */
+    public String getNextUnsignedDouble() throws EOFException, FoodNetworkException {
+        try {
+            return getNextStringWithPattern("[0-9]*\\.?[0-9]+");
+        } catch(FoodNetworkException e){
+            throw new FoodNetworkException("Failed to parse a unsigned double", e);
+        }
+    }
+
+    /**
+     * Get next newLine character
+     * @return "\n"
+     * @throws FoodNetworkException If the next byte is not "\n"
+     * @throws EOFException stream closes prematurely
+     */
+    public char getNextNewLine() throws FoodNetworkException, EOFException {
+        char newLine;
+        newLine = getNextFixedBytes(1).charAt(0); // get next byte
+        if('\n' != newLine){
+            throw new FoodNetworkException("Expecting a new line character");
+        }
+        return newLine;
+    }
+
+    /**
+     * Get next String using \n as decimeter
+     * @return next String
+     * @throws FoodNetworkException if there is no data before \n
+     */
+    public String getNextString() throws FoodNetworkException {
+        String string;
+        messageScanner.useDelimiter("\n");
+        if (messageScanner.hasNext()) {
+            string = messageScanner.next();
+        } else {
+            throw new FoodNetworkException("No String before \\n");
+        }
+        messageScanner.useDelimiter(" ");
+        return string;
     }
 }
 

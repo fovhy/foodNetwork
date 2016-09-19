@@ -29,25 +29,7 @@ public class MessageOutput {
      * @param output the byte array to write out
      * @throws IOException if outputStream closes unexpectedly
      */
-    /*/**
-     * Turns a foodItem object into a String and write it to the OutputStream
-     * @param foodItem take a food item and encode it to a String of data
-     * @throws FoodNetworkException if trying to write a null FoodItem
-     * @throws IOException if outputStream closes
-     */
-    /*
-    public void writeObject(FoodItem foodItem) throws FoodNetworkException {
-        if(foodItem != null) {
-            outputValue = foodItem.toString();
-            try {
-                out.write(outputValue.getBytes());
-            } catch (IOException e) {
-                throw new FoodNetworkException("OutputStream prematurely closes", e);
-            }
-        }else{
-            throw new FoodNetworkException("Writing a null FoodItem");
-        }
-    }*/
+
     public void writeAndStore(String output) throws IOException {
         outputValue = output;
         out.write(output.getBytes("ASCII"));
