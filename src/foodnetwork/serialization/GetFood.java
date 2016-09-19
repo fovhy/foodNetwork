@@ -17,7 +17,7 @@ public class GetFood extends FoodMessage{
      * @throws FoodNetworkException if the message is empty or null
      */
     public GetFood(long messageTimestamp) throws FoodNetworkException{
-
+        setMessageTimestamp(messageTimestamp);
     }
 
     /**
@@ -25,7 +25,7 @@ public class GetFood extends FoodMessage{
      * @return GetFood request message
      */
     public String getRequest() {
-        return null;
+        return "GET ";
     }
 
     /**
@@ -34,6 +34,6 @@ public class GetFood extends FoodMessage{
      */
     @Override
     public String toString(){
-        return null;
+        return super.toString() + "Type: GET\n";
     }
 }

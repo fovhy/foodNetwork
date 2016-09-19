@@ -11,6 +11,7 @@ package foodnetwork.serialization;
  * AddFood is a message class that stores what will be needed for adding a FoodItem into the server.
  */
 public class AddFood extends FoodMessage{
+    private FoodItem foodItemToBeAdded;
     /**
      * constructor for AddFood, that stores a timestamp and foodItem
      * @param messageTimestamp timestamp when the message is created
@@ -18,7 +19,8 @@ public class AddFood extends FoodMessage{
      * @throws FoodNetworkException if the message is empty or null. Or if the foodItem is null.
      */
     public AddFood(long messageTimestamp, FoodItem foodItem) throws FoodNetworkException{
-
+        setMessageTimestamp(messageTimestamp);
+        setFoodItem(foodItem);
     }
 
 
@@ -28,7 +30,7 @@ public class AddFood extends FoodMessage{
      * @return add foodItem message
      */
     public String getRequest(){
-        return null;
+        return "ADD " + foodItemToBeAdded.toCodeString();
     }
 
     /**
@@ -37,7 +39,10 @@ public class AddFood extends FoodMessage{
      * @throws FoodNetworkException if the foodItem is null
      */
     public final void setFoodItem(FoodItem foodItem) throws FoodNetworkException{
-
+        if(foodItem == null){
+            throw new FoodNetworkException("Null foodItem");
+        }
+        foodItemToBeAdded = foodItem;
     }
 
     /**
@@ -45,7 +50,7 @@ public class AddFood extends FoodMessage{
      * @return FoodItem stored in this class
      */
     public final FoodItem getFoodItem(){
-        return null;
+        return foodItemToBeAdded;
     }
 
     /**
@@ -54,7 +59,7 @@ public class AddFood extends FoodMessage{
      */
     @Override
     public int hashCode (){
-        return 0;
+        return super.hashCode() + (foodItemToBeAdded.hashCode() * 53);
     }
 
     /**
@@ -64,7 +69,23 @@ public class AddFood extends FoodMessage{
      */
     @Override
     public boolean equals(Object obj){
-        return false;
+        if(obj == null){
+            return false;
+        }
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof AddFood)){
+            return false;
+        }
+        boolean results = false;
+        AddFood testObj = (AddFood) obj;
+        if(this.hashCode()== testObj.hashCode() &&
+                this.timestamp == testObj.timestamp &&
+                this.foodItemToBeAdded.equals(testObj.foodItemToBeAdded)){
+            results = true;
+        }
+        return results;
     }
 
     /**
@@ -73,7 +94,10 @@ public class AddFood extends FoodMessage{
      */
     @Override
     public String toString(){
-        return null;
+        String temp = super.toString();
+        temp += "Type: ADD\n";
+        temp += foodItemToBeAdded.toString();
+        return temp;
     }
 
 

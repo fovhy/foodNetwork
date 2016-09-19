@@ -45,17 +45,10 @@ public class MessageInput {
      * @throws EOFException         if stream ends prematurely
      */
     public char getNextSpace() throws FoodNetworkException, EOFException {
-        char space;
-        messageScanner.useDelimiter("");
-        if (messageScanner.hasNext(".")) {
-            space = messageScanner.next(".").charAt(0);
-            if (space != ' ') {
-                throw new FoodNetworkException("Expecting a space");
-            }
-        } else {
-            throw new EOFException("Premature string termination, expecting a space");
+        char space = getNextFixedBytes(1).charAt(0); // read one char
+        if (space != ' ') {
+            throw new FoodNetworkException("Expecting a space");
         }
-        messageScanner.useDelimiter(" ");
         return space;
     }
 
@@ -73,10 +66,10 @@ public class MessageInput {
         messageScanner.useDelimiter("");
         char[] characterList = new char[count];
         for(int i = 0; i < count; i++){
-            if(messageScanner.hasNext(".")){
-                characterList[i] = messageScanner.next(".").charAt(0);
+            if(messageScanner.hasNext()){
+                characterList[i] = messageScanner.next().charAt(0);
             }else{
-                throw new EOFException("Expecting more bytes when reading fixing length token");
+                throw new EOFException("Expecting more bytes when reading fixed length token");
             }
         }
         messageScanner.useDelimiter(" ");
@@ -92,7 +85,7 @@ public class MessageInput {
      */
     public String getNextStringWithPattern(String pattern) throws EOFException, FoodNetworkException {
         if(!messageScanner.hasNext()){
-            throw new EOFException("Expecting more bytes when trying to read nex pattern");
+            throw new EOFException("Expecting more bytes when trying to read next pattern");
         }
         if(messageScanner.hasNext(pattern)){
             return messageScanner.next(pattern);
@@ -155,6 +148,38 @@ public class MessageInput {
         } catch(FoodNetworkException e){
             throw new FoodNetworkException("Failed to parse a unsigned double", e);
         }
+    }
+
+    /**
+     * Get next newLine character
+     * @return "\n"
+     * @throws FoodNetworkException If the next byte is not "\n"
+     * @throws EOFException stream closes prematurely
+     */
+    public char getNextNewLine() throws FoodNetworkException, EOFException {
+        char newLine;
+        newLine = getNextFixedBytes(1).charAt(0); // get next byte
+        if('\n' != newLine){
+            throw new FoodNetworkException("Expecting a new line character");
+        }
+        return newLine;
+    }
+
+    /**
+     * Get next String using \n as decimeter
+     * @return next String
+     * @throws FoodNetworkException if there is no data before \n
+     */
+    public String getNextString() throws FoodNetworkException {
+        String string;
+        messageScanner.useDelimiter("\n");
+        if (messageScanner.hasNext()) {
+            string = messageScanner.next();
+        } else {
+            throw new FoodNetworkException("No String before \\n");
+        }
+        messageScanner.useDelimiter(" ");
+        return string;
     }
 }
 

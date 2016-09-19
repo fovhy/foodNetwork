@@ -12,12 +12,15 @@ package foodnetwork.serialization;
  */
 public class ErrorMessage extends FoodMessage{
 
+    private String errorMessage;
     /**
      * Constructor for ErrorMessage
      * @param timestamp when message is created
      * @param errorMessage what is the error
      */
     public ErrorMessage(long timestamp, String errorMessage)throws FoodNetworkException {
+        setMessageTimestamp(timestamp);
+        setErrorMessage(errorMessage);
     }
 
     /**
@@ -25,7 +28,7 @@ public class ErrorMessage extends FoodMessage{
      * @return error message
      */
     public final String getErrorMessage(){
-        return null;
+        return errorMessage;
     }
 
     /**
@@ -33,7 +36,7 @@ public class ErrorMessage extends FoodMessage{
      * @return request of error message.
      */
     public final String getRequest(){
-        return null;
+        return "ERROR " + errorMessage;
     }
     /**
      * Compare this object with another one to see if they are equal.
@@ -42,7 +45,23 @@ public class ErrorMessage extends FoodMessage{
      */
     @Override
     public boolean equals(Object obj){
-        return false;
+        if(obj == null){
+            return false;
+        }
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof ErrorMessage)){
+            return false;
+        }
+        boolean results = false;
+        ErrorMessage testObj = (ErrorMessage) obj;
+        if(this.hashCode()== testObj.hashCode() &&
+                this.timestamp == testObj.timestamp &&
+                this.errorMessage.equals(testObj.errorMessage)){
+            results = true;
+        }
+        return results;
     }
 
     /**
@@ -51,7 +70,7 @@ public class ErrorMessage extends FoodMessage{
      */
     @Override
     public int hashCode(){
-        return 0;
+        return super.hashCode() + errorMessage.hashCode() * 7;
     }
 
     /**
@@ -60,6 +79,9 @@ public class ErrorMessage extends FoodMessage{
      * @throws FoodNetworkException if the message is empty String or null
      */
     void setErrorMessage(String errorMessage) throws FoodNetworkException{
-
+        if(errorMessage == null || "".equals(errorMessage)){
+            throw new FoodNetworkException("Invalid error message");
+        }
+        this.errorMessage = errorMessage;
     }
 }

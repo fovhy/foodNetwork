@@ -14,6 +14,7 @@ import org.testng.annotations.Parameters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,7 +91,7 @@ public class FoodListTest {
         checkFoodList(expFoodList);
     }
     @Test
-    public void testDecode() throws FoodNetworkException, UnsupportedEncodingException {
+    public void testDecode() throws FoodNetworkException, UnsupportedEncodingException, EOFException {
         MessageInput in = new MessageInput(new ByteArrayInputStream(expDecode.getBytes(CHARSET)));
         FoodList temp = (FoodList) FoodMessage.decode(in);
         checkFoodItemList(temp);

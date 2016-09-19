@@ -7,21 +7,27 @@
  ************************************************/
 package foodnetwork.serialization;
 
+import java.io.EOFException;
+import java.io.IOException;
+
 /**
  * An abstract class that represents a FoodMessage. It provides a genral form for all the foodMessage subclass to
  * encode and decode. The only abstract method is getRequest here.
  *
  */
 abstract public class FoodMessage {
-    protected long timeStamp;
-
+    protected long timestamp;
     /**
      * Encode a foodMessage subclass object
-     * @param in MessageOutput object that wraps around a outputStream
+     * @param out MessageOutput object that wraps around a outputStream
      * @throws FoodNetworkException if fails to encode foodMessage
      */
-    public void encode(MessageOutput out) throws FoodNetworkException{
-
+    public void encode(MessageOutput out) throws FoodNetworkException {
+        try {
+            out.writeAndStore("FN1.0 " + timestamp + " " + this.getRequest() + "\n");
+        }catch (IOException e){
+            throw new FoodNetworkException("OutputStream closes prematurely", e);
+        }
     }
 
 
@@ -31,8 +37,43 @@ abstract public class FoodMessage {
      * @param in MessageInput object that wraps around a input stream
      * @throws FoodNetworkException if fails to construct the foodMessage item
      */
-    public static FoodMessage decode(MessageInput in)throws FoodNetworkException{
-        return null;
+    public static FoodMessage decode(MessageInput in) throws FoodNetworkException, EOFException {
+        String version =  in.getNextFixedBytes("FN1.0".length());
+        if(!"FN1.0".equals(version)){
+            throw new FoodNetworkException("Failed to read version number");
+        }
+        in.getNextSpace();
+        long messageTimestamp = in.getNextUnsignedLong();
+        in.getNextSpace();
+        String type = in.getNextStringWithPattern("[A-Z]+");
+        switch(type){
+            case "ADD":
+                in.getNextSpace();
+                FoodItem foodItem = new FoodItem(in);
+                in.getNextNewLine();
+                return new AddFood(messageTimestamp, foodItem);
+            case "GET":
+                in.getNextSpace();
+                in.getNextNewLine();
+                return new GetFood(messageTimestamp);
+            case "LIST":
+                in.getNextSpace();
+                long modifiedTimestamp = in.getNextUnsignedLong();
+                in.getNextSpace();
+                int count = in.getNextUnsignedInt();
+                FoodList tempFoodList = new FoodList(messageTimestamp, modifiedTimestamp);
+                for(int i = 0; i < count; i++){
+                    tempFoodList.addFoodItem(new FoodItem(in));
+                }
+                in.getNextNewLine();
+                return tempFoodList;
+            case "ERROR":
+                in.getNextSpace();
+                String message = in.getNextString();
+                return new ErrorMessage(messageTimestamp, message);
+            default:
+                return null;
+        }
     }
 
 
@@ -41,7 +82,7 @@ abstract public class FoodMessage {
      * @return a long that represents timestamp
      */
     public final long getMessageTimestamp(){
-        return 0L;
+        return timestamp;
     }
 
     /**
@@ -50,7 +91,10 @@ abstract public class FoodMessage {
      * @throws FoodNetworkException if the messageTimestamp is negative
      */
     public final void setMessageTimestamp(long messageTimestamp) throws FoodNetworkException{
-
+        if(messageTimestamp < 0){
+            throw new FoodNetworkException("negative messageTimestamp");
+        }
+        timestamp = messageTimestamp;
     }
 
     /**
@@ -65,7 +109,7 @@ abstract public class FoodMessage {
      */
     @Override
     public int hashCode(){
-        return 0;
+        return new Long(timestamp).hashCode() * 13;
     }
 
     /**
@@ -74,7 +118,10 @@ abstract public class FoodMessage {
      */
     @Override
     public String toString(){
-        return null;
+        String temp = "";
+        temp += "Version: FN1.0\n";
+        temp += "MessageTime: " + timestamp + "\n";
+        return temp;
     }
 
 }

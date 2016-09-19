@@ -15,6 +15,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,12 +42,12 @@ public class AddFoodTest {
     @Parameters
     public static Collection<Object[]> data() throws FoodNetworkException {
         ArrayList list = new ArrayList();
-        list.add(new Object[]{"FN1.0 200 ADD 5 AppleB32 0.7\n", 200L,
+        list.add(new Object[]{"FN1.0 200 ADD 5 AppleB32 0.7 \n", 200L,
                 new FoodItem("Apple", MealType.Breakfast, 32L, "0.7")});
-        list.add(new Object[]{"FN1.0 0 ADD 4 PearL23 0.12\n", 0L,
+        list.add(new Object[]{"FN1.0 0 ADD 4 PearL23 0.12 \n", 0L,
                 new FoodItem("Pear", MealType.Lunch, 23L, "0.12")});
-        list.add(new Object[]{"FN1.0 300000 ADD 3 AxeD12 0.45\n", 23L,
-                new FoodItem("Axe", MealType.Dinner, 12L, "0.45")});
+        list.add(new Object[]{"FN1.0 3000 ADD 3 AxeD23 0.45 \n", 3000L,
+                new FoodItem("Axe", MealType.Dinner, 23L, "0.45")});
         return list;
     }
 
@@ -88,7 +89,7 @@ public class AddFoodTest {
      * @throws FoodNetworkException if decode fails
      */
     @Test
-    public void testDecode() throws UnsupportedEncodingException, FoodNetworkException {
+    public void testDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         MessageInput in = new MessageInput(new ByteArrayInputStream(expDecode.getBytes(CHARSET)));
         AddFood temp = (AddFood) FoodMessage.decode(in);
         checkAddFood(temp);

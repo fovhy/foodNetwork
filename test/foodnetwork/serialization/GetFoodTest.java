@@ -14,6 +14,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +82,7 @@ public class GetFoodTest {
      * @throws UnsupportedEncodingException wrong encoding
      */
     @Test
-    public void testDecode() throws FoodNetworkException, UnsupportedEncodingException {
+    public void testDecode() throws FoodNetworkException, UnsupportedEncodingException, EOFException {
         MessageInput in = new MessageInput(new ByteArrayInputStream(expDecode.getBytes(CHARSET)));
         GetFood temp = (GetFood) GetFood.decode(in);
         checkGetFood(temp);

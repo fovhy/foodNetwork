@@ -8,6 +8,7 @@
 package foodnetwork.serialization;
 
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
@@ -57,7 +58,7 @@ public class FoodListBoundsTest {
         assertEquals(modifiedTimestamp, foodList.getModifiedTimestamp());
         assertEquals(list, foodList.getFoodItemList());
     }
-    private FoodMessage decode() throws UnsupportedEncodingException, FoodNetworkException {
+    private FoodMessage decode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         return FoodList.decode(new MessageInput(new ByteArrayInputStream(this.getCodeString().getBytes(CHARSET))));
     }
 
@@ -74,12 +75,12 @@ public class FoodListBoundsTest {
         foodList3.setModifiedTimestamp(-1L);
     }
     @Test(expected = FoodNetworkException.class)
-    public void testNegativeTimestampDecode() throws UnsupportedEncodingException, FoodNetworkException {
+    public void testNegativeTimestampDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         expTimestamp = -1;
         decode();
     }
     @Test(expected = FoodNetworkException.class)
-    public void testNegativeModifiedTimeDecode() throws UnsupportedEncodingException, FoodNetworkException {
+    public void testNegativeModifiedTimeDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         expModifiedTimestamp = -12;
         decode();
     }

@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.*;
@@ -34,7 +35,7 @@ public class ErrorMessageTest {
      * @throws FoodNetworkException if fails to construct a ErrorMessage object
      */
     @Before
-    protected void setUp() throws FoodNetworkException {
+    public void setUp() throws FoodNetworkException {
         error1 = "This is Sparta";
         error2 = "Kappa123";
         timestamp1 = 12L;
@@ -104,7 +105,7 @@ public class ErrorMessageTest {
      * @throws UnsupportedEncodingException wrong encoding
      */
     @Test
-    public void testDecode() throws FoodNetworkException, UnsupportedEncodingException {
+    public void testDecode() throws FoodNetworkException, UnsupportedEncodingException, EOFException {
         MessageInput in = new MessageInput(new ByteArrayInputStream(message2Decode.getBytes("ASCII")));
         ErrorMessage temp = (ErrorMessage) FoodMessage.decode(in);
         assertNotNull(temp);

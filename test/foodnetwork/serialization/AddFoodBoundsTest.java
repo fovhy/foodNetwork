@@ -9,6 +9,7 @@ package foodnetwork.serialization;
 
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.UnsupportedEncodingException;
 
 import static org.junit.Assert.*;
@@ -59,7 +60,7 @@ public class AddFoodBoundsTest {
      * @throws UnsupportedEncodingException encoding is not correct
      * @throws FoodNetworkException Fails to decode this String into a FoodItem
      */
-    private FoodMessage decode() throws UnsupportedEncodingException, FoodNetworkException {
+    private FoodMessage decode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         return AddFood.decode(new MessageInput(new ByteArrayInputStream(this.getCodeString().getBytes(CHARSET))));
     }
 
@@ -104,7 +105,7 @@ public class AddFoodBoundsTest {
      * @throws FoodNetworkException expected
      */
     @Test(expected = FoodNetworkException.class)
-    public void testNegativeDecode() throws UnsupportedEncodingException, FoodNetworkException {
+    public void testNegativeDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         expTimeStamp = -1;
         this.decode();
     }
