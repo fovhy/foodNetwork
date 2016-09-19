@@ -45,6 +45,11 @@ public class FoodListBoundsTest {
             throw new FoodNetworkException("Failed to set up Bounding test for FoodList", e);
         }
     }
+
+    /**
+     * Return a serialized String based on the expected value of the test
+     * @return
+     */
     private String getCodeString(){
         String temp = "FN1.0 " + expTimestamp + " LIST " + expModifiedTimestamp + " " + expListCount + " ";
         for(FoodItem foodItem : foodItemList){
@@ -53,32 +58,75 @@ public class FoodListBoundsTest {
         temp += "\n";
         return temp;
     }
+
+    /**
+     * Test if the foodList contains all the same attributes as it should
+     * @param foodList the FoodList object to be examined
+     * @param timestamp expected messageTimestamp
+     * @param modifiedTimestamp expected modifiedMessageTimestamp
+     * @param list expected FoodItem list
+     */
     private void testValues(FoodList foodList, long timestamp, long modifiedTimestamp, List<FoodItem> list){
         assertEquals(timestamp, foodList.getMessageTimestamp());
         assertEquals(modifiedTimestamp, foodList.getModifiedTimestamp());
         assertEquals(list, foodList.getFoodItemList());
     }
+
+    /**
+     * Make a FoodMessage out of the expected serialization String
+     * @return a FoodMessage(FoodList) that is build on the information of the expected serialization String
+     * @throws UnsupportedEncodingException wrong encoding
+     * @throws FoodNetworkException if it fails construct a FoodMessage out of the encoding
+     * @throws EOFException the stream ends prematurally
+     */
     private FoodMessage decode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         return FoodList.decode(new MessageInput(new ByteArrayInputStream(this.getCodeString().getBytes(CHARSET))));
     }
 
+    /**
+     *Test the constructor of the FoodList
+     */
     @Test
     public void testConstructor(){
         testValues(foodList1, expTimestamp, expModifiedTimestamp, null);
     }
+
+    /**
+     * Test the constructor with negative modifiedTimestamp
+     * @throws FoodNetworkException expected
+     */
     @Test(expected = FoodNetworkException.class)
     public void testConstructorWithNegativeTimestamp() throws FoodNetworkException {
         new FoodList(10L, -1L);
     }
+
+    /**
+     * Test the setter of modifiedTimestamp with negative value
+     * @throws FoodNetworkException expected
+     */
     @Test(expected = FoodNetworkException.class)
     public void testModifiedTimestampSetterWithNegativeValue() throws FoodNetworkException {
         foodList3.setModifiedTimestamp(-1L);
     }
+
+    /**
+     * Test the decode function when the timestamp is negative
+     * @throws UnsupportedEncodingException wrong encoding
+     * @throws FoodNetworkException expected
+     * @throws EOFException stream ends prematurally
+     */
     @Test(expected = FoodNetworkException.class)
     public void testNegativeTimestampDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         expTimestamp = -1;
         decode();
     }
+
+    /**
+     * Test decode function with negative modifiedTimestamp
+     * @throws UnsupportedEncodingException wrong encoding
+     * @throws FoodNetworkException expected
+     * @throws EOFException stream ends prematurally
+     */
     @Test(expected = FoodNetworkException.class)
     public void testNegativeModifiedTimeDecode() throws UnsupportedEncodingException, FoodNetworkException, EOFException {
         expModifiedTimestamp = -12;

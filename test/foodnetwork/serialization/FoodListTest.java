@@ -87,17 +87,39 @@ public class FoodListTest {
             expFoodList.addFoodItem(foodItem);
         }
     }
+
+    /**
+     * Check if the FoodList attributes are as expected, here it only checks both timestamps
+     * @param foodlist the foodList to be checked
+     */
     public void checkFoodList(FoodList foodlist){
         assertEquals(expTimestamp, foodlist.getMessageTimestamp());
         assertEquals(expModifiedTimestamp, foodlist.getModifiedTimestamp());
     }
+
+    /**
+     * Check the foodItem list inside the class is exacted or not
+     * @param foodList the FoodList to be checked
+     */
     public void checkFoodItemList(FoodList foodList){
         assertEquals(expFoodItemList, foodList.getFoodItemList());
     }
+
+    /**
+     * Test the constructor of the FoodList
+     * @throws FoodNetworkException if it fails to construct a FoodList object
+     */
     @Test
     public void testConstructorAndAdd() throws FoodNetworkException {
         checkFoodList(expFoodList);
     }
+
+    /**
+     * Test the decoding function of FoodMessage when the String indicates a FoodList item
+     * @throws FoodNetworkException fail to decode the String
+     * @throws UnsupportedEncodingException wrong encoding
+     * @throws EOFException inputStream ends prematurally
+     */
     @Test
     public void testDecode() throws FoodNetworkException, UnsupportedEncodingException, EOFException {
         MessageInput in = new MessageInput(new ByteArrayInputStream(expDecode.getBytes(CHARSET)));
@@ -105,6 +127,12 @@ public class FoodListTest {
         checkFoodItemList(temp);
         checkFoodList(temp);
     }
+
+    /**
+     * Test the encoding function of FoodList class
+     * @throws FoodNetworkException if the encoding fails
+     * @throws UnsupportedEncodingException if wrong encoding
+     */
     @Test
     public void testEncode() throws FoodNetworkException, UnsupportedEncodingException {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -112,16 +140,29 @@ public class FoodListTest {
         expFoodList.encode(out);
         assertArrayEquals(expDecode.getBytes(CHARSET), outStream.toByteArray());
     }
+
+    /**
+     * test if add FoodItem function works properly
+     */
     @Test
     public void testAddItem() {
         checkFoodItemList(expFoodList);
     }
+
+    /**
+     * Test if set modifiedTimestamp and get modifiedTimestamp works properly
+     * @throws FoodNetworkException if the timestamp is negative
+     */
     @Test
     public void testGetModifiedTimestamp() throws FoodNetworkException {
         long timestamp = 20L;
         expFoodList.setModifiedTimestamp(timestamp);
         assertEquals(timestamp, expFoodList.getModifiedTimestamp());
     }
+
+    /**
+     * Test if the toString function actually returns a String or not
+     */
     @Test
     public void testToString(){
         assertNotNull(expFoodList.toString());
