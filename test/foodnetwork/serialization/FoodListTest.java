@@ -55,13 +55,9 @@ public class FoodListTest {
         foodItemList2.add(item3);
         foodItemList3.add(item1);
         foodItemList3.add(item3);
-        String itemCodestring1 = "FN1.0 123 LIST 342 3 ";
+        String itemCodestring1 = "FN1.0 123 LIST 342 3 5 AppleB120 0 6 OrangeL10 1.2 6 PickleS123 0.42 \n";
         String itemCodestring2 = "FN1.0 13 LIST 0 2 ";
         String itemCodestring3 = "FN1.0 8 LIST 122 2 ";
-        for(FoodItem foodItem : foodItemList1){
-            itemCodestring1 += foodItem.toCodeString();
-        }
-        itemCodestring1 += "\n";
         for(FoodItem foodItem : foodItemList2){
             itemCodestring2 += foodItem.toCodeString();
         }
