@@ -7,11 +7,28 @@
  ************************************************/
 package foodnetwork.serialization;
 
+import java.io.EOFException;
+
 /**
  * AddFood is a message class that stores what will be needed for adding a FoodItem into the server.
  */
 public class AddFood extends FoodMessage{
     private FoodItem foodItemToBeAdded;
+
+    /**
+     * A constructor should never be called outside of foodMessage's decode function.
+     * @param messageTimestamp the time stamp already read in from MessageInput
+     * @param in the messageInput to use
+     * @throws FoodNetworkException if it fails to construct the class
+     * @throws EOFException the stream ends prematurally
+     */
+    public AddFood(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
+        setMessageTimestamp(messageTimestamp);
+        in.getNextSpace();
+        FoodItem foodItem = new FoodItem(in);
+        in.getNextNewLine();
+        setFoodItem(foodItem);
+    }
     /**
      * constructor for AddFood, that stores a timestamp and foodItem
      * @param messageTimestamp timestamp when the message is created

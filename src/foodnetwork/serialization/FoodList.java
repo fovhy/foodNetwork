@@ -7,6 +7,7 @@
  ************************************************/
 package foodnetwork.serialization;
 
+import java.io.EOFException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,26 @@ import java.util.List;
 public class FoodList extends FoodMessage{
     List<FoodItem> foodItemList;
     private long modifiedTimestamp;
+    /**
+     * A constructor should never be called outside of foodMessage's decode function.
+     * @param messageTimestamp the time stamp already read in from MessageInput
+     * @param in the messageInput to use
+     * @throws FoodNetworkException if it fails to construct the class
+     * @throws EOFException the stream ends prematurally
+     */
+    public FoodList(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
+        setMessageTimestamp(messageTimestamp);
+        in.getNextSpace();
+        long modifiedTimestamp = in.getNextUnsignedLong();
+        setModifiedTimestamp(modifiedTimestamp);
+        in.getNextSpace();
+        int count = in.getNextUnsignedInt();
+        foodItemList = new ArrayList<>();
+        for(int i = 0; i < count; i++){
+            addFoodItem(new FoodItem(in));
+        }
+        in.getNextNewLine();
+    }
     /**
      * Construct a FoodList with a messageTimestamp, and modifiedTimestamp
      * @param messageTimestamp timestamp for message itself

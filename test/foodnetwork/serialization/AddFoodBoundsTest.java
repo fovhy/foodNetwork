@@ -81,14 +81,13 @@ public class AddFoodBoundsTest {
         new AddFood(-1L, foodItem1);
     }
 
-    /**
+    /*/**
      * Test constructor with null FoodItem
      * @throws FoodNetworkException expected
-     */
     @Test(expected = FoodNetworkException.class)
     public void testConstructorWithNullFoodItem() throws FoodNetworkException{
         new AddFood(expTimeStamp, null);
-    }
+    }*/
 
     /**
      * Test settler with null FoodItem

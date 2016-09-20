@@ -7,12 +7,27 @@
  ************************************************/
 package foodnetwork.serialization;
 
+import java.io.EOFException;
+
 /**
  * ErrorMessage is a class that stores all the information needed for a error message.
  */
 public class ErrorMessage extends FoodMessage{
 
     private String errorMessage;
+    /**
+     * A constructor should never be called outside of foodMessage's decode function.
+     * @param messageTimestamp the time stamp already read in from MessageInput
+     * @param in the messageInput to use
+     * @throws FoodNetworkException if it fails to construct the class
+     * @throws EOFException the stream ends prematurally
+     */
+    public ErrorMessage(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
+        setMessageTimestamp(messageTimestamp);
+        in.getNextSpace();
+        String message = in.getNextString();
+        this.setErrorMessage(message);
+    }
     /**
      * Constructor for ErrorMessage
      * @param timestamp when message is created

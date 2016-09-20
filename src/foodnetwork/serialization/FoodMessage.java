@@ -49,29 +49,13 @@ abstract public class FoodMessage {
         String type = in.getNextStringWithPattern("[A-Z]+");
         switch(type){
             case "ADD":
-                in.getNextSpace();
-                FoodItem foodItem = new FoodItem(in);
-                in.getNextNewLine();
-                return new AddFood(messageTimestamp, foodItem);
+                return new AddFood(messageTimestamp, in);
             case "GET":
-                in.getNextSpace();
-                in.getNextNewLine();
-                return new GetFood(messageTimestamp);
+                return new GetFood(messageTimestamp, in);
             case "LIST":
-                in.getNextSpace();
-                long modifiedTimestamp = in.getNextUnsignedLong();
-                in.getNextSpace();
-                int count = in.getNextUnsignedInt();
-                FoodList tempFoodList = new FoodList(messageTimestamp, modifiedTimestamp);
-                for(int i = 0; i < count; i++){
-                    tempFoodList.addFoodItem(new FoodItem(in));
-                }
-                in.getNextNewLine();
-                return tempFoodList;
+                return new FoodList(messageTimestamp, in);
             case "ERROR":
-                in.getNextSpace();
-                String message = in.getNextString();
-                return new ErrorMessage(messageTimestamp, message);
+                return new ErrorMessage(messageTimestamp, in);
             default:
                 return null;
         }
