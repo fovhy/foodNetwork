@@ -147,11 +147,19 @@ public class FoodList extends FoodMessage{
      * @return request message
      */
     @Override
-    public String getRequest() {
+    public String getFullRequest() {
         String temp = "LIST " + modifiedTimestamp + " " + foodItemList.size() + " ";
         for(FoodItem foodItem : foodItemList){
             temp += foodItem.toCodeString();
         }
         return temp;
+    }
+    /**
+     * Get what the type of message this is
+     * @return request type
+     */
+    @Override
+    public String getRequest(){
+        return "LIST";
     }
 }

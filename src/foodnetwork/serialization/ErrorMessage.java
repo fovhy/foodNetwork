@@ -51,8 +51,17 @@ public class ErrorMessage extends FoodMessage{
      * Return the request of a Error message. ERROR + SP + ErrorMessage
      * @return request of error message.
      */
-    public final String getRequest(){
+    public final String getFullRequest(){
         return "ERROR " + errorMessage;
+    }
+
+    /**
+     * Get what the type of message this is
+     * @return request type
+     */
+    @Override
+    public final String getRequest(){
+        return "ERROR";
     }
     /**
      * Compare this object with another one to see if they are equal.

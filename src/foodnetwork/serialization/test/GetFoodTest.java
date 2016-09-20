@@ -94,7 +94,7 @@ public class GetFoodTest {
     }
 
     /**
-     * Test encode function of GetFood (test getRequest)
+     * Test encode function of GetFood (test getFullRequest)
      * @throws FoodNetworkException if it fails to encode
      * @throws UnsupportedEncodingException for wrong encoding
      */

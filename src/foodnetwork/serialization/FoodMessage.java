@@ -12,7 +12,7 @@ import java.io.IOException;
 
 /**
  * An abstract class that represents a FoodMessage. It provides a genral form for all the foodMessage subclass to
- * encode and decode. The only abstract method is getRequest here.
+ * encode and decode. The only abstract method is getFullRequest here.
  *
  */
 abstract public class FoodMessage {
@@ -25,7 +25,7 @@ abstract public class FoodMessage {
      */
     public void encode(MessageOutput out) throws FoodNetworkException {
         try {
-            out.writeAndStore(currentVersion + " " + timestamp + " " + this.getRequest() + "\n");
+            out.writeAndStore(currentVersion + " " + timestamp + " " + this.getFullRequest() + "\n");
         }catch (IOException e){
             throw new FoodNetworkException("OutputStream closes prematurely", e);
         }
@@ -87,6 +87,8 @@ abstract public class FoodMessage {
      * Get a request message
      * @return a request message based on subclass
      */
+    abstract public String getFullRequest();
+
     abstract public String getRequest();
 
     /**

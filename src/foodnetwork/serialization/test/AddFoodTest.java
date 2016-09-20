@@ -98,7 +98,7 @@ public class AddFoodTest {
     }
 
     /**
-     * Test ADDFood encoding. (test getRequest)
+     * Test ADDFood encoding. (test getFullRequest)
      * @throws FoodNetworkException if fails to construct a FoodMessage from the stream
      * @throws UnsupportedEncodingException the encoding is not supported
      */

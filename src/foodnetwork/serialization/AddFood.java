@@ -46,8 +46,16 @@ public class AddFood extends FoodMessage{
      * Get the request message for adding a foodItem. ADD + sp +  FoodItem
      * @return add foodItem message
      */
-    public String getRequest(){
+    public String getFullRequest(){
         return "ADD " + foodItemToBeAdded.toCodeString();
+    }
+    /**
+     * Get what the type of message this is
+     * @return request type
+     */
+    @Override
+    public String getRequest(){
+        return "ADD";
     }
 
     /**

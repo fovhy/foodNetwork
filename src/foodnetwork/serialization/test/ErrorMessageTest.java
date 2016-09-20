@@ -88,7 +88,7 @@ public class ErrorMessageTest {
     }
 
     /**
-     * Test encode function for ErrorMessage. (Test getRequest)
+     * Test encode function for ErrorMessage. (Test getFullRequest)
      * @throws FoodNetworkException if ErrorMessage is null
      * @throws UnsupportedEncodingException wrong encoding
      */

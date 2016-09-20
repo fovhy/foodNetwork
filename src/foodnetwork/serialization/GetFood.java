@@ -39,7 +39,7 @@ public class GetFood extends FoodMessage{
      * Get the GetFood request message. GET + SP
      * @return GetFood request message
      */
-    public String getRequest() {
+    public String getFullRequest() {
         return "GET ";
     }
 
@@ -50,5 +50,13 @@ public class GetFood extends FoodMessage{
     @Override
     public String toString(){
         return super.toString() + "Type: GET\n";
+    }
+    /**
+     * Get what the type of message this is
+     * @return request type
+     */
+    @Override
+    public String getRequest(){
+        return "GET";
     }
 }
