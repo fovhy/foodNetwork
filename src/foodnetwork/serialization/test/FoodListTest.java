@@ -5,12 +5,12 @@
  * Class: CSI 4321
  *
  ************************************************/
-package foodnetwork.serialization;
+package foodnetwork.serialization.test;
 
+import foodnetwork.serialization.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.testng.annotations.Parameters;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

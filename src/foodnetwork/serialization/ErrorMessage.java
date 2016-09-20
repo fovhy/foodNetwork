@@ -94,7 +94,7 @@ public class ErrorMessage extends FoodMessage{
      * @param errorMessage errorMessage to be stored
      * @throws FoodNetworkException if the message is empty String or null
      */
-    void setErrorMessage(String errorMessage) throws FoodNetworkException{
+    public void setErrorMessage(String errorMessage) throws FoodNetworkException{
         if(errorMessage == null || "".equals(errorMessage)){
             throw new FoodNetworkException("Invalid error message");
         }

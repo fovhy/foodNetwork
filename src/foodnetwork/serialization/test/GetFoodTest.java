@@ -5,8 +5,12 @@
  * Class: CSI 4321
  *
  ************************************************/
-package foodnetwork.serialization;
+package foodnetwork.serialization.test;
 
+import foodnetwork.serialization.FoodNetworkException;
+import foodnetwork.serialization.GetFood;
+import foodnetwork.serialization.MessageInput;
+import foodnetwork.serialization.MessageOutput;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

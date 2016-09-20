@@ -5,8 +5,11 @@
  * Class: CSI 4321
  *
  ************************************************/
-package foodnetwork.serialization;
+package foodnetwork.serialization.test;
 
+import foodnetwork.serialization.FoodNetworkException;
+import foodnetwork.serialization.MealType;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -23,7 +26,7 @@ public class MealTypeTest {
      */
     @Test
     public void testGetRightMealType() throws FoodNetworkException {
-            assertEquals(MealType.Breakfast, MealType.getMealType('B'));
+            Assert.assertEquals(MealType.Breakfast, MealType.getMealType('B'));
             assertEquals(MealType.Lunch, MealType.getMealType('L'));
             assertEquals(MealType.Dinner, MealType.getMealType('D'));
             assertEquals(MealType.Snack, MealType.getMealType('S'));

@@ -5,8 +5,9 @@
  * Class: CSI 4321
  *
  ************************************************/
-package foodnetwork.serialization;
+package foodnetwork.serialization.test;
 
+import foodnetwork.serialization.*;
 import org.junit.Test;
 import java.io.ByteArrayInputStream;
 import java.io.EOFException;
