@@ -17,6 +17,7 @@ import java.io.IOException;
  */
 abstract public class FoodMessage {
     protected long timestamp;
+    protected static final String currentVersion = "FN1.0";
     /**
      * Encode a foodMessage subclass object
      * @param out MessageOutput object that wraps around a outputStream
@@ -24,7 +25,7 @@ abstract public class FoodMessage {
      */
     public void encode(MessageOutput out) throws FoodNetworkException {
         try {
-            out.writeAndStore("FN1.0 " + timestamp + " " + this.getRequest() + "\n");
+            out.writeAndStore(currentVersion + " " + timestamp + " " + this.getRequest() + "\n");
         }catch (IOException e){
             throw new FoodNetworkException("OutputStream closes prematurely", e);
         }
@@ -39,8 +40,8 @@ abstract public class FoodMessage {
      * @throws EOFException if the stream prematurally closes
      */
     public static FoodMessage decode(MessageInput in) throws FoodNetworkException, EOFException {
-        String version =  in.getNextFixedBytes("FN1.0".length());
-        if(!"FN1.0".equals(version)){
+        String version =  in.getNextFixedBytes(currentVersion.length());
+        if(!currentVersion.equals(version)){
             throw new FoodNetworkException("Failed to read version number");
         }
         in.getNextSpace();
@@ -104,7 +105,7 @@ abstract public class FoodMessage {
     @Override
     public String toString(){
         String temp = "";
-        temp += "Version: FN1.0\n";
+        temp += "Version: +" + currentVersion + "\n";
         temp += "MessageTime: " + timestamp + "\n";
         return temp;
     }
