@@ -27,6 +27,7 @@ public class ErrorMessage extends FoodMessage{
         in.getNextSpace();
         String message = in.getNextString();
         this.setErrorMessage(message);
+        in.getNextNewLine();
     }
     /**
      * Constructor for ErrorMessage
