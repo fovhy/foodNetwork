@@ -125,7 +125,7 @@ public class MessageInput {
         String unsignedLongString = getNextStringWithPattern("[0-9]+");
         long unsignedLong;
         try{
-            unsignedLong = Long.parseLong(unsignedLongString);
+            unsignedLong = Long.parseUnsignedLong(unsignedLongString);
         }catch(NumberFormatException e){
             throw new FoodNetworkException("Failed to parse the String as a long");
         }

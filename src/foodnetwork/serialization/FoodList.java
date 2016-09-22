@@ -32,6 +32,7 @@ public class FoodList extends FoodMessage{
         setModifiedTimestamp(modifiedTimestamp);
         in.getNextSpace();
         int count = in.getNextUnsignedInt();
+        in.getNextSpace();
         foodItemList = new ArrayList<>();
         for(int i = 0; i < count; i++){
             addFoodItem(new FoodItem(in));

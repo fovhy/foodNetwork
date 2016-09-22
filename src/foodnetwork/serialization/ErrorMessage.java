@@ -14,7 +14,9 @@ import java.io.EOFException;
  */
 public class ErrorMessage extends FoodMessage{
 
-    private String errorMessage;
+
+    private static String type = "ERROR";
+    private String errorMessage; // the error messages stored inside of ErrorMessage class
     /**
      * A constructor should never be called outside of foodMessage's decode function.
      * @param messageTimestamp the time stamp already read in from MessageInput
@@ -25,7 +27,9 @@ public class ErrorMessage extends FoodMessage{
     public ErrorMessage(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
         setMessageTimestamp(messageTimestamp);
         in.getNextSpace();
-        String message = in.getNextString();
+        int messageLength = in.getNextUnsignedInt();
+        in.getNextSpace();
+        String message = in.getNextFixedBytes(messageLength);
         this.setErrorMessage(message);
         in.getNextNewLine();
     }
@@ -53,7 +57,7 @@ public class ErrorMessage extends FoodMessage{
      * @return request of error message.
      */
     public final String getFullRequest(){
-        return "ERROR " + errorMessage;
+        return type + " " + errorMessage.length() + " " + errorMessage;
     }
 
     /**
@@ -62,7 +66,7 @@ public class ErrorMessage extends FoodMessage{
      */
     @Override
     public final String getRequest(){
-        return "ERROR";
+        return type;
     }
     /**
      * Compare this object with another one to see if they are equal.
