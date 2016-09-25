@@ -16,6 +16,9 @@ import java.io.IOException;
  *
  */
 abstract public class FoodMessage {
+    /**
+     * when the message is being created
+     */
     protected long timestamp;
     protected static final String currentVersion = "FN1.0";
     /**

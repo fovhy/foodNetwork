@@ -13,6 +13,7 @@ import java.io.EOFException;
  * Message class for getting a food. Subclass of FoodMessage.
  */
 public class GetFood extends FoodMessage{
+    private String type = "GET";
     /**
      * A constructor should never be called outside of foodMessage's decode function.
      * @param messageTimestamp the time stamp already read in from MessageInput
@@ -40,7 +41,7 @@ public class GetFood extends FoodMessage{
      * @return GetFood request message
      */
     public String getFullRequest() {
-        return "GET ";
+        return  type + " ";
     }
 
     /**
@@ -57,6 +58,6 @@ public class GetFood extends FoodMessage{
      */
     @Override
     public String getRequest(){
-        return "GET";
+        return type;
     }
 }

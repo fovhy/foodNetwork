@@ -16,8 +16,15 @@ import java.util.List;
  * It can encode and decode it self, and return all the foodItems it contains.
  */
 public class FoodList extends FoodMessage{
-    List<FoodItem> foodItemList;
+    /**
+     * The foodItem lists stored in the message
+     */
+    private List<FoodItem> foodItemList;
+    /**
+     * The time when the foodItem list being modified
+     */
     private long modifiedTimestamp;
+    private static String type = "LIST";
     /**
      * A constructor should never be called outside of foodMessage's decode function.
      * @param messageTimestamp the time stamp already read in from MessageInput
@@ -136,6 +143,7 @@ public class FoodList extends FoodMessage{
     @Override
     public String toString(){
         String temp = super.toString();
+        temp = temp + "Type: " + type + "\n" ;
         temp =  temp + "Modified time: " + modifiedTimestamp + "\n";
         for(int i = 0; i < foodItemList.size(); i++){
             temp = temp + "FoodItem " + i + "\n" + foodItemList.get(i).toString();
@@ -149,7 +157,7 @@ public class FoodList extends FoodMessage{
      */
     @Override
     public String getFullRequest() {
-        String temp = "LIST " + modifiedTimestamp + " " + foodItemList.size() + " ";
+        String temp = type + " " + modifiedTimestamp + " " + foodItemList.size() + " ";
         for(FoodItem foodItem : foodItemList){
             temp += foodItem.toCodeString();
         }

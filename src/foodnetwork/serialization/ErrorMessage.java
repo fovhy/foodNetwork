@@ -114,4 +114,16 @@ public class ErrorMessage extends FoodMessage{
         }
         this.errorMessage = errorMessage;
     }
+
+    /**
+     * Turn ErrorMessage into a human readable format
+     * @return the human readable string
+     */
+    public String toString(){
+        String temp = super.toString();
+        temp   = temp + "Type: " + type + "\n";
+        temp  = temp +  "Error Message: " + errorMessage + "\n";
+        return temp;
+    }
+
 }

@@ -13,7 +13,14 @@ import java.io.EOFException;
  * AddFood is a message class that stores what will be needed for adding a FoodItem into the server.
  */
 public class AddFood extends FoodMessage{
+    /**
+     * the foodItem that will be added to the server
+     */
     private FoodItem foodItemToBeAdded;
+    /**
+     * The type of the request
+     */
+    private static String type = "ADD";
 
     /**
      * A constructor should never be called outside of foodMessage's decode function.
@@ -47,7 +54,7 @@ public class AddFood extends FoodMessage{
      * @return add foodItem message
      */
     public String getFullRequest(){
-        return "ADD " + foodItemToBeAdded.toCodeString();
+        return type + " " + foodItemToBeAdded.toCodeString();
     }
     /**
      * Get what the type of message this is
@@ -55,7 +62,7 @@ public class AddFood extends FoodMessage{
      */
     @Override
     public String getRequest(){
-        return "ADD";
+        return type;
     }
 
     /**
@@ -120,7 +127,7 @@ public class AddFood extends FoodMessage{
     @Override
     public String toString(){
         String temp = super.toString();
-        temp += "Type: ADD\n";
+        temp += "Type: " + type + "\n";
         temp += foodItemToBeAdded.toString();
         return temp;
     }
