@@ -50,7 +50,7 @@ public class GetFood extends FoodMessage{
      */
     @Override
     public String toString(){
-        return super.toString() + "Type: waitServerRespond\n";
+        return super.toString() + "Type: " + type + "\n";
     }
     /**
      * Get what the type of message this is
