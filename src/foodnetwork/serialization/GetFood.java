@@ -37,7 +37,7 @@ public class GetFood extends FoodMessage{
     }
 
     /**
-     * Get the GetFood request message. GET + SP
+     * Get the GetFood request message. waitServerRespond + SP
      * @return GetFood request message
      */
     public String getFullRequest() {
@@ -50,7 +50,7 @@ public class GetFood extends FoodMessage{
      */
     @Override
     public String toString(){
-        return super.toString() + "Type: GET\n";
+        return super.toString() + "Type: waitServerRespond\n";
     }
     /**
      * Get what the type of message this is

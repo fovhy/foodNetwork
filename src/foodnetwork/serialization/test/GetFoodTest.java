@@ -46,9 +46,9 @@ public class GetFoodTest {
     @Parameters
     public static Collection<Object[]> data() throws FoodNetworkException {
         ArrayList list = new ArrayList();
-        list.add(new Object[]{"FN1.0 23 GET \n", 23L});
-        list.add(new Object[]{"FN1.0 10000 GET \n", 10000L});
-        list.add(new Object[]{"FN1.0 0 GET \n", 0L});
+        list.add(new Object[]{"FN1.0 23 waitServerRespond \n", 23L});
+        list.add(new Object[]{"FN1.0 10000 waitServerRespond \n", 10000L});
+        list.add(new Object[]{"FN1.0 0 waitServerRespond \n", 0L});
         return list;
     }
 
