@@ -29,6 +29,10 @@ public class Client {
     private final static String enterCalories = "Calories> ";
     private final static String enterFat = "Fat> ";
     private final static String askContinue = "Continue (y/n)> ";
+
+    /**
+     * The different steps of the whole client. From getRequest to the end.
+     */
     public enum states{
         getRequest,
         getName,
@@ -52,12 +56,14 @@ public class Client {
         } catch (IOException e) {
             throw new IOException(commuError + "Failed to create socket");
         }
-        InputStream in = socket.getInputStream();
-        OutputStream out = socket.getOutputStream();
+        InputStream in = socket.getInputStream();      // TCP socket inputStream
+        OutputStream out = socket.getOutputStream();   // TCP socket outputStream
         System.out.println("Successfully connected to server...");
+        /*
+         * Create a list that contains all types of mealType, so you can loop through them
+         */
         final List<String> optionsForMealType = Arrays.asList("B", "L", "D", "S");
-
-        states steps = getRequest;
+        states steps = getRequest;           // set the step to the first one
         String userInput;                    // store user input
         Scanner reader = new Scanner(System.in);
         String name = null;
