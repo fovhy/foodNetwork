@@ -77,7 +77,7 @@ public class FoodItem {
         try {
             setFat(in.getNextUnsignedDouble());
         } catch(FoodNetworkException e){
-            throw new FoodNetworkException("Invalid fat", e);
+            throw new FoodNetworkException("Invalid fat. " + e.getMessage());
         }
         in.getNextSpace();
     }
@@ -249,11 +249,10 @@ public class FoodItem {
      * @return whether the name is valid
      */
     private boolean validateName(String aName){
-        boolean result = false;
-        if(aName != null && aName != ""){
-            result = true;
+        if(aName == null || "".equals(aName)){
+            return false;
         }
-        return result;
+        return true;
     }
 
     /**

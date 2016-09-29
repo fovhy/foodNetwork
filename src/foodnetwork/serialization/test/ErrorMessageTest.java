@@ -43,8 +43,8 @@ public class ErrorMessageTest {
         timestamp2 = 123L;
         message1 = new ErrorMessage(timestamp1, error1);
         message2 = new ErrorMessage(timestamp2, error2);
-        message1Decode = "FN1.0 " + timestamp1 + " ERROR " + error1 + "\n";
-        message2Decode = "FN1.0 " + timestamp2 + " ERROR " + error2 + "\n";
+        message1Decode = "FN1.0 " + timestamp1 + " ERROR " + error1.length() + " " +  error1 + "\n";
+        message2Decode = "FN1.0 " + timestamp2 + " ERROR " + error2.length() + " " + error2+ "\n";
     }
 
     /**

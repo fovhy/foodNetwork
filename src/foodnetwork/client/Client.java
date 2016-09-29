@@ -1,39 +1,50 @@
+/************************************************
+ *
+ * Author: Dean He
+ * Assignment: Assignment 2
+ * Class: CSI 4321
+ *
+ ************************************************/
 package foodnetwork.client;
 
 import foodnetwork.serialization.*;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
 
-import static foodnetwork.client.Client.states.*;
+import static foodnetwork.client.Client.States.*;
+
 
 /**
  * A simple client for user to communicate with a server using foodMessage. It will print out error
  * if the communication fails.
  */
 public class Client {
-    private final static String commuError = "Unable to communicate: ";
-    private final static String invalidMessage = "Invalid message: ";
-    private final static String unexpectedMessage = "Unexpected message: ";
-    private final static String errorMessage = "Error: ";
-    private final static String invalidInput = "Invalid user input: ";
-    private final static String request = "Request(ADD|GET)> ";
-    private final static String selName = "Name> ";
-    private final static String selMealType = "Meal Type(B, L, D, S)> ";
-    private final static String enterCalories = "Calories> ";
-    private final static String enterFat = "Fat> ";
-    private final static String askContinue = "Continue (y/n)> ";
+    /*
+    Store common message headings here.
+     */
+    private final static String commuError = "Unable to communicate: ";     // communicate error message header
+    private final static String invalidMessage = "Invalid message: ";       // invalid message header
+    private final static String unexpectedMessage = "Unexpected message: "; // unexpected message header
+    private final static String errorMessage = "Error: ";                   // Receive error header
+    private final static String invalidInput = "Invalid user input: ";      // Local client validation header
 
+    private final static String caseAdd = "ADD";                            // ADD choice
+    private final static String caseGet = "GET";                            // GET choice
+    private final static String request = "Request(" + caseAdd + "|" + caseGet +")"; // request
+    private final static String selName = "Name> ";                         // select name prompt
+    private final static String selMealType = "Meal Type(B, L, D, S)> ";    // select MealType code prompt
+    private final static String enterCalories = "Calories> ";               // enter calories prompt
+    private final static String enterFat = "Fat> ";                         // enter fat prompt
+    private final static String askContinue = "Continue (y/n)> ";           // continue? prompt
     /**
      * The different steps of the whole client. From getRequest to the end.
      */
-    public enum states{
+   public enum States{
         getRequest,
         getName,
         getMealType ,
@@ -42,15 +53,16 @@ public class Client {
         waitServerRespond,
         askAgain ,
         sendAddFood,
+        sendGetFood,
         end
     }
-    public static void main(String args[]) throws IOException, FoodNetworkException {
-        if (args.length != 2) {
+   public static void main(String args[]) throws IOException, FoodNetworkException {
+        if (args.length != 2) {          //check if user entered server and port or not
             throw new IllegalArgumentException("Parameters(s): <Server> <Port>");
         }
         String server = args[0]; // the server address
         int serPort = Integer.parseInt(args[1]); // server port
-        Socket socket;
+        Socket socket;                           // the TCP socket with the server
         try {
             socket = new Socket(server, serPort);
         } catch (IOException e) {
@@ -62,118 +74,225 @@ public class Client {
         /*
          * Create a list that contains all types of mealType, so you can loop through them
          */
-        final List<String> optionsForMealType = Arrays.asList("B", "L", "D", "S");
-        states steps = getRequest;           // set the step to the first one
-        String userInput;                    // store user input
-        Scanner reader = new Scanner(System.in);
-        String name = null;
-        char mealType = 'K';
-        long calories = 0;
-        String fat = null;
-        MessageInput messageInput = new MessageInput(in);
-        MessageOutput messageOutput = new MessageOutput(out);
-        while (steps != states.end) {         // the 7th step, out of the loop
+        States steps = getRequest;           // set the step to the first one
+        /*possible foodItem to be added in the method*/
+        FoodItem foodItem = new FoodItem("temp", MealType.Snack, 0, "0");
+        MessageInput messageInput = new MessageInput(in);      // the messageInput that wraps input from Socket
+        MessageOutput messageOutput = new MessageOutput(out);  // the messageOutput that wraps output to Socket
+        MessageInput userMessageInput = new MessageInput(System.in); // get user input
+        while (steps != States.end) {         // the 7th step, out of the loop
             switch (steps) {
-                case getRequest:
+                case getRequest:               // this step you get request from user (ADD OR GET for now)
                     System.out.print(request);
-                    userInput = reader.nextLine();
-                    switch (userInput){
-                        case "ADD":
-                            steps = getName;
-                            break;
-                        case "GET":
-                            steps = waitServerRespond;
-                            new GetFood(Instant.now().toEpochMilli()).encode(messageOutput);
-                            break;
-                        default:
-                            System.err.println(invalidInput + "please enter ADD or GET");
-                    }
+                    steps = getRequest(userMessageInput);
+                   break;
+                case sendGetFood:              // this send a GetFood message to server asking for foodList.
+                    steps = sendGetFoodMessage(messageOutput);
                     break;
-                case getName:
+                case getName:                  // get the name for foodItem from user
                     System.out.print(selName);
-                    userInput = reader.nextLine();
-                    if("".equals(userInput) || userInput == null){
-                        System.err.println(invalidInput + "please enter a non empty string");
-                    }else{
-                        name = userInput;
-                        steps = getMealType;
-                    }
+                    steps = getName(foodItem, userMessageInput);
                     break;
-                case getMealType:
+                case getMealType:               // get the mealType from user
                     System.out.print(selMealType);
-                    userInput = reader.nextLine();
-                    if(optionsForMealType.contains(userInput)){
-                        mealType = userInput.charAt(0);
-                        steps = getCalories;
-                    }
+                    steps = getMealType(foodItem, userMessageInput);
                     break;
-                case getCalories:
+                case getCalories:               // get calories from user
                     System.out.print(enterCalories);
-                    userInput = reader.nextLine();
-                    if((calories = validateUnsignedLong(userInput)) < 0){
-                        System.err.println(invalidInput + "please enter a unsigned long");
-                    }else{
-                        steps = getFat;
-                    }
+                    steps = getCalories(foodItem, userMessageInput);
                     break;
-                case getFat:
+                case getFat:                    // get fat from user. After this success, go to sendAddFood
                     System.out.print(enterFat);
-                    userInput = reader.nextLine();
-                    if(userInput.matches("^[0-9]*\\.?[0-9]+$")){
-                        fat = userInput;
-                        steps = sendAddFood;
-                    }
+                    steps = getFat(foodItem, userMessageInput);
                     break;
-                case sendAddFood:
-                    try {
-                        new AddFood(Instant.now().toEpochMilli(),
-                                new FoodItem(name, MealType.getMealType(mealType), calories, fat)).encode(messageOutput);
-                    } catch (FoodNetworkException e) {
-                        System.out.println(invalidInput + "bad request " + e.getMessage());
-                        steps = getRequest;
-                    }
-                    steps = waitServerRespond;
+                case sendAddFood:              // sent a addFood message to server
+                    steps = sendAddFoodMessage(foodItem, messageOutput);
                     break;
-                case waitServerRespond:
-                    FoodMessage message;
-                    try {
-                        message = FoodMessage.decode(messageInput);
-                    } catch (FoodNetworkException e) {
-                        throw new FoodNetworkException(invalidMessage + e.getMessage());
-                    }
-                    if(message instanceof ErrorMessage){
-                        System.out.println(errorMessage + message.toString());
-                    }else if(message instanceof FoodList){
-                        System.out.println(message.toString());
-                        steps = askAgain;
-                    }else{
-                        System.out.println(unexpectedMessage + message.toString());
-                        steps = askAgain;
-                    }
+                case waitServerRespond:        // wait for server's response
+                    steps = waitResponse(messageInput);
                     break;
-                case askAgain:
+                case askAgain:                // ask if the user want to do one more request
                     System.out.print(askContinue);
-                    userInput = reader.nextLine();
-                    if("n".equals(userInput)) {
-                        steps = end;
-                    }else if("y".equals(userInput)){
-                        steps = getRequest;
-                    }else{
-                        System.err.println(invalidInput + "please enter y or n");
-                    }
+                    steps = getContinue(userMessageInput);
                     break;
             }
         }
     }
 
-    private static long validateUnsignedLong(String userInput) {
-        long value = -1;
+    /**
+     * Send a AddFoodMessage to a outputStream using a MessageOutput object
+     * @param foodItem the foodItem to add
+     * @param out the MessageOutput object that wraps around the outputStream
+     * @return next state for the client
+     */
+    public static States sendAddFoodMessage(FoodItem foodItem, MessageOutput out){
         try {
-            value = Long.parseLong(userInput);
-        } catch (NumberFormatException e) {
-            return value;  // leave the loop directly
+            new AddFood(Instant.now().toEpochMilli(), foodItem).encode(out);
+        } catch (FoodNetworkException e) {
+            System.err.print(commuError + "Failed to send " + caseAdd + " message to server. " + e.getMessage());
+            System.exit(1);
         }
-        return value;
+        return States.waitServerRespond;
     }
 
+    /**
+     * Get the request from user input
+     * @param in MessageInput object that wraps around user input
+     * @return next state for the client
+     */
+    public static States getRequest(MessageInput in){
+        String userInput = in.getNextLine();
+        States steps = getRequest;
+        switch (userInput){
+            case caseAdd:
+                steps = States.getName;
+                break;
+            case caseGet:
+                steps = States.sendGetFood;
+                break;
+            default:
+                System.err.println(invalidInput + "please enter ADD or GET");
+                break;
+        }
+        return steps;
+    }
+
+    /**
+     * Get the foodItem name from user
+     * @param foodItem foodItem to be added to server
+     * @param in MessageInput object that wraps around server's InputStream
+     * @return next state for the client
+     */
+    public static States getName(FoodItem foodItem, MessageInput in){
+        States steps = States.getName;
+        try {
+            foodItem.setName(in.getNextLine());
+        } catch (FoodNetworkException e) {
+            System.err.println(invalidInput + "Failed to set name " + e.getMessage());
+            return steps;
+        }
+        steps = States.getMealType;
+        return steps;
+    }
+
+    /**
+     * Get the mealType code from user
+     * @param foodItem foodItem to be added to server
+     * @param in MessageInput object that wraps around server's InputStream
+     * @return next state for the client
+     */
+    public static States getMealType(FoodItem foodItem, MessageInput in){
+        States steps = States.getMealType;
+        String userInput= in.getNextLine();
+        if(userInput.length()!= 1){           // if user input is not a char
+            System.err.println(invalidInput + "MealType code must be a single character");
+            return steps;
+        }
+        try {
+            foodItem.setMealType(MealType.getMealType(userInput.charAt(0)));         // get the character
+        } catch (FoodNetworkException e) {
+            System.err.println(invalidInput + "Wrong MealType code " + e.getMessage());
+            return steps;
+        }
+        steps = States.getCalories;
+        return steps;
+    }
+
+    /**
+     * Get the calories of the food from user
+     * @param foodItem foodItem to be added to server
+     * @param in MessageInput object that wraps around server's InputStream
+     * @return next state for the client
+     */
+    public static States getCalories(FoodItem foodItem, MessageInput in){
+        States steps = States.getCalories;
+        try {
+            foodItem.setCalories(in.getNextUnsignedLong());
+        } catch (FoodNetworkException | EOFException e) {
+            System.err.println(invalidInput + "Failed to set calories.");
+            in.getNextLine();                     // clear the buffer
+            return steps;
+        }
+        steps = States.getFat;
+        return steps;
+    }
+
+    /**
+     * Get the fat from user input
+     * @param foodItem foodItem to be added to server
+     * @param in MessageInput object that wraps around server's InputStream
+     * @return next state for the client
+     */
+    public static States getFat(FoodItem foodItem, MessageInput in){
+        States steps = States.getFat;
+        try {
+            foodItem.setFat(in.getNextUnsignedDouble());
+        } catch (FoodNetworkException | EOFException e) {
+            System.err.println(invalidInput + "Failed to set fat " + e.getMessage());
+            in.getNextLine();            // clear the buffer
+            in.getNextLine();
+            return steps;
+        }
+        steps = States.sendAddFood;
+        return steps;
+    }
+
+    /**
+     * Ask if user want to continue
+     * @param in MessageInput object that wraps around user input
+     * @return next state for the client
+     */
+    public static States getContinue(MessageInput in){
+        String userInput = in.getNextLine();
+        switch(userInput){
+            case "y":
+                return States.getRequest;
+            case "n":
+                return States.end;
+            default:
+                System.err.println(invalidInput + " please enter y or n");
+                return States.askAgain;
+        }
+    }
+
+    /**
+     * Send GetFood message to the server
+     * @param out MessageOutput object that wraps around the Socket's outputStream
+     * @return next state for the client
+     */
+    public static States sendGetFoodMessage(MessageOutput out){
+        States steps = States.sendGetFood;
+        try {
+            new GetFood(Instant.now().toEpochMilli()).encode(out);
+        } catch (FoodNetworkException e) {
+            System.err.println(commuError + " failed to send GetFoodMessage. " + e.getMessage());
+        }
+        steps = States.waitServerRespond;
+        return steps;
+    }
+
+    /**
+     * Wait for server's response
+     * @param in MessageInput that wraps around Socket's inputStream
+     * @return next state for the client
+     */
+    public static States waitResponse(MessageInput in){
+        States steps;
+        FoodMessage message = null;
+        try {
+            message = FoodMessage.decode(in);
+        } catch (FoodNetworkException | EOFException e) {
+            System.err.println(invalidMessage + e.getMessage());
+            System.exit(2);
+        }
+        if(message instanceof ErrorMessage){
+            System.out.println(errorMessage + message.toString());
+        }else if(message instanceof FoodList){
+            System.out.println(message.toString());
+        }else{
+            System.out.println(unexpectedMessage + message.toString());
+        }
+        steps = States.askAgain;
+        return steps;
+    }
 }

@@ -90,7 +90,8 @@ public class MessageInput {
         if(messageScanner.hasNext(pattern)){
             return messageScanner.next(pattern);
         }else{
-            throw new FoodNetworkException("Failed to find the pattern :" + pattern);
+            throw new FoodNetworkException("Failed to find the pattern :" + pattern + ". In String " +
+                    messageScanner.next());
         }
     }
 
@@ -146,7 +147,7 @@ public class MessageInput {
         try {
             return getNextStringWithPattern("[0-9]*\\.?[0-9]+");
         } catch(FoodNetworkException e){
-            throw new FoodNetworkException("Failed to parse a unsigned double", e);
+            throw new FoodNetworkException("Failed to parse a unsigned double." + e.getMessage());
         }
     }
 
@@ -166,20 +167,11 @@ public class MessageInput {
     }
 
     /**
-     * Get next String using \n as decimeter
-     * @return next String
-     * @throws FoodNetworkException if there is no data before \n
+     * Get's next line in inputStream
+     * @return next line of String
      */
-    public String getNextString() throws FoodNetworkException {
-        String string;
-        messageScanner.useDelimiter("\n");
-        if (messageScanner.hasNext()) {
-            string = messageScanner.next();
-        } else {
-            throw new FoodNetworkException("No String before \\n");
-        }
-        messageScanner.useDelimiter(" ");
-        return string;
+    public String getNextLine(){
+        return messageScanner.nextLine();
     }
 }
 
