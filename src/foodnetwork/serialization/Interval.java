@@ -1,3 +1,10 @@
+/************************************************
+ *
+ * Author: Dean He
+ * Assignment: Assignment 3
+ * Class: CSI 4321
+ *
+ ************************************************/
 package foodnetwork.serialization;
 
 import java.io.EOFException;
@@ -23,9 +30,9 @@ public class Interval extends FoodMessage{
     }
 
     /**
-     * @param messageTimestamp
-     * @param intervalTime
-     * @throws FoodNetworkException
+     * @param messageTimestamp the message timestamp
+     * @param intervalTime how long of time frame
+     * @throws FoodNetworkException fails to construct the Interval
      */
     public Interval(long messageTimestamp, int intervalTime) throws FoodNetworkException {
         setMessageTimestamp(messageTimestamp);

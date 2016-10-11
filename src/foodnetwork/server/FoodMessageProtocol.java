@@ -1,3 +1,10 @@
+/************************************************
+ *
+ * Author: Dean He
+ * Assignment: Assignment 3
+ * Class: CSI 4321
+ *
+ ************************************************/
 package foodnetwork.server;
 
 import edu.baylor.googlefit.FoodManager;
@@ -9,6 +16,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.logging.Logger;
 
+import static java.util.logging.Level.INFO;
 
 
 /**
@@ -34,6 +42,7 @@ public class FoodMessageProtocol implements Runnable{
      * @param aClntSock the client socket
      * @param logger the logger used to log
      * @param foodManager the food manager used to connect with google
+     * @throws IOException if the server disconnected with client, or the IOStream simply fails
      */
     public FoodMessageProtocol(Socket aClntSock, Logger logger, FoodManager foodManager) throws IOException {
         this.clntSock = aClntSock;
@@ -45,9 +54,13 @@ public class FoodMessageProtocol implements Runnable{
         this.out = new MessageOutput(this.clntSock.getOutputStream());
         int recvMsgSize;    // size of received message
    }
-    public void  handleFoodNetworkClinet(Socket clntSock, Logger logger,
-                                               FoodManager foodManager){
+
+    /**
+     * The execute or run function for sending and receiving FoodMessage over a single thread
+     */
+    public void  handleFoodNetworkClient(){
         try{
+            logNewConnection();
             int totalBytes = 0; // bytes received from client
             long endTime = System.currentTimeMillis() + timelimit;  // when it shall end
             int timeBoundMillis = timelimit;
@@ -68,12 +81,15 @@ public class FoodMessageProtocol implements Runnable{
                 switch (message.getRequest()) {
                     case addFoodRequest:
                         addFoodToServer((AddFood) message);
+                        logReceiveMessage(message);
                         break;
                     case getFoodRequest:
                         getListFromServer();
+                        logReceiveMessage(message);
                         break;
                     case intervalRequest:
                         getIntervalListFromServer((Interval) message);
+                        logReceiveMessage(message);
                         break;
                     default:
                         sendErrorMessage("Unexpected messageType: " + message.getRequest(),
@@ -88,26 +104,89 @@ public class FoodMessageProtocol implements Runnable{
         }
     }
 
+    /**
+     * The interface for runnable. Establish a unicast between client and server
+     */
     @Override
     public void run() {
-        handleFoodNetworkClinet(this.clntSock, this.logger, this.foodManager);
+        handleFoodNetworkClient();
     }
+
+    /**
+     * Send error message to client
+     * @param message error message
+     * @param timestamp when it is being sent
+     * @throws FoodNetworkException illegal message
+     */
     public void sendErrorMessage(String message, long timestamp) throws FoodNetworkException {
-        new ErrorMessage(timestamp, message).encode(out);
+        ErrorMessage temp = new ErrorMessage(timestamp, message);
+        temp.encode(out);
+        logSentMessage(temp);
     }
+
+    /**
+     * A message to Google server to add the food to the server
+     * @param addFood the add food message to be sent
+     * @throws FoodNetworkException illegal addFood message
+     */
     public void addFoodToServer(AddFood addFood) throws FoodNetworkException {
         FoodItem foodItem = addFood.getFoodItem();
         foodManager.addFood(foodItem.getName(), foodItem.getMealType(),
                 foodItem.getCalories(), foodItem.getFat());
     }
+
+    /**
+     * Get list from google server
+     * @throws FoodNetworkException illegal list
+     */
     public void getListFromServer() throws FoodNetworkException {
         FoodList temp = new FoodList(System.currentTimeMillis(), foodManager.getLastModified());
         foodManager.getFoodItems().forEach(temp::addFoodItem);
         temp.encode(out);
+        logSentMessage(temp);
     }
+
+    /**
+     * Get list from Google server within a certain amount of interval
+     * @param interval the time frame for data
+     * @throws FoodNetworkException ileegal interval
+     */
     public void getIntervalListFromServer(Interval interval) throws FoodNetworkException {
         FoodList temp = new FoodList(System.currentTimeMillis(), foodManager.getLastModified());
         foodManager.getFoodItems(interval.getIntervalTime()).forEach(temp::addFoodItem);
         temp.encode(out);
+        logSentMessage(temp);
+    }
+
+    /**
+     * Log there is a new connection
+     */
+    public void logNewConnection(){
+        logger.log(INFO, "Handling client: " + getClientIP() + "with thread id " +
+                Thread.currentThread().getName() + '\n');
+    }
+
+    /**
+     * Log receiving a message from client
+     * @param message the message it received
+     */
+    public void logReceiveMessage(FoodMessage message){
+        logger.log(INFO, "Receive from: " + getClientIP() + message.toString() + '\n');
+    }
+
+    /**
+     * Log sending message to Client
+     * @param message the message it sent out
+     */
+    public void logSentMessage(FoodMessage message){
+        logger.log(INFO, "Sent to: " + getClientIP() + message.toString() + '\n');
+    }
+
+    /**
+     * Helper function that returns a string of client IP and port
+     * @return client IP and port
+     */
+    public String getClientIP(){
+        return clntSock.getRemoteSocketAddress() + "-" + clntSock.getPort() + " ";
     }
 }

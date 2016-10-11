@@ -54,6 +54,7 @@ public class IntervalTest {
      * Set up a Interval item with expected values from parameters
      * @param code expected Decoded String
      * @param timestamp expected timestamp
+     * @param intervalTime the expected time interval
      * @throws FoodNetworkException Fails to construct a GetFoodItem
      */
     public IntervalTest(String code, long timestamp, int intervalTime) throws FoodNetworkException {

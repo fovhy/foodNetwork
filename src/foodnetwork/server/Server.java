@@ -21,6 +21,9 @@ import edu.baylor.googlefit.GFitFoodManager;
 
 import static java.util.logging.Level.SEVERE;
 
+/**
+ * The server for FoodNetwork. It creates a fixed amount of threads based on command line arguments
+ */
 public class Server {
     public static void main(String[] args) throws IOException{
         if(args.length != 2){
@@ -37,6 +40,7 @@ public class Server {
         Executor service = Executors.newFixedThreadPool(threadPoolSize); // Dispatch service
         FoodManager manager = null;                          // create a manager that connects to google server
         try {
+            // for some reason it cannot find the path
             manager = new GFitFoodManager("foodnetwork-146101", "./cred.json");
         } catch (FoodNetworkException e) {
             logger.log(SEVERE, e.getMessage());
