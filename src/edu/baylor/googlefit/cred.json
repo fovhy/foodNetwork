@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "foodnetwork-146101",
+  "private_key_id": "21792de2799f6ae4be9ced2d17c4508d0aff5e9e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDAQTuo2TcFS2nB\nHxz806Sni7y96Achbe9W13viuUfEDN+NZT/n1+/RC3JW5hY1D/AcH4oCuuqQN73E\nqAGZKtVPMdrJvPrrR8GwNYZwFy7PdtKcEG4YCX3tCxySQop/8EbCG+5PWDWNqoUt\nAd2cOXySIkpgxEEpHIwWrWsryMSf/3d51cn3A7RrRDvYHAXqNOP3q6EvvbbhLqHB\nVsv/KHbbBxeU74aF8RKLqCxrQCLmbgY1qbXOVlc7NTiMZXgHx/j7nMq+WNfFiIsK\nsww8eogWQ7CLTugKM78lE0F4UGUb2TjUR8poAGlsSHgg7tyR/3AzB5MB/ve6fFyz\nI0xa9Z5rAgMBAAECggEBAIuhVSEm0Y0o3mACpt0BIb8GAEi08ijXXVLnIfTiuDqt\nVtesx6Ms8+IRvDNc3JghQTRLu8KL2rxvn4Xqt25064OfI9YNSPgEn6nI1iEm1Tqc\nhA4Q6MTQcALvZQrdBRYyflGQU56Q5CRFyn+LsVY7cjv4Z6isIN8o+p2lygZ8xEGm\n1twsS9LRngJuEhBi783GXLlmgdgl29sv8H8XWhaSb2Eh59qDcoB82jY0f8KeqJFk\nTHj0JPu76tDuIiwnzLegk8MeRmhOeEuNZ6+SIe3FFj9dzTwouWYsRGa/z2Fwv+5m\nW9cptaJ8DwUWDRBjjZjTQqdA4PmIAboTfWvSJINst1ECgYEA+IXI0mjFd+o3KGfG\nPtg1doHGkew13etfA1IvEouISdW9X9SXhXQ7jlBP1VZngMwEIdjXBT/vutxAwPC7\nQLlRHxGoJKYQB/NWcHM9ML+HNQDI2NkVivk8N+08O2YEZe0Q2Wzu3ewl6+TwVTtZ\niiHUhfF23pw2+cDiqCz9wMS52d8CgYEAxgoNgT8x2dJGX9+0guai6rPj2+LRejsI\nJbdjOXUbeFS9vt68QG1DZPTMZ93ggDKXFPczXGglHCgXJBzSR77zkX2EQQgyx1r6\n78OFYc7mlqUHSk9DHI2eM3Xnv/EDx4KmzK8j7oQKgBqpvHq47U0V0ulD/Hy1l12p\n+NrIfJ2jZPUCgYB6vxEmI0tM4+ikU0UOKxmU05ow3nroheUircfEIBiLZz8mgsjn\nyDXWH4KeuxNaAOoVkZT56c9M+pYc9Yl2+VDAyKbEmySV2LEbzz8swZxVKHMK74V9\nY4ZDlS/HoqaPdRx6VxxPjeBY93Vgk3SxDe56zX1Ji9x3VLZeHAKk4EVu/wKBgAlI\nb1mfnLaZJLNZyRxZs0lNJWEpQKh6G+eosP4Af0kkr8BCsJBUjtQspWg4/k0EEhDp\nhX7PYu3u8ya+Mx0p1kD7oTdrKvYtTZXvlFEBYc2t7qmNDZhJCyFeZX6ZzZOMjEUL\n8KM9jUBz/4DWP9TfyCYayRUMw3ZU7aK8nqk4unABAoGANocLHhWb97da4238lIvh\nFom5VuPNXJMZaIcuu/WB+0Ta3OmyatWQMVTGHIXZ1HWXzAHAWh2D7/YHoFrGg31U\nOQWUwojWmjo2RfAJFUf9G+ctM2+Ll4bjo6bgmj+VL/UfICXdLAyCi9k8/grsyNnv\njfOhp5ojZ+aIzdI2Gbp0MCA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "kappa-55@foodnetwork-146101.iam.gserviceaccount.com",
+  "client_id": "100866732889939708904",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/kappa-55%40foodnetwork-146101.iam.gserviceaccount.com"
+}

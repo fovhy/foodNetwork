@@ -35,7 +35,10 @@ public class Client {
 
     private final static String caseAdd = "ADD";                            // ADD choice
     private final static String caseGet = "GET";                            // GET choice
-    private final static String request = "Request(" + caseAdd + "|" + caseGet +")"; // request
+    private final static String caseInterval = "INTERVAL";
+    private final static String request = "Request(" + caseAdd + "|" +
+            caseGet + "|" + caseInterval + ")"; // request
+    private final static String setInterval = "Interval> ";
     private final static String selName = "Name> ";                         // select name prompt
     private final static String selMealType = "Meal Type(B, L, D, S)> ";    // select MealType code prompt
     private final static String enterCalories = "Calories> ";               // enter calories prompt
@@ -46,6 +49,7 @@ public class Client {
      */
    public enum States{
         getRequest,
+        getAndSendInterval,
         getName,
         getMealType ,
         getCalories ,
@@ -80,7 +84,7 @@ public class Client {
         MessageInput messageInput = new MessageInput(in);      // the messageInput that wraps input from Socket
         MessageOutput messageOutput = new MessageOutput(out);  // the messageOutput that wraps output to Socket
         MessageInput userMessageInput = new MessageInput(System.in); // get user input
-        while (steps != States.end) {         // the 7th step, out of the loop
+        while (steps != States.end) {         // the 7th step, out of the loop, terminate the program
             switch (steps) {
                 case getRequest:               // this step you get request from user (ADD OR GET for now)
                     System.out.print(request);
@@ -88,6 +92,10 @@ public class Client {
                    break;
                 case sendGetFood:              // this send a GetFood message to server asking for foodList.
                     steps = sendGetFoodMessage(messageOutput);
+                    break;
+                case getAndSendInterval:
+                    System.out.print(setInterval);
+                    steps = getAndSendInterval(messageInput, messageOutput);
                     break;
                 case getName:                  // get the name for foodItem from user
                     System.out.print(selName);
@@ -150,8 +158,12 @@ public class Client {
             case caseGet:
                 steps = States.sendGetFood;
                 break;
+            case caseInterval:
+                steps = States.getAndSendInterval;
+                break;
             default:
-                System.err.println(invalidInput + "please enter ADD or GET");
+                System.err.println(invalidInput + "please enter " + caseAdd + " or " + caseGet +
+                        " or " + caseInterval);
                 break;
         }
         return steps;
@@ -261,11 +273,12 @@ public class Client {
      * @return next state for the client
      */
     public static States sendGetFoodMessage(MessageOutput out){
-        States steps = States.sendGetFood;
+        States steps;
         try {
             new GetFood(Instant.now().toEpochMilli()).encode(out);
         } catch (FoodNetworkException e) {
             System.err.println(commuError + " failed to send GetFoodMessage. " + e.getMessage());
+            System.exit(-2);
         }
         steps = States.waitServerRespond;
         return steps;
@@ -295,4 +308,21 @@ public class Client {
         steps = States.askAgain;
         return steps;
     }
+    public static States getAndSendInterval(MessageInput in, MessageOutput out){
+        int interval;
+        try {
+            interval = in.getNextUnsignedInt();
+        } catch (EOFException | FoodNetworkException e) {
+            System.err.println(invalidInput + " failed to set interval time. " + e.getMessage());
+            return getAndSendInterval;                        // loop back, reenter the string
+        }
+        try {
+            new Interval(System.currentTimeMillis(), interval).encode(out);
+        } catch (FoodNetworkException e) {
+            System.err.println(commuError + " failed to send Interval Message. " + e.getMessage());
+            System.exit(-2);
+        }
+        return States.waitServerRespond;
+    }
 }
+

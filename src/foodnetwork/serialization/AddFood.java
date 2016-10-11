@@ -20,7 +20,7 @@ public class AddFood extends FoodMessage{
     /**
      * The type of the request
      */
-    private static String type = "ADD";
+    private final static String type = "ADD";
 
     /**
      * A constructor should never be called outside of foodMessage's decode function.

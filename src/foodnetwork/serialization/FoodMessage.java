@@ -45,7 +45,7 @@ abstract public class FoodMessage {
     public static FoodMessage decode(MessageInput in) throws FoodNetworkException, EOFException {
         String version =  in.getNextFixedBytes(currentVersion.length());
         if(!currentVersion.equals(version)){
-            throw new FoodNetworkException("Failed to read version number");
+            throw new FoodNetworkException("Version: " +  version);
         }
         in.getNextSpace();
         long messageTimestamp = in.getNextUnsignedLong();
@@ -60,8 +60,10 @@ abstract public class FoodMessage {
                 return new FoodList(messageTimestamp, in);
             case "ERROR":
                 return new ErrorMessage(messageTimestamp, in);
+            case "INTERVAL":
+                return new Interval(messageTimestamp, in);
             default:
-                return null;
+                throw new FoodNetworkException("Unknown operation: " + type);
         }
     }
 

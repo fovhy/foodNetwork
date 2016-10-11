@@ -24,13 +24,13 @@ public class FoodList extends FoodMessage{
      * The time when the foodItem list being modified
      */
     private long modifiedTimestamp;
-    private static String type = "LIST";
+    private final static String type = "LIST";
     /**
      * A constructor should never be called outside of foodMessage's decode function.
      * @param messageTimestamp the time stamp already read in from MessageInput
      * @param in the messageInput to use
      * @throws FoodNetworkException if it fails to construct the class
-     * @throws EOFException the stream ends prematurally
+     * @throws EOFException the stream ends prematurely
      */
     public FoodList(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
         setMessageTimestamp(messageTimestamp);

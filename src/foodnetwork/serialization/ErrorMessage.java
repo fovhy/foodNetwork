@@ -15,7 +15,7 @@ import java.io.EOFException;
 public class ErrorMessage extends FoodMessage{
 
 
-    private static String type = "ERROR";
+    private final static String type = "ERROR";
     private String errorMessage; // the error messages stored inside of ErrorMessage class
     /**
      * A constructor should never be called outside of foodMessage's decode function.
