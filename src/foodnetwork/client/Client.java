@@ -47,7 +47,7 @@ public class Client {
     /**
      * The different steps of the whole client. From getRequest to the end.
      */
-   public enum States{
+    public enum States{
         getRequest,
         getAndSendInterval,
         getName,
@@ -60,7 +60,7 @@ public class Client {
         sendGetFood,
         end
     }
-   public static void main(String args[]) throws IOException, FoodNetworkException {
+    public static void main(String args[]) throws IOException, FoodNetworkException {
         if (args.length != 2) {          //check if user entered server and port or not
             throw new IllegalArgumentException("Parameters(s): <Server> <Port>");
         }
@@ -78,53 +78,10 @@ public class Client {
         /*
          * Create a list that contains all types of mealType, so you can loop through them
          */
-        States steps = getRequest;           // set the step to the first one
-        /*possible foodItem to be added in the method*/
-        FoodItem foodItem = new FoodItem("temp", MealType.Snack, 0, "0");
-        MessageInput messageInput = new MessageInput(in);      // the messageInput that wraps input from Socket
+       MessageInput messageInput = new MessageInput(in);      // the messageInput that wraps input from Socket
         MessageOutput messageOutput = new MessageOutput(out);  // the messageOutput that wraps output to Socket
         MessageInput userMessageInput = new MessageInput(System.in); // get user input
-        while (steps != States.end) {         // the 7th step, out of the loop, terminate the program
-            switch (steps) {
-                case getRequest:               // this step you get request from user (ADD OR GET for now)
-                    System.out.print(request);
-                    steps = getRequest(userMessageInput);
-                   break;
-                case sendGetFood:              // this send a GetFood message to server asking for foodList.
-                    steps = sendGetFoodMessage(messageOutput);
-                    break;
-                case getAndSendInterval:
-                    System.out.print(setInterval);
-                    steps = getAndSendInterval(messageInput, messageOutput);
-                    break;
-                case getName:                  // get the name for foodItem from user
-                    System.out.print(selName);
-                    steps = getName(foodItem, userMessageInput);
-                    break;
-                case getMealType:               // get the mealType from user
-                    System.out.print(selMealType);
-                    steps = getMealType(foodItem, userMessageInput);
-                    break;
-                case getCalories:               // get calories from user
-                    System.out.print(enterCalories);
-                    steps = getCalories(foodItem, userMessageInput);
-                    break;
-                case getFat:                    // get fat from user. After this success, go to sendAddFood
-                    System.out.print(enterFat);
-                    steps = getFat(foodItem, userMessageInput);
-                    break;
-                case sendAddFood:              // sent a addFood message to server
-                    steps = sendAddFoodMessage(foodItem, messageOutput);
-                    break;
-                case waitServerRespond:        // wait for server's response
-                    steps = waitResponse(messageInput);
-                    break;
-                case askAgain:                // ask if the user want to do one more request
-                    System.out.print(askContinue);
-                    steps = getContinue(userMessageInput);
-                    break;
-            }
-        }
+        processInput(messageInput, userMessageInput, messageOutput);
     }
 
     /**
@@ -323,6 +280,54 @@ public class Client {
             System.exit(-2);
         }
         return States.waitServerRespond;
+    }
+    public static void processInput(MessageInput messageInput, MessageInput userMessageInput,
+                                    MessageOutput messageOutput) throws FoodNetworkException {
+         /*possible foodItem to be added in the method*/
+        FoodItem foodItem = new FoodItem("temp", MealType.Snack, 0, "0");
+        States steps = getRequest;           // set the step to the first one
+        while (steps != States.end) {         // the 7th step, out of the loop, terminate the program
+            switch (steps) {
+                case getRequest:               // this step you get request from user (ADD OR GET for now)
+                    System.out.print(request);
+                    steps = getRequest(userMessageInput);
+                    break;
+                case sendGetFood:              // this send a GetFood message to server asking for foodList.
+                    steps = sendGetFoodMessage(messageOutput);
+                    break;
+                case getAndSendInterval:
+                    System.out.print(setInterval);
+                    steps = getAndSendInterval(messageInput, messageOutput);
+                    break;
+                case getName:                  // get the name for foodItem from user
+                    System.out.print(selName);
+                    steps = getName(foodItem, userMessageInput);
+                    break;
+                case getMealType:               // get the mealType from user
+                    System.out.print(selMealType);
+                    steps = getMealType(foodItem, userMessageInput);
+                    break;
+                case getCalories:               // get calories from user
+                    System.out.print(enterCalories);
+                    steps = getCalories(foodItem, userMessageInput);
+                    break;
+                case getFat:                    // get fat from user. After this success, go to sendAddFood
+                    System.out.print(enterFat);
+                    steps = getFat(foodItem, userMessageInput);
+                    break;
+                case sendAddFood:              // sent a addFood message to server
+                    steps = sendAddFoodMessage(foodItem, messageOutput);
+                    break;
+                case waitServerRespond:        // wait for server's response
+                    steps = waitResponse(messageInput);
+                    break;
+                case askAgain:                // ask if the user want to do one more request
+                    System.out.print(askContinue);
+                    steps = getContinue(userMessageInput);
+                    break;
+            }
+        }
+
     }
 }
 
