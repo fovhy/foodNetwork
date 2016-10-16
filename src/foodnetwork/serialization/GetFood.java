@@ -58,4 +58,28 @@ public class GetFood extends FoodMessage{
     public String getRequest(){
         return type;
     }
+    /**
+     * Check if this GetFood object equals to another object
+     * @param obj another object
+     * @return equal or not
+     */
+
+    public boolean equals(Object obj){
+        if(obj == null){
+            return false;
+        }
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof GetFood)){
+            return false;
+        }
+        GetFood testObj = (GetFood) obj;
+        if(this.hashCode()== testObj.hashCode() &&
+                this.timestamp == testObj.timestamp) {
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
