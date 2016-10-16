@@ -8,8 +8,7 @@
 
 package foodnetwork.serialization;
 
-import java.io.EOFException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Scanner;
 
 /**
@@ -24,9 +23,10 @@ import java.util.Scanner;
  */
 public class MessageInput {
     /**
-     * The scanner that will do the scanning and buffer handling
+     * The reader that will do the scanning and buffer handling
      */
-    private Scanner messageScanner;
+    private InputStreamReader messageReader;
+    private String delimiter; // the delimiter that it will skipp
 
     /**
      * Public constructor that associate one InputStream with this MessageInput object
@@ -34,7 +34,12 @@ public class MessageInput {
      * @param in The InputStream MessageInput has
      */
     public MessageInput(InputStream in) {
-        messageScanner = new Scanner(in, "ASCII");
+        try {
+            messageReader = new InputStreamReader(in, "ASCII");
+            delimiter = " ";
+        } catch (UnsupportedEncodingException e) {
+            System.err.println("Unsupported encode"); // will never happen
+        }
     }
 
     /**
@@ -63,36 +68,55 @@ public class MessageInput {
         if(count <= 0){
             throw new FoodNetworkException("Invalid count");
         }
-        messageScanner.useDelimiter("");
-        char[] characterList = new char[count];
-        for(int i = 0; i < count; i++){
-            if(messageScanner.hasNext()){
-                characterList[i] = messageScanner.next().charAt(0);
-            }else{
-                throw new EOFException("Expecting more bytes when reading fixed length token");
+        String temp = "";
+        for(int i = 0; i < count ; i++){
+            try {
+                int tempChar = messageReader.read();
+                if(tempChar != -1){
+                    temp += (char)tempChar;
+                }else{
+                    throw new EOFException("Stream prematurely ended when reading fixed " + count +
+                            " bytes");
+                }
+            } catch (IOException e) {
+                throw new EOFException("Failed to read fixed " + count + " bytes, EOFException");
             }
         }
-        messageScanner.useDelimiter(" ");
-        return String.valueOf(characterList);
+        return temp;
     }
 
     /**
-     * get the next string from the stream that contains a certain pattern.
+     * get the next string from the stream that contains a certain pattern. It will consume delimiter
      * @param pattern the pattern you want to search in string format. A Java regex.
      * @return the String it found
      * @throws EOFException if stream ends prematurely
      * @throws FoodNetworkException Cannot find such pattern in the stream
      */
     public String getNextStringWithPattern(String pattern) throws EOFException, FoodNetworkException {
-        if(!messageScanner.hasNext()){
-            throw new EOFException("Expecting more bytes when trying to read next pattern");
+        String temp = "";      // template string that to be returned
+        int tempChar;
+        try {
+            boolean loop = true;
+            while(loop){
+                if((tempChar = messageReader.read()) != -1){
+                    if(delimiter.contains(String.valueOf((char) tempChar))){
+                        loop = false;
+                    }
+                    else{
+                        temp += (char)tempChar;
+                    }
+                }else{
+                    throw new EOFException("Stream unexpectedly terminates when reading pattern: " +
+                            pattern);
+                }
+            }
+        } catch (IOException e) {
+            throw new EOFException("Failed to read pattern " + pattern + " EOFException");
         }
-        if(messageScanner.hasNext(pattern)){
-            return messageScanner.next(pattern);
-        }else{
-            throw new FoodNetworkException("Failed to find the pattern :" + pattern + ". In String " +
-                    messageScanner.next());
+        if(!temp.matches(pattern)){
+            throw new FoodNetworkException("No such pattern as " + pattern);
         }
+        return temp;
     }
 
     /**
@@ -169,9 +193,35 @@ public class MessageInput {
     /**
      * Get's next line in inputStream
      * @return next line of String
+     * @throws FoodNetworkException trouble happens when read in next line
      */
-    public String getNextLine(){
-        return messageScanner.nextLine();
+    public String getNextLine() throws FoodNetworkException {
+        String temp = "";
+        int tempChar;
+        try {
+            while((tempChar = messageReader.read()) != -1){
+                temp += (char)tempChar;
+            }
+        } catch (IOException e) {
+            throw new FoodNetworkException("Failed to get next line of input IOExcpeiton");
+        }
+        return temp;
+    }
+
+    /**
+     * Set delimiters
+     * @param delimiter the delimiter you want to set to
+     */
+    public void setDelimiter(String delimiter){
+        delimiter = delimiter;
+    }
+
+    /**
+     * Get delimiters
+     * @return the current delimiter String
+     */
+    public String getDelimiter(){
+        return delimiter;
     }
 }
 

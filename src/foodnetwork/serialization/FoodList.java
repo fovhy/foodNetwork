@@ -34,12 +34,9 @@ public class FoodList extends FoodMessage{
      */
     public FoodList(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
         setMessageTimestamp(messageTimestamp);
-        in.getNextSpace();
         long modifiedTimestamp = in.getNextUnsignedLong();
         setModifiedTimestamp(modifiedTimestamp);
-        in.getNextSpace();
         int count = in.getNextUnsignedInt();
-        in.getNextSpace();
         foodItemList = new ArrayList<>();
         for(int i = 0; i < count; i++){
             addFoodItem(new FoodItem(in));

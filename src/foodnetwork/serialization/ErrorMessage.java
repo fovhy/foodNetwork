@@ -26,9 +26,7 @@ public class ErrorMessage extends FoodMessage{
      */
     public ErrorMessage(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
         setMessageTimestamp(messageTimestamp);
-        in.getNextSpace();
         int messageLength = in.getNextUnsignedInt();
-        in.getNextSpace();
         String message = in.getNextFixedBytes(messageLength);
         this.setErrorMessage(message);
         in.getNextNewLine();

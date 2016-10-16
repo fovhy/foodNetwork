@@ -40,7 +40,7 @@ abstract public class FoodMessage {
      * @return a FoodMessage that constructs that based on the MessageInput
      * @param in MessageInput object that wraps around a input stream
      * @throws FoodNetworkException if fails to construct the foodMessage item
-     * @throws EOFException if the stream prematurally closes
+     * @throws EOFException if the stream prematurely closes
      */
     public static FoodMessage decode(MessageInput in) throws FoodNetworkException, EOFException {
         String version =  in.getNextFixedBytes(currentVersion.length());
@@ -49,7 +49,6 @@ abstract public class FoodMessage {
         }
         in.getNextSpace();
         long messageTimestamp = in.getNextUnsignedLong();
-        in.getNextSpace();
         String type = in.getNextStringWithPattern("[A-Z]+");
         switch(type){
             case "ADD":

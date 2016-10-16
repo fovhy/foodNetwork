@@ -23,9 +23,7 @@ public class GetFood extends FoodMessage{
      */
     public GetFood(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
         setMessageTimestamp(messageTimestamp);
-        in.getNextSpace();
         in.getNextNewLine();
-
     }
     /**
      * Constructor for GetFood. Takes a timestamp for when the message is created.

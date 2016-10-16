@@ -25,8 +25,8 @@ public class Interval extends FoodMessage{
      */
     public Interval(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException{
         setMessageTimestamp(messageTimestamp);
-        in.getNextSpace();
         setIntervalTime(in.getNextUnsignedInt());
+        in.getNextNewLine();
     }
 
     /**

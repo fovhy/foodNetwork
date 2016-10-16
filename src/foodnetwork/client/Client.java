@@ -104,8 +104,9 @@ public class Client {
      * Get the request from user input
      * @param in MessageInput object that wraps around user input
      * @return next state for the client
+     * @throws FoodNetworkException Failed to read in Next line of user input
      */
-    public static States getRequest(MessageInput in){
+    public static States getRequest(MessageInput in) throws FoodNetworkException {
         String userInput = in.getNextLine();
         States steps = getRequest;
         switch (userInput){
@@ -149,8 +150,9 @@ public class Client {
      * @param foodItem foodItem to be added to server
      * @param in MessageInput object that wraps around server's InputStream
      * @return next state for the client
+     * @throws FoodNetworkException Failed to read in Next line of user input
      */
-    public static States getMealType(FoodItem foodItem, MessageInput in){
+    public static States getMealType(FoodItem foodItem, MessageInput in) throws FoodNetworkException {
         States steps = States.getMealType;
         String userInput= in.getNextLine();
         if(userInput.length()!= 1){           // if user input is not a char
@@ -172,8 +174,9 @@ public class Client {
      * @param foodItem foodItem to be added to server
      * @param in MessageInput object that wraps around server's InputStream
      * @return next state for the client
+     * @throws FoodNetworkException Failed to read in Next line of user input
      */
-    public static States getCalories(FoodItem foodItem, MessageInput in){
+    public static States getCalories(FoodItem foodItem, MessageInput in) throws FoodNetworkException {
         States steps = States.getCalories;
         try {
             foodItem.setCalories(in.getNextUnsignedLong());
@@ -191,15 +194,15 @@ public class Client {
      * @param foodItem foodItem to be added to server
      * @param in MessageInput object that wraps around server's InputStream
      * @return next state for the client
+     * @throws FoodNetworkException Failed to read in Next line of user input
      */
-    public static States getFat(FoodItem foodItem, MessageInput in){
+    public static States getFat(FoodItem foodItem, MessageInput in) throws FoodNetworkException {
         States steps = States.getFat;
         try {
             foodItem.setFat(in.getNextUnsignedDouble());
         } catch (FoodNetworkException | EOFException e) {
             System.err.println(invalidInput + "Failed to set fat " + e.getMessage());
             in.getNextLine();            // clear the buffer
-            in.getNextLine();
             return steps;
         }
         steps = States.sendAddFood;
@@ -210,8 +213,9 @@ public class Client {
      * Ask if user want to continue
      * @param in MessageInput object that wraps around user input
      * @return next state for the client
+     * @throws FoodNetworkException Failed to read in Next line of user input
      */
-    public static States getContinue(MessageInput in){
+    public static States getContinue(MessageInput in) throws FoodNetworkException {
         String userInput = in.getNextLine();
         switch(userInput){
             case "y":
@@ -327,7 +331,6 @@ public class Client {
                     break;
             }
         }
-
     }
 }
 

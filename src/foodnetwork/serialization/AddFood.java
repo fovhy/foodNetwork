@@ -31,7 +31,6 @@ public class AddFood extends FoodMessage{
      */
     public AddFood(long messageTimestamp, MessageInput in) throws FoodNetworkException, EOFException {
         setMessageTimestamp(messageTimestamp);
-        in.getNextSpace();
         FoodItem foodItem = new FoodItem(in);
         in.getNextNewLine();
         setFoodItem(foodItem);

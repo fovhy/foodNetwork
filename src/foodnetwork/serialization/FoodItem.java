@@ -64,7 +64,6 @@ public class FoodItem {
      */
     public FoodItem(MessageInput in) throws FoodNetworkException, EOFException {
         int foodCount = in.getNextUnsignedInt();
-        in.getNextSpace();
         setName(in.getNextFixedBytes(foodCount));               // set name as fixed bytes of counts
         char mealTypeCode = in.getNextFixedBytes(1).charAt(0);  // get next char in the inputStream
         setMealType(MealType.getMealType(mealTypeCode));
@@ -73,13 +72,11 @@ public class FoodItem {
         }catch(FoodNetworkException e){
             throw new FoodNetworkException("Invalid calories", e);
         }
-        in.getNextSpace();
         try {
             setFat(in.getNextUnsignedDouble());
         } catch(FoodNetworkException e){
             throw new FoodNetworkException("Invalid fat. " + e.getMessage());
         }
-        in.getNextSpace();
     }
 
     /**
