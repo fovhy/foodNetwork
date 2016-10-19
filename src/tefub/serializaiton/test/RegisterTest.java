@@ -17,6 +17,9 @@ import java.util.Collection;
 
 import static org.junit.Assert.*;
 
+/**
+ * Parameterized teste for Register class, test for decode and encode.
+ */
 @RunWith(Parameterized.class)
 public class RegisterTest extends TeFubMessageTest{
     private Inet4Address expAddress;

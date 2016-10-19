@@ -9,7 +9,8 @@ package tefub.serializaiton.test;
 
 
 /**
- * Created by fovhy on 10/18/2016.
+ * Test for bounding situation for addresses. Works for both Register and
+ * Deregister class
  */
 public class AddressBoundTest {
 }

@@ -7,6 +7,9 @@
  ************************************************/
 package tefub.serializaiton;
 
+/**
+ * The acknowledge message of TeFubMessage
+ */
 public class ACK extends TeFubMessage {
     /**
      * Construct an ACK message given a TeFubMessage ID
@@ -17,30 +20,4 @@ public class ACK extends TeFubMessage {
     public ACK(int msgID) throws IllegalArgumentException {
         super(msgID);
     }
-
-    /**
-     * Return the ACK in a human readable form
-     * @return human readable String
-     */
-    @Override
-    public String toString(){
-        return null;
-    }
-
-    /**
-     * Get Code of ACK
-     * @return message Code
-     */
-    public int getCode(){
-        return 0;
-    }
-    /**
-     * Get the data of message
-     * @return the data of the TeFub Message
-     */
-    public byte[] getData(){
-        return null;
-    }
-
-
 }

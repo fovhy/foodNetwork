@@ -33,7 +33,7 @@ public abstract class TeFubMessageTest {
 
     /**
      * The data for parameterized test
-     * @return
+     * @return the data that will be used to run the test
      */
     @Parameterized.Parameters
     public static Collection<Object[]> data(){
@@ -133,8 +133,10 @@ public abstract class TeFubMessageTest {
      * @param teFubMessage the teFubMessage to be tested
      * @param expMsgId the expected message id
      * @param expCode the expected code
+     * @param sub the sub class of the base class
      */
-    public void verifyBaseMessage(TeFubMessage teFubMessage, int expMsgId, int expCode){
+    public void verifyBaseMessage(TeFubMessage teFubMessage, int expMsgId, int expCode, Class<?> sub){
+        assertTrue(sub.isInstance(teFubMessage));
         assertEquals(expMsgId, teFubMessage.getMsgId());
         assertEquals(expMsgId, teFubMessage.getCode());
     }

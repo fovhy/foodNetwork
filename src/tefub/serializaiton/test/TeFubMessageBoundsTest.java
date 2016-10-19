@@ -7,5 +7,8 @@
  ************************************************/
 package tefub.serializaiton.test;
 
+/**
+ * Boundary test for the TeFub message
+ */
 public class TeFubMessageBoundsTest {
 }
