@@ -22,7 +22,7 @@ public class Addition extends TeFubMessage{
                     String name,
                     MealType mealType,
                     long calories)
-        throws IllegalArgumentException{
+            throws IllegalArgumentException{
         super(msgId);
     }
     /**
@@ -109,6 +109,13 @@ public class Addition extends TeFubMessage{
     @Override
     public boolean equals(Object obj){
         return false;
+    }
+    /**
+     * Get the data of message
+     * @return the data of the TeFub Message
+     */
+    public byte[] getData(){
+        return null;
     }
 
 }

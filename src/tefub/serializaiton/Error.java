@@ -37,4 +37,12 @@ public class Error extends TeFubMessage{
     public String getErrorMessage() {
         return null;
     }
+    /**
+     * Get the data of message
+     * @return the data of the TeFub Message
+     */
+    public byte[] getData(){
+        return null;
+    }
+
 }

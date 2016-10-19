@@ -66,5 +66,13 @@ public class Register extends TeFubMessage{
     public InetSocketAddress getSocketAddress(){
         return null;
     }
+    /**
+     * Get the data of message
+     * @return the data of the TeFub Message
+     */
+    public byte[] getData(){
+        return null;
+    }
+
 
 }

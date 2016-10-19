@@ -7,8 +7,8 @@
  ************************************************/
 package tefub.serializaiton.test;
 
-import static org.junit.Assert.*;
-
-public class ACKTest {
-
+/**
+ * Created by fovhy on 10/18/2016.
+ */
+public class AddressBoundTest {
 }

@@ -34,5 +34,13 @@ public class ACK extends TeFubMessage {
     public int getCode(){
         return 0;
     }
+    /**
+     * Get the data of message
+     * @return the data of the TeFub Message
+     */
+    public byte[] getData(){
+        return null;
+    }
+
 
 }
