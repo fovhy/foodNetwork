@@ -7,17 +7,23 @@
  ************************************************/
 package tefub.serializaiton.test;
 
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import tefub.serializaiton.TeFubMessage;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
+@RunWith(Parameterized.class)
 public class ErrorTest extends TeFubMessageTest {
 
     public ErrorTest(byte[] expSerialization, int expMsgId, int expCode) {
         super(expSerialization, expMsgId, expCode);
     }
+    @Parameterized.Parameters
+    public static Collection<Object[]> data(){return null;}
 
     @Override
     public void verifyExpectedMessage(TeFubMessage teFubMessage) {

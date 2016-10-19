@@ -61,7 +61,7 @@ public abstract class TeFubMessageTest {
     }
     public abstract void verifyExpectedMessage(TeFubMessage teFubMessage);
     public abstract TeFubMessage getDeserializeMessage()throws IllegalArgumentException, IOException;
-    public static byte[] binaryStringToByteArray(String binaryString){
+    protected static byte[] binaryStringToByteArray(String binaryString){
         return new BigInteger(binaryString, 2).toByteArray();
     }
     public static byte[] concat(byte[] first, byte[] second) throws IOException {
@@ -70,6 +70,21 @@ public abstract class TeFubMessageTest {
         outputStream.write(second);
         return outputStream.toByteArray( );
     }
+    protected static <T> T[] concat(T[] first, T[] second){
+        // concat two generic array
+        T[] toReturn = Arrays.copyOf(first, first.length + second.length);
+        System.arraycopy(second, 0, toReturn, first.length, second.length);
+        return toReturn;
+    }
+    protected static Object[] buildTest(Object[] base, Object[] sub) throws IOException {
+        byte[] expBytes = concat((byte[])base[0],(byte[])sub[0]);
+        return concat(new Object[]{expBytes},
+                concat(Arrays.copyOfRange(base, 1, base.length),
+                Arrays.copyOfRange(sub, 1, sub.length))
+                );
+    }
+
+
     public void verifyBaseMessage(TeFubMessage teFubMessage, int expMsgId, int expCode){
         assertEquals(expMsgId, teFubMessage.getMsgId());
         assertEquals(expMsgId, teFubMessage.getCode());
