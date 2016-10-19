@@ -58,8 +58,12 @@ public class FoodList extends FoodMessage{
     /**
      * Add a FoodItem to a foodList
      * @param foodItem the foodItem to be added
+     * @throws FoodNetworkException if the foodItem being added is null
      */
-    public void addFoodItem(FoodItem foodItem){
+    public void addFoodItem(FoodItem foodItem) throws FoodNetworkException {
+        if(foodItem == null){
+            throw new FoodNetworkException("Adding Null footItem to foodLIst");
+        }
         foodItemList.add(foodItem);
     }
 

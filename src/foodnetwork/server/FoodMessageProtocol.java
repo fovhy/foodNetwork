@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
@@ -141,7 +143,10 @@ public class FoodMessageProtocol implements Runnable{
      */
     public void getListFromServer() throws FoodNetworkException {
         FoodList temp = new FoodList(System.currentTimeMillis(), foodManager.getLastModified());
-        foodManager.getFoodItems().forEach(temp::addFoodItem);
+        List<FoodItem> tempList = foodManager.getFoodItems();
+        for(FoodItem i : tempList){
+            temp.addFoodItem(i);
+        }
         temp.encode(out);
         logSentMessage(temp);
     }
@@ -153,7 +158,10 @@ public class FoodMessageProtocol implements Runnable{
      */
     public void getIntervalListFromServer(Interval interval) throws FoodNetworkException {
         FoodList temp = new FoodList(System.currentTimeMillis(), foodManager.getLastModified());
-        foodManager.getFoodItems(interval.getIntervalTime()).forEach(temp::addFoodItem);
+        List<FoodItem> tempList = foodManager.getFoodItems(interval.getIntervalTime());
+        for(FoodItem i : tempList){
+            temp.addFoodItem(i);
+        }
         temp.encode(out);
         logSentMessage(temp);
     }

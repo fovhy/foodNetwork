@@ -27,7 +27,7 @@ public class Client {
     /*
     Store common message headings here.
      */
-    private final static String commuError = "Unable to communicate: ";     // communicate error message header
+    private final static String commu_Error = "Unable to communicate: ";     // communicate error message header
     private final static String invalidMessage = "Invalid message: ";       // invalid message header
     private final static String unexpectedMessage = "Unexpected message: "; // unexpected message header
     private final static String errorMessage = "Error: ";                   // Receive error header
@@ -70,7 +70,7 @@ public class Client {
         try {
             socket = new Socket(server, serPort);
         } catch (IOException e) {
-            throw new IOException(commuError + "Failed to create socket");
+            throw new IOException(commu_Error + "Failed to create socket");
         }
         InputStream in = socket.getInputStream();      // TCP socket inputStream
         OutputStream out = socket.getOutputStream();   // TCP socket outputStream
@@ -94,7 +94,7 @@ public class Client {
         try {
             new AddFood(Instant.now().toEpochMilli(), foodItem).encode(out);
         } catch (FoodNetworkException e) {
-            System.err.print(commuError + "Failed to send " + caseAdd + " message to server. " + e.getMessage());
+            System.err.print(commu_Error + "Failed to send " + caseAdd + " message to server. " + e.getMessage());
             System.exit(1);
         }
         return States.waitServerRespond;
@@ -238,7 +238,7 @@ public class Client {
         try {
             new GetFood(Instant.now().toEpochMilli()).encode(out);
         } catch (FoodNetworkException e) {
-            System.err.println(commuError + " failed to send GetFoodMessage. " + e.getMessage());
+            System.err.println(commu_Error + " failed to send GetFoodMessage. " + e.getMessage());
             System.exit(-2);
         }
         steps = States.waitServerRespond;
@@ -255,6 +255,7 @@ public class Client {
         FoodMessage message = null;
         try {
             message = FoodMessage.decode(in);
+            //TODO: check whether this print stack trace when server is up
         } catch (FoodNetworkException | EOFException e) {
             System.err.println(invalidMessage + e.getMessage());
             System.exit(2);
@@ -280,7 +281,7 @@ public class Client {
         try {
             new Interval(System.currentTimeMillis(), interval).encode(out);
         } catch (FoodNetworkException e) {
-            System.err.println(commuError + " failed to send Interval Message. " + e.getMessage());
+            System.err.println(commu_Error + " failed to send Interval Message. " + e.getMessage());
             System.exit(-2);
         }
         return States.waitServerRespond;
