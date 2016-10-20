@@ -5,7 +5,7 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 
 import java.io.*;
@@ -75,7 +75,7 @@ public abstract class TeFubMessage {
      * Serialize message
      * @return serialized message bytes
      */
-    public byte[] encode() throws IOException {
+    public byte[] encode() {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(byteStream);
         byte versionAndCode = (byte) currentVersion;
@@ -88,8 +88,12 @@ public abstract class TeFubMessage {
         } catch (IOException e) {
             // will not happen
         }
-        out.write(getData());
-        out.flush();
+        try {
+            out.write(getData());
+            out.flush();
+        }catch(IOException e){
+            // it will not happen
+        }
         return byteStream.toByteArray();
     }
 
@@ -112,10 +116,10 @@ public abstract class TeFubMessage {
      * @throws IllegalArgumentException if the message ID is out of range
      */
     public void setMsgId(int msgId) throws IllegalArgumentException{
-        if(msgID < 0){
+        if(msgId < 0){
             throw new IllegalArgumentException("Negative message ID");
         }
-        if(msgID > 255){
+        if(msgId > 255){
             throw new IllegalArgumentException("Message ID greater than 255 cannot be contained in 8 bit");
         }
         this.msgID = msgId;
@@ -152,12 +156,29 @@ public abstract class TeFubMessage {
      * @return equals or not
      */
     public boolean equals(Object obj){
-        return false;
+        if(obj == null){
+            return false;
+        }
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof TeFubMessage)){
+            return false;
+        }
+        boolean results = false;
+        TeFubMessage testObj = (TeFubMessage) obj;
+        if(this.hashCode()== testObj.hashCode() &&
+                this.getCode() == testObj.getCode() &&
+                this.getMsgId() == testObj.getMsgId()){
+            results = true;
+        }
+        return results;
     }
 
     /**
      * Get the data of message
      * @return the data of the TeFub Message
+     * @throws IOException if fails to output the data
      */
     public abstract byte[] getData() throws IOException;
 

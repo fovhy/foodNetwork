@@ -5,7 +5,7 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -63,6 +63,7 @@ public class AddressHelper {
     /**
      * Get the data of message
      * @return the data of the TeFub Message
+     * @throws IOException if the ByteBuffer fails to write out the data
      */
     public byte[] getData() throws IOException {
         int addressInInt = ByteBuffer.wrap(getAdress().getAddress()).getInt();

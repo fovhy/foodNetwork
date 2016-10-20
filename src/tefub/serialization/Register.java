@@ -5,7 +5,7 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 
 import java.io.DataInputStream;
@@ -23,6 +23,7 @@ public class Register extends TeFubMessage{
      * @param address address to register
      * @param port port to register
      * @throws IllegalArgumentException if validation fails
+     * @throws IOException if the dataInputStream fails to read
      */
     public Register(int msgId, Inet4Address address, int port) throws IllegalArgumentException, IOException {
         super(msgId);

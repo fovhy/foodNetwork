@@ -5,7 +5,7 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 
 import java.io.ByteArrayOutputStream;
@@ -62,9 +62,9 @@ public class EndianCoder {
     }
 
     /**
-     * @param val
-     * @param offset
-     * @return
+     * @param val decode an unsigned int
+     * @param offset offset of the array
+     * @return unsigned int in long form
      */
     public long decodeUnsignedInt(byte[] val, int offset){
         return decodeBytes(val, offset, ISIZE);

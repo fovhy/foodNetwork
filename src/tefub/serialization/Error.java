@@ -5,7 +5,7 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 import java.io.ByteArrayInputStream;
 

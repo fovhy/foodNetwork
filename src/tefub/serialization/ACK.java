@@ -5,7 +5,7 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 /**
  * The acknowledge message of TeFubMessage
@@ -22,6 +22,10 @@ public class ACK extends TeFubMessage {
         code = 4;
     }
 
+    /**
+     * Retur the the data part of ACK message
+     * @return null, because there is no data field in ACK
+     */
     @Override
     public byte[] getData() {
         return null;

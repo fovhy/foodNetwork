@@ -5,13 +5,12 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 import foodnetwork.serialization.FoodItem;
 import foodnetwork.serialization.FoodNetworkException;
 import foodnetwork.serialization.MealType;
 
-import java.io.DataInput;
 import java.io.DataInputStream;
 
 public class Addition extends TeFubMessage{
@@ -118,7 +117,7 @@ public class Addition extends TeFubMessage{
      */
     @Override
     public int hashCode(){
-        return 0;
+        return super.hashCode() * 7 + myFoodItem.hashCode() * 127;
     }
 
     /**
@@ -128,10 +127,28 @@ public class Addition extends TeFubMessage{
      */
     @Override
     public boolean equals(Object obj){
-        return false;
+        if(obj == null){
+            return false;
+        }
+        if(obj == this){
+            return true;
+        }
+        if(!(obj instanceof Addition)){
+            return false;
+        }
+        if(!super.equals(obj)){
+            return false;
+        }
+        boolean results = false;
+        Addition testObj = (Addition) obj;
+        if(this.hashCode()== testObj.hashCode() &&
+                this.myFoodItem.equals(testObj.myFoodItem)){
+            results = true;
+        }
+        return results;
     }
     /**
-     * Get the data of message
+     * Get the data of addition message
      * @return the data of the TeFub Message
      */
     public byte[] getData(){

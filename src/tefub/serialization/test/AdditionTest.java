@@ -5,16 +5,14 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton.test;
+package tefub.serialization.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import tefub.serializaiton.TeFubMessage;
+import tefub.serialization.TeFubMessage;
 
 import java.io.IOException;
 import java.util.Collection;
-
-import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class AdditionTest extends TeFubMessageTest{

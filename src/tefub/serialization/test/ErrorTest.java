@@ -5,36 +5,34 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton.test;
+package tefub.serialization.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import tefub.serializaiton.TeFubMessage;
+import tefub.serialization.TeFubMessage;
 
 import java.io.IOException;
 import java.util.Collection;
 
-import static org.junit.Assert.*;
-
 /**
- * The test class for ACK
+ * The parameterized test for error message
  */
 @RunWith(Parameterized.class)
-public class ACKTest extends TeFubMessageTest{
-    public ACKTest(byte[] expSerialization, int expMsgId, int expCode) {
+public class ErrorTest extends TeFubMessageTest {
+
+    /**
+     * Set up the data for running test on Error message
+     * @return the test data
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> data(){return null;}
+    public ErrorTest(byte[] expSerialization, int expMsgId, int expCode) {
         super(expSerialization, expMsgId, expCode);
     }
 
     /**
-     * Get the test data for ACK
-     * @return data for testing
-     */
-    @Parameterized.Parameters
-    public static Collection<Object[]> data(){return null;}
-
-    /**
-     * Verify the message is expected or not
-     * @param teFubMessage
+     * Verify if this TeFubMessage is as expected
+     * @param teFubMessage message to be tested
      */
     @Override
     public void verifyExpectedMessage(TeFubMessage teFubMessage) {
@@ -42,14 +40,13 @@ public class ACKTest extends TeFubMessageTest{
     }
 
     /**
-     * Get a TeFubMessage from the expected message
-     * @return expected TeFubMesage
-     * @throws IllegalArgumentException if validation fails
-     * @throws IOException if the TeFubMelange is null or invalid
+     * Get the deserialized byte array of the Error message
+     * @return deserialized byte array
+     * @throws IllegalArgumentException if the encode fails
+     * @throws IOException null message or invalid field
      */
     @Override
     public TeFubMessage getDeserializeMessage() throws IllegalArgumentException, IOException {
         return null;
     }
-
 }

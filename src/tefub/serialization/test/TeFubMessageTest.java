@@ -5,17 +5,16 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton.test;
+package tefub.serialization.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import tefub.serializaiton.TeFubMessage;
+import tefub.serialization.TeFubMessage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,9 +59,9 @@ public abstract class TeFubMessageTest {
 
     /**
      * The constructor for the TeFubMessage test. Equals to setup
-     * @param expSerialization
-     * @param expMsgId
-     * @param expCode
+     * @param expSerialization expected byte array
+     * @param expMsgId expected message ID
+     * @param expCode expected code
      */
     public TeFubMessageTest(byte[] expSerialization, int expMsgId, int expCode){
         this.expSerialization = expSerialization;
@@ -73,7 +72,7 @@ public abstract class TeFubMessageTest {
     /**
      * The method for sub classes to very their expected message, or byte array
      * in this case
-     * @param teFubMessage
+     * @param teFubMessage the message to examine
      */
     public abstract void verifyExpectedMessage(TeFubMessage teFubMessage);
     public abstract TeFubMessage getDeserializeMessage()throws IllegalArgumentException, IOException;
@@ -159,13 +158,4 @@ public abstract class TeFubMessageTest {
         assertEquals(expSerialization, message.encode());
     }
 
-    /**
-     * Test the if the decode fails if there is not enough bytes
-     * @throws IOException expected
-     */
-    @Test(expected = IOException.class)
-    public void testShortDecode() throws IOException {
-        byte[] shortArray = Arrays.copyOfRange(this.expSerialization, 0, this.expSerialization.length - 1);
-        TeFubMessage.decode(shortArray);
-    }
 }

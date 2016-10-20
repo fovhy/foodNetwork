@@ -5,13 +5,13 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton.test;
+package tefub.serialization.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import tefub.serializaiton.EndianCoder;
-import tefub.serializaiton.Register;
-import tefub.serializaiton.TeFubMessage;
+import tefub.serialization.EndianCoder;
+import tefub.serialization.Register;
+import tefub.serialization.TeFubMessage;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -62,11 +62,21 @@ public class RegisterTest extends TeFubMessageTest{
         this.expPort = expPort;
     }
 
+    /**
+     * Verify if a TeFubMessage is as expected
+     * @param teFubMessage the message to be tested
+     */
     @Override
     public void verifyExpectedMessage(TeFubMessage teFubMessage) {
         verifyExpectedMessage(teFubMessage, expAddress, expPort);
     }
 
+    /**
+     * Verify this teFubMessage is correct
+     * @param teFubMessage the message to be tested
+     * @param address the address to test
+     * @param port port to test
+     */
     public void verifyExpectedMessage(TeFubMessage teFubMessage, Inet4Address address, int port){
         TeFubMessageTest.verifyBaseMessage(teFubMessage, this.expMsgId, expCode, TeFubMessage.class);
         assertEquals(expAddress, address);

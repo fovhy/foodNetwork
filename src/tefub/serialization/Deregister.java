@@ -5,12 +5,11 @@
  * Class: CSI 4321
  *
  ************************************************/
-package tefub.serializaiton;
+package tefub.serialization;
 
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
@@ -23,6 +22,7 @@ public class Deregister extends TeFubMessage {
      * @param address address to register
      * @param port port to register
      * @throws IllegalArgumentException if validation fails
+     * @throws IOException if the dataInputStream fails to read
      */
     public Deregister(int msgId, Inet4Address address, int port) throws IllegalArgumentException, IOException {
         super(msgId);
