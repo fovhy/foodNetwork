@@ -15,6 +15,7 @@ import tefub.serializaiton.TeFubMessage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,8 +28,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public abstract class TeFubMessageTest {
     protected byte[] expSerialization; // expected serialization for TeFubMessage
-    protected long expMsgId;          // expected message ID
-    protected int expCode;           // expected messageCode
+    protected int expMsgId;          // expected message ID (can only be 8 bit)
+    protected int expCode;           // expected messageCode (can only be 4 bit)
     public static final String CHARSET = "ASCII"; // default encoding
 
     /**
@@ -36,7 +37,7 @@ public abstract class TeFubMessageTest {
      * @return the data that will be used to run the test
      */
     @Parameterized.Parameters
-    public static Collection<Object[]> data(){
+    public static Collection<Object[]> data() throws UnknownHostException, IOException {
         ArrayList testList = new ArrayList();
         // current version number
         String versionNumber = "0011";
@@ -135,7 +136,7 @@ public abstract class TeFubMessageTest {
      * @param expCode the expected code
      * @param sub the sub class of the base class
      */
-    public void verifyBaseMessage(TeFubMessage teFubMessage, int expMsgId, int expCode, Class<?> sub){
+    public static void verifyBaseMessage(TeFubMessage teFubMessage, int expMsgId, int expCode, Class<?> sub){
         assertTrue(sub.isInstance(teFubMessage));
         assertEquals(expMsgId, teFubMessage.getMsgId());
         assertEquals(expMsgId, teFubMessage.getCode());
