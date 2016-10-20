@@ -11,6 +11,9 @@ import foodnetwork.serialization.FoodItem;
 import foodnetwork.serialization.FoodNetworkException;
 import foodnetwork.serialization.MealType;
 
+import java.io.DataInput;
+import java.io.DataInputStream;
+
 public class Addition extends TeFubMessage{
     private FoodItem myFoodItem;             // the food item for addition methods
     /**
@@ -32,6 +35,11 @@ public class Addition extends TeFubMessage{
         } catch (FoodNetworkException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
+        code = 1;
+    }
+    public Addition(int msgId, DataInputStream in){
+        super(msgId);
+        code = 1;
     }
     /**
      * Return the Addition in a human readable form
@@ -39,7 +47,7 @@ public class Addition extends TeFubMessage{
      */
     @Override
     public String toString(){
-        return null;
+        return super.toString() + myFoodItem.toString();
     }
 
     /**
@@ -47,7 +55,7 @@ public class Addition extends TeFubMessage{
      * @return name
      */
     public final String getName(){
-        return null;
+        return myFoodItem.getName();
     }
 
     /**
@@ -56,7 +64,11 @@ public class Addition extends TeFubMessage{
      * @throws IllegalArgumentException if validation fails
      */
     public void setName(String name) throws IllegalArgumentException{
-
+        try {
+            myFoodItem.setName(name);
+        } catch (FoodNetworkException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     /**
@@ -73,7 +85,11 @@ public class Addition extends TeFubMessage{
      * @throws IllegalArgumentException if validation fails
      */
     public void setMealType(MealType mealType) throws IllegalArgumentException{
-
+        try {
+            myFoodItem.setMealType(mealType);
+        } catch (FoodNetworkException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     /**
@@ -81,7 +97,7 @@ public class Addition extends TeFubMessage{
      * @return calories
      */
     public final long getCaloires(){
-        return 0;
+        return myFoodItem.getCalories();
     }
 
     /**
@@ -90,7 +106,11 @@ public class Addition extends TeFubMessage{
      * @throws IllegalArgumentException if validation fails
      */
     public final void setCalories(long calories) throws IllegalArgumentException{
-
+        try {
+            myFoodItem.setCalories(calories);
+        } catch (FoodNetworkException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
     /**
      * The hash function for Addition class

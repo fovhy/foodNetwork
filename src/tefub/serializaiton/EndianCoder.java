@@ -8,10 +8,14 @@
 package tefub.serializaiton;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+
 /**
  * A coder for encode and decode little endian byte array.
  */
-public class LittleEndianCoder {
+public class EndianCoder {
     private final static int SSIZE = Short.SIZE / Byte.SIZE; // 16 bit
     private final static int ISIZE = Integer.SIZE / Byte.SIZE; // 32 bit
     private final static int BYTEMASK = 0xFF;
@@ -42,7 +46,7 @@ public class LittleEndianCoder {
      * @param offset the offset
      * @return  unsigned short
      */
-    public int decodeShort(byte[] val, int offset){
+    public static int decodeShort(byte[] val, int offset){
         return (int)decodeBytes(val, offset, SSIZE);
     }
 
@@ -53,7 +57,7 @@ public class LittleEndianCoder {
      * @param offset the offset
      * @return the 32 bit value that contains a Inet4Address
      */
-    public int decodeAddress(byte[] val, int offset){
+    public static int decodeAddress(byte[] val, int offset){
         return (int)decodeBytes(val, offset, ISIZE);
     }
 
@@ -85,4 +89,28 @@ public class LittleEndianCoder {
             i++;
         }
     }
+    /**
+     * Concat two byte stream
+     * @param first the first byte array to combine
+     * @param second the second byte array to combine
+     * @return the combined stream
+     * @throws IOException if the write to byteStream fails
+     */
+    public static byte[] concat(byte[] first, byte[] second) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        outputStream.write(first);
+        outputStream.write(second);
+        return outputStream.toByteArray( );
+    }
+    public static byte[] intToBytesBigEndian(int i){
+        ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE);
+        bb.putInt(i);
+        return bb.array();
+    }
+    public static byte[] shortToBytesBigEndian(short i){
+        ByteBuffer bb = ByteBuffer.allocate(Short.SIZE);
+        bb.putShort(i);
+        return bb.array();
+    }
+
 }

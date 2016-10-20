@@ -9,7 +9,8 @@ package tefub.serializaiton.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import tefub.serializaiton.LittleEndianCoder;
+import tefub.serializaiton.EndianCoder;
+import tefub.serializaiton.Register;
 import tefub.serializaiton.TeFubMessage;
 
 import java.io.IOException;
@@ -38,8 +39,8 @@ public class RegisterTest extends TeFubMessageTest{
         byte[] portBytes = new byte[]{123 & 0xFF, 0}; // in little Endian order
         byte[] testAddressLittleEndian1 = testAddress1.getAddress();  // get the big endian address byte array
         byte[] testAddressLittleEndian2 = testAddress2.getAddress();
-        LittleEndianCoder.reverse(testAddressLittleEndian1);      // turn them into little endian
-        LittleEndianCoder.reverse(testAddressLittleEndian2);      // turn them into little endian
+        EndianCoder.reverse(testAddressLittleEndian1);      // turn them into little endian
+        EndianCoder.reverse(testAddressLittleEndian2);      // turn them into little endian
         Object[][] subData = new Object[][]{
                 {concat(testAddressLittleEndian1, portBytes), testAddress1, port},
                 {concat(testAddressLittleEndian2, portBytes), testAddress2, port},
@@ -74,6 +75,6 @@ public class RegisterTest extends TeFubMessageTest{
 
     @Override
     public TeFubMessage getDeserializeMessage() throws IllegalArgumentException, IOException {
-        return null;
+        return new Register(expMsgId, expAddress, expPort);
     }
 }

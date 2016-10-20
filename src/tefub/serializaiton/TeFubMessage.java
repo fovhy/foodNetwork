@@ -8,8 +8,7 @@
 package tefub.serializaiton;
 
 
-import java.io.IOException;
-import java.util.IllegalFormatCodePointException;
+import java.io.*;
 
 /**
  * The abstract base class for TeFubMessage group. It has a message ID, and a code that represents for
@@ -18,7 +17,16 @@ import java.util.IllegalFormatCodePointException;
 public abstract class TeFubMessage {
     protected int msgID;
     protected int code;
-    protected final int currentVersion = 3;
+    protected final static int currentVersion = 3;
+    private final static int HEADER_SIZE = 2;
+    public static final int VERSION = 0x3000;
+    private static final int VERSION_SHIFT = 12;
+    public static final int VERSION_MASK =  0xF000;
+
+    private static final int CODE_MASK = 0xF00;
+    private static final int CODE_SHIFT = 8;
+
+    private static final int ID_MASK = 0xFF;
     /**
      * Construct a TeFubMessage given a TeFubMessage ID
      * @param msgID the message ID to set
@@ -35,15 +43,54 @@ public abstract class TeFubMessage {
      * @throws IOException if I/O problem including packet too long/short (EOFException)
      */
     public static TeFubMessage decode (byte[] pkt) throws IllegalArgumentException, IOException{
-        return null;
+        if(pkt.length < HEADER_SIZE){
+            throw new IOException("Runt message");
+        }
+        ByteArrayInputStream bs = new ByteArrayInputStream(pkt);
+        DataInputStream in = new DataInputStream(bs);
+        int header = in.readShort();
+        if((header & VERSION_MASK) != VERSION){
+            throw new IllegalArgumentException("Bad Version number: " +
+                    ((header & VERSION_MASK) >> VERSION_SHIFT));
+        }
+        int readCode = (header & CODE_MASK) >> CODE_SHIFT;
+        int messageID = (header & ID_MASK);
+        switch(readCode){
+            case 0:
+                return new Register(messageID, in);
+            case 1:
+                return new Addition(messageID, in);
+            case 2:
+                return new Deregister(messageID, in);
+            case 3:
+                return new Error(messageID, bs);
+            case 4:
+                return new ACK(messageID);
+            default:
+                throw new IllegalArgumentException("Code: " + readCode+ " does not exist.");
+        }
     }
 
     /**
      * Serialize message
      * @return serialized message bytes
      */
-    public byte[] encode(){
-        return null;
+    public byte[] encode() throws IOException {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(byteStream);
+        byte versionAndCode = (byte) currentVersion;
+        byte byteCode = (byte)getCode();
+        versionAndCode = (byte) (versionAndCode << 4);
+        versionAndCode |= byteCode;
+        try {
+            out.writeByte(versionAndCode);
+            out.writeByte(getMsgId());
+        } catch (IOException e) {
+            // will not happen
+        }
+        out.write(getData());
+        out.flush();
+        return byteStream.toByteArray();
     }
 
     /**
@@ -112,6 +159,6 @@ public abstract class TeFubMessage {
      * Get the data of message
      * @return the data of the TeFub Message
      */
-    public abstract byte[] getData();
+    public abstract byte[] getData() throws IOException;
 
 }

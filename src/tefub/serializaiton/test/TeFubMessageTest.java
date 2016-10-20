@@ -45,10 +45,6 @@ public abstract class TeFubMessageTest {
         // 5 codes
         ArrayList<String> codeNumbers = new ArrayList<String>();
         codeNumbers.add("0000");
-        codeNumbers.add("0001");
-        codeNumbers.add("0010");
-        codeNumbers.add("0011");
-        codeNumbers.add("0100");
 
         String MsgId = "00000000";
         for(String codeNumber : codeNumbers){

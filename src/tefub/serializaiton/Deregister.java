@@ -7,6 +7,9 @@
  ************************************************/
 package tefub.serializaiton;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
@@ -14,57 +17,58 @@ import java.net.InetSocketAddress;
  * The Deregister TeFubMessage. It stores the information of what to deregister.
  */
 public class Deregister extends TeFubMessage {
+   private AddressHelper addressHelper;
     /**
-     * Construct a Deregister message
-     *
-     * @param msgId   message ID
-     * @param address address of deregister
-     * @param port    port to deregister
+     * @param msgId message ID
+     * @param address address to register
+     * @param port port to register
      * @throws IllegalArgumentException if validation fails
      */
-    public Deregister(int msgId,
-                      InetAddress address,
-                      int port)
-            throws IllegalArgumentException {
+    public Deregister(int msgId, Inet4Address address, int port) throws IllegalArgumentException, IOException {
         super(msgId);
+        code = 0;
+        addressHelper = new AddressHelper();
+        setAddress(address);
+        setPort(port);
+    }
+    public Deregister(int msgId, DataInputStream in) throws IOException {
+        super(msgId);
+        code = 0;
+        addressHelper = new AddressHelper(in);
     }
 
     /**
-     * Get deregister address
-     *
-     * @return deregsiter address
+     * Get the address to Deregister
+     * @return address to Deregister
      */
-    public InetAddress getAddress() {
-        return null;
+    public Inet4Address getAddress(){
+        return addressHelper.getAdress();
     }
 
     /**
-     * Set the address to deregister
-     *
-     * @param address the address to deregister
+     * Set Deregister address
+     * @param address Deregister address
      * @throws IllegalArgumentException if validation fails (e.g. null, multicast)
      */
-    public void setAddress(InetAddress address) throws IllegalArgumentException {
-
+    public void setAddress(Inet4Address address) throws IllegalArgumentException{
+        addressHelper.setAddress(address);
     }
 
     /**
-     * Get deregister port
-     *
-     * @return deregister port
+     * Get port to Deregister
+     * @return port to Deregister
      */
-    public int getPort() {
-        return 0;
+    public int getPort(){
+        return addressHelper.getPort();
     }
 
     /**
-     * Set the port to deregister
-     *
-     * @param port deregister port
-     * @throws IllegalArgumentException if the port is out of range
+     * Set port to Deregister
+     * @param port port to Deregister
+     * @throws IllegalArgumentException if port is out of range
      */
-    public void setPort(int port) throws IllegalArgumentException {
-
+    public void setPort(int port) throws IllegalArgumentException{
+        addressHelper.setPort(port);
     }
 
     /**
@@ -72,15 +76,16 @@ public class Deregister extends TeFubMessage {
      * @return socket address
      */
     public InetSocketAddress getSocketAddress(){
-        return null;
+        return new InetSocketAddress(getAddress(), getPort());
     }
     /**
      * Get the data of message
      * @return the data of the TeFub Message
      */
-    public byte[] getData(){
-        return null;
+    public byte[] getData() throws IOException {
+       return addressHelper.getData();
     }
+
 
 }
 

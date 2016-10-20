@@ -7,6 +7,8 @@
  ************************************************/
 package tefub.serializaiton;
 
+import java.io.ByteArrayInputStream;
+
 /**
  * Error message of TeFubMessage. It simply stores an ErrorMessage.
  */
@@ -19,6 +21,11 @@ public class Error extends TeFubMessage{
      */
     public Error(int msgId, String errorMessage) throws IllegalArgumentException{
         super(msgId);
+        code = 3;
+    }
+    public Error(int msgId, ByteArrayInputStream in){
+        super(msgId);
+        code = 3;
     }
 
     /**

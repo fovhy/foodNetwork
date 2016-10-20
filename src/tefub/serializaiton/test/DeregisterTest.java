@@ -58,4 +58,5 @@ public class DeregisterTest extends TeFubMessageTest{
     public TeFubMessage getDeserializeMessage() throws IllegalArgumentException, IOException {
         return null;
     }
+
 }
