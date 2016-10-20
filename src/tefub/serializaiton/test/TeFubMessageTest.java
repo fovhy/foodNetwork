@@ -35,9 +35,10 @@ public abstract class TeFubMessageTest {
     /**
      * The data for parameterized test
      * @return the data that will be used to run the test
+     * @throws IOException if it fails to copy data in sub classes
      */
     @Parameterized.Parameters
-    public static Collection<Object[]> data() throws UnknownHostException, IOException {
+    public static Collection<Object[]> data() throws IOException {
         ArrayList testList = new ArrayList();
         // current version number
         String versionNumber = "0011";

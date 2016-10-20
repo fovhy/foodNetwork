@@ -9,19 +9,23 @@ package tefub.serializaiton;
 
 
 import java.io.IOException;
+import java.util.IllegalFormatCodePointException;
 
 /**
  * The abstract base class for TeFubMessage group. It has a message ID, and a code that represents for
  * different type of TeFubMessage.
  */
 public abstract class TeFubMessage {
+    protected int msgID;
+    protected int code;
+    protected final int currentVersion = 3;
     /**
      * Construct a TeFubMessage given a TeFubMessage ID
      * @param msgID the message ID to set
      * @throws IllegalArgumentException if messageID is out of range
      */
     public TeFubMessage(int msgID) throws IllegalArgumentException{
-
+        setMsgId(msgID);
     }
 
     /**
@@ -48,16 +52,26 @@ public abstract class TeFubMessage {
      */
     @Override
     public String toString(){
-        return null;
+        String temp = "";
+        temp = temp + "Current Version: " + currentVersion + "\n";
+        temp = temp + "Code: " + code + "\n";
+        temp = temp + "Message ID: " + msgID + "\n";
+        return temp;
     }
 
     /**
      * Set the Msg ID
-     * @param mesgId message ID
+     * @param msgId message ID
      * @throws IllegalArgumentException if the message ID is out of range
      */
-    public void setMsgId(int mesgId) throws IllegalArgumentException{
-
+    public void setMsgId(int msgId) throws IllegalArgumentException{
+        if(msgID < 0){
+            throw new IllegalArgumentException("Negative message ID");
+        }
+        if(msgID > 255){
+            throw new IllegalArgumentException("Message ID greater than 255 cannot be contained in 8 bit");
+        }
+        this.msgID = msgId;
     }
 
     /**
@@ -65,7 +79,7 @@ public abstract class TeFubMessage {
      * @return message ID
      */
     public int getMsgId(){
-        return 0;
+        return msgID;
     }
 
     /**
@@ -73,7 +87,7 @@ public abstract class TeFubMessage {
      * @return message Code
      */
     public int getCode(){
-        return 0;
+        return code;
     }
 
     /**
@@ -98,8 +112,6 @@ public abstract class TeFubMessage {
      * Get the data of message
      * @return the data of the TeFub Message
      */
-    public byte[] getData(){
-        return null;
-    }
+    public abstract byte[] getData();
 
 }

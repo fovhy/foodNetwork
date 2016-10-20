@@ -9,13 +9,12 @@ package tefub.serializaiton.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import tefub.serializaiton.LittleEndianCoder;
 import tefub.serializaiton.TeFubMessage;
 
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,10 +35,14 @@ public class RegisterTest extends TeFubMessageTest{
         InetAddress testAddress1 = Inet4Address.getByName("www.google.com");
         InetAddress testAddress2 = Inet4Address.getByName("www.youtube.com");
         int port = 123;
-        byte[] portBytes = new byte[]{0 , 123 & 0xFF};
+        byte[] portBytes = new byte[]{123 & 0xFF, 0}; // in little Endian order
+        byte[] testAddressLittleEndian1 = testAddress1.getAddress();  // get the big endian address byte array
+        byte[] testAddressLittleEndian2 = testAddress2.getAddress();
+        LittleEndianCoder.reverse(testAddressLittleEndian1);      // turn them into little endian
+        LittleEndianCoder.reverse(testAddressLittleEndian2);      // turn them into little endian
         Object[][] subData = new Object[][]{
-                {concat(testAddress1.getAddress(), portBytes), testAddress1, port},
-                {concat(testAddress2.getAddress(), portBytes), testAddress2, port},
+                {concat(testAddressLittleEndian1, portBytes), testAddress1, port},
+                {concat(testAddressLittleEndian2, portBytes), testAddress2, port},
         };
         Iterator i = TeFubMessageTest.data().iterator();
         while(i.hasNext()){

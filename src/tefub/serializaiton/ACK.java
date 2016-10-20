@@ -20,4 +20,9 @@ public class ACK extends TeFubMessage {
     public ACK(int msgID) throws IllegalArgumentException {
         super(msgID);
     }
+
+    @Override
+    public byte[] getData() {
+        return null;
+    }
 }

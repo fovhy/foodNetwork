@@ -79,6 +79,7 @@ public class FoodItem {
         }
     }
 
+
     /**
      * encode the FoodItem object into a string, and hook the string to an MessageOutput object.
      *

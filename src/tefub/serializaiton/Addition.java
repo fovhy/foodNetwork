@@ -7,9 +7,12 @@
  ************************************************/
 package tefub.serializaiton;
 
+import foodnetwork.serialization.FoodItem;
+import foodnetwork.serialization.FoodNetworkException;
 import foodnetwork.serialization.MealType;
 
 public class Addition extends TeFubMessage{
+    private FoodItem myFoodItem;             // the food item for addition methods
     /**
      * Construct an Addition TeFubMessage
      * @param msgId message ID of the message
@@ -24,6 +27,11 @@ public class Addition extends TeFubMessage{
                     long calories)
             throws IllegalArgumentException{
         super(msgId);
+        try {
+            myFoodItem = new FoodItem(name, mealType, calories, "0");
+        } catch (FoodNetworkException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
     /**
      * Return the Addition in a human readable form
@@ -84,14 +92,6 @@ public class Addition extends TeFubMessage{
     public final void setCalories(long calories) throws IllegalArgumentException{
 
     }
-    /**
-     * Get Code of Addition
-     * @return message Code
-     */
-    public int getCode(){
-        return 0;
-    }
-
     /**
      * The hash function for Addition class
      * @return hash code
