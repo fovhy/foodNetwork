@@ -7,12 +7,15 @@
  ************************************************/
 package tefub.serialization;
 
-import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Error message of TeFubMessage. It simply stores an ErrorMessage.
  */
 public class Error extends TeFubMessage{
+    private String errorMessage;
     /**
      * Construct an Error Message
      * @param msgId message ID
@@ -23,9 +26,20 @@ public class Error extends TeFubMessage{
         super(msgId);
         code = 3;
     }
-    public Error(int msgId, ByteArrayInputStream in){
+
+    /**
+     * Constructor that uses a DataInputStream
+     * @param msgId message ID
+     * @param in DataInputStream to construct the error message
+     * @throws IOException if DataInputStream closes prematurely
+     */
+    public Error(int msgId, DataInputStream in) throws IOException {
         super(msgId);
         code = 3;
+        byte temp;
+        while((temp = in.readByte()) != -1){
+            errorMessage += (char)temp;
+        }
     }
 
     /**
@@ -34,7 +48,7 @@ public class Error extends TeFubMessage{
      * @throws IllegalArgumentException if validation fails (e.g. null or non-ASCII)
      */
     public void setErrorMessage(String errorMesage)throws IllegalArgumentException{
-
+        errorMessage = errorMesage;
     }
 
     /**
@@ -42,14 +56,15 @@ public class Error extends TeFubMessage{
      * @return error message
      */
     public String getErrorMessage() {
-        return null;
+        return errorMessage;
     }
+
     /**
      * Get the data of message
      * @return the data of the TeFub Message
      */
-    public byte[] getData(){
-        return null;
+    public byte[] getData() throws UnsupportedEncodingException {
+        return errorMessage.getBytes("ASCII");
     }
 
 }

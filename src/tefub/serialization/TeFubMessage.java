@@ -63,7 +63,7 @@ public abstract class TeFubMessage {
             case 2:
                 return new Deregister(messageID, in);
             case 3:
-                return new Error(messageID, bs);
+                return new Error(messageID, in);
             case 4:
                 return new ACK(messageID);
             default:
