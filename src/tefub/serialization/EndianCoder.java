@@ -11,6 +11,7 @@ package tefub.serialization;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 
 /**
  * A coder for encode and decode little endian byte array.
@@ -28,8 +29,8 @@ public class EndianCoder {
     }
     public static long decodeBytes(byte[] val, int offset, int size){
         long toReturn = 0;
-        for(int i = 0; i < size; i++){
-            toReturn = (toReturn >> Byte.SIZE) | ((long)val[offset + 1] & BYTEMASK);
+        for(int i = size - 1; i >= 0; i--){
+            toReturn = (toReturn << Byte.SIZE) | ((long)val[offset + i] & BYTEMASK);
         }
         return toReturn;
     }
@@ -38,6 +39,15 @@ public class EndianCoder {
     }
     public static int encode4Bytes(byte[] dst, int val, int offset){
         return encodeBytes(dst, val, offset, ISIZE);
+    }
+
+    /**
+     * Check if a String is purely in ASCII
+     * @param s the String to be checked
+     * @return whether it is completely in ascii or not
+     */
+    public static boolean checkForAscii(String s){
+        return Charset.forName("ASCII").newEncoder().canEncode(s);
     }
 
     /**

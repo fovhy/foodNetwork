@@ -12,6 +12,7 @@ import foodnetwork.serialization.FoodNetworkException;
 import foodnetwork.serialization.MealType;
 
 import java.io.DataInputStream;
+import java.io.IOException;
 
 public class Addition extends TeFubMessage{
     private FoodItem myFoodItem;             // the food item for addition methods
@@ -36,9 +37,11 @@ public class Addition extends TeFubMessage{
         }
         code = 1;
     }
-    public Addition(int msgId, DataInputStream in){
+    public Addition(int msgId, DataInputStream in) throws IOException {
         super(msgId);
         code = 1;
+        int length = in.readUnsignedByte();
+
     }
     /**
      * Return the Addition in a human readable form
@@ -151,6 +154,7 @@ public class Addition extends TeFubMessage{
      * Get the data of addition message
      * @return the data of the TeFub Message
      */
+    @Override
     public byte[] getData(){
         return null;
     }

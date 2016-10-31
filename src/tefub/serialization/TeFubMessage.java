@@ -8,7 +8,11 @@
 package tefub.serialization;
 
 
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+
 import java.io.*;
+import java.util.Arrays;
 
 /**
  * The abstract base class for TeFubMessage group. It has a message ID, and a code that represents for
@@ -46,7 +50,7 @@ public abstract class TeFubMessage {
         if(pkt.length < HEADER_SIZE){
             throw new IOException("Runt message");
         }
-        ByteArrayInputStream bs = new ByteArrayInputStream(pkt);
+        InputStream bs = new ByteArrayInputStream(pkt);
         DataInputStream in = new DataInputStream(bs);
         int header = in.readShort();
         if((header & VERSION_MASK) != VERSION){
@@ -65,7 +69,7 @@ public abstract class TeFubMessage {
             case 3:
                 return new Error(messageID, in);
             case 4:
-                return new ACK(messageID);
+                return new ACK(messageID, in);
             default:
                 throw new IllegalArgumentException("Code: " + readCode+ " does not exist.");
         }
@@ -76,25 +80,28 @@ public abstract class TeFubMessage {
      * @return serialized message bytes
      */
     public byte[] encode() {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        ByteOutputStream byteStream = new ByteOutputStream();
         DataOutputStream out = new DataOutputStream(byteStream);
         byte versionAndCode = (byte) currentVersion;
         byte byteCode = (byte)getCode();
         versionAndCode = (byte) (versionAndCode << 4);
         versionAndCode |= byteCode;
+        int count = 0;  // the offset for Bytearray
         try {
             out.writeByte(versionAndCode);
+            count += 1;
             out.writeByte(getMsgId());
+            count += 1;
         } catch (IOException e) {
             // will not happen
         }
         try {
             out.write(getData());
-            out.flush();
+            count += getData().length;
         }catch(IOException e){
             // it will not happen
         }
-        return byteStream.toByteArray();
+        return Arrays.copyOfRange(byteStream.getBytes(), 0, count);
     }
 
     /**
@@ -147,7 +154,7 @@ public abstract class TeFubMessage {
      */
     @Override
     public int hashCode(){
-        return 0;
+            return (msgID * 13) + (code * 113);
     }
 
     /**
@@ -167,10 +174,15 @@ public abstract class TeFubMessage {
         }
         boolean results = false;
         TeFubMessage testObj = (TeFubMessage) obj;
-        if(this.hashCode()== testObj.hashCode() &&
-                this.getCode() == testObj.getCode() &&
-                this.getMsgId() == testObj.getMsgId()){
-            results = true;
+        try {
+            if(this.hashCode()== testObj.hashCode() &&
+                    this.getCode() == testObj.getCode() &&
+                    this.getMsgId() == testObj.getMsgId()&&
+                    Arrays.equals(this.getData(), testObj.getData())){
+                results = true;
+            }
+        } catch (IOException e) {
+            // won't happen for the ASCII encoding
         }
         return results;
     }

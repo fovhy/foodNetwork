@@ -43,7 +43,7 @@ public class Register extends TeFubMessage{
      * @return address to register
      */
     public Inet4Address getAddress(){
-        return addressHelper.getAdress();
+        return addressHelper.getAddress();
     }
 
     /**
@@ -83,6 +83,7 @@ public class Register extends TeFubMessage{
      * Get the data of message
      * @return the data of the TeFub Message
      */
+    @Override
     public byte[] getData() throws IOException {
        return addressHelper.getData();
     }

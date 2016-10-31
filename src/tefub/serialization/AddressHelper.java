@@ -25,15 +25,28 @@ public class AddressHelper {
 
     public AddressHelper(DataInputStream in) throws IOException {
         byte[] rawAddressBytes = new byte[ADDRESS_SIZE];
-        in.read(rawAddressBytes, 0, ADDRESS_SIZE);
+        if(in.read(rawAddressBytes, 0, ADDRESS_SIZE) < ADDRESS_SIZE){
+            throw new IOException("Too less of bytes");
+        }
+
         byte[] rawPortBytes = new byte[PORT_SIZE];
-        in.read(rawPortBytes, 0, PORT_SIZE);
-        EndianCoder.reverse(rawAddressBytes);
-        EndianCoder.reverse(rawPortBytes);
+        if(in.read(rawPortBytes, 0, PORT_SIZE) < PORT_SIZE){
+            throw new IOException("Too less of bytes");
+        }
+        if(in.available() > 0){ // if there is extra byre throw
+            throw new IOException("More bytes than expected");
+        }
+
+        EndianCoder.reverse(rawAddressBytes); // reverse bytes order from big endian to small endian
+        //EndianCoder.reverse(rawPortBytes);
+
         setAddress((Inet4Address)Inet4Address.getByAddress(rawAddressBytes));
         setPort(EndianCoder.decodeShort(rawPortBytes, 0));
     }
 
+    /**
+     * Default constructor, simply make setAddress
+     */
     public AddressHelper() {
     }
 
@@ -56,7 +69,7 @@ public class AddressHelper {
     public int getPort(){
         return port;
     }
-    public Inet4Address getAdress(){
+    public Inet4Address getAddress(){
         return adress;
     }
 
@@ -66,11 +79,14 @@ public class AddressHelper {
      * @throws IOException if the ByteBuffer fails to write out the data
      */
     public byte[] getData() throws IOException {
-        int addressInInt = ByteBuffer.wrap(getAdress().getAddress()).getInt();
+        int addressInInt = ByteBuffer.wrap(getAddress().getAddress()).getInt();
+
         ByteBuffer first = ByteBuffer.allocate(Integer.SIZE / Byte.SIZE);
         first.order(ByteOrder.LITTLE_ENDIAN).putInt(addressInInt);
+
         ByteBuffer second = ByteBuffer.allocate(Short.SIZE / Byte.SIZE);
         second.order(ByteOrder.LITTLE_ENDIAN).putShort((short) getPort());
+
         return EndianCoder.concat(first.array(), second.array());
     }
 }
