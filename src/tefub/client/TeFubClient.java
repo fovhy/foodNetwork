@@ -18,6 +18,9 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * The simple TeFubMessage UDP client. It simply serve as a reminder
+ */
 public class TeFubClient {
     private static DatagramSocket sock;
     private static InetAddress destAddress;
@@ -40,6 +43,14 @@ public class TeFubClient {
      */
     private static final int MAX_MESSAGE_SIZE = 4098;
     private static final int TIMER = 3000; // 3s timeout
+
+    /**
+     * The implementation of the two way handshake of the UDP packet, sort of..
+     * @param data the data you want to send out
+     * @param terminateMessage termination message when it fails to shake the hand
+     * @return the data received from the server
+     * @throws IOException if the data communication channel closes unexpectedly
+     */
     private static byte[] handShake(byte[] data, String terminateMessage) throws IOException {
         int failCounter = 0;
         DatagramPacket messageSent = new DatagramPacket(data, data.length);
@@ -64,6 +75,14 @@ public class TeFubClient {
             }
         }
     }
+
+    /**
+     * Deduct a teFubMessage from given bytes
+     * @param data given bytes
+     * @return a teFubFoodMessage
+     * @throws IOException if the data is too long or too short
+     * @throws IllegalArgumentException invalid field
+     */
     public static TeFubMessage getMessage(byte[] data) throws IOException , IllegalArgumentException{
         return TeFubMessage.decode(data);
     }
@@ -74,19 +93,35 @@ public class TeFubClient {
             throw new IllegalArgumentException("Null data packet");
         }
     }
+
+    /**
+     *
+     */
+    //TODO: implement shutdown
     public static void shutDown(){
 
     }
+
+    /**
+     * Start up the connection between client and server
+     * @throws IOException if the communication channel closes unexpectedly
+     */
     public static void startup() throws IOException {
         int MsgId = genRandomMessageID();
         Register registerMessage = new Register(MsgId, (Inet4Address) localAddress, localPort);
         byte[] data = registerMessage.encode();
         byte[] receivedData = handShake(data, "Unable to register");
-        TeFubMessage receivedMessage = getMessage(receivedData);
+        TeFubMessage receivedMessage;
+        //TODO: here it might throw an expcetion
         receivedMessage = getMessage(receivedData);
         processACKTeFubMessage(receivedMessage, MsgId);
         //TODO: might want loop back to processACKTeFubMessage again
     }
+
+    /**
+     * Process the teFubMessage normally, does not care about ACK
+     * @param message the message you want to process
+     */
     public static void processTeFubMessage(TeFubMessage message) {
         int code = message.getCode();
         switch(code){
@@ -101,6 +136,12 @@ public class TeFubClient {
                 System.err.println("Unexpected message type");
         }
     }
+
+    /**
+     * Process the ACK message in the startup and shutdown process
+     * @param message the message you want to check
+     * @param expectedID the expected messageID for the ACK message
+     */
     public static void processACKTeFubMessage(TeFubMessage message, int expectedID){
         if(message.getCode() != TeFubMessage.ACK){
             processTeFubMessage(message);
@@ -111,6 +152,11 @@ public class TeFubClient {
             }
         }
     }
+
+    /**
+     * Terminate the connection, no hand shake
+     * @param terminateMessage the message you want to print out
+     */
     public static void terminate(String terminateMessage){
         sock.close();
         quit = true;
@@ -118,10 +164,19 @@ public class TeFubClient {
             System.err.println(terminateMessage);
         }
     }
+
+    /**
+     * THe main method for the client
+     * @param args destination address, local IP, local port
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         if(args.length != 2){
-            throw new IllegalArgumentException("Parameters(s) : <Destination> + <Port>" +
-                    " + <Client local IP>");
+            throw new IllegalArgumentException(
+                    "Parameters(s) : <Destination> " +
+                    "<Client local IP>" +
+                    "<Port>"
+            );
         }
         destAddress = InetAddress.getByName(args[0]);
         desPort = Integer.parseInt(args[1]);
