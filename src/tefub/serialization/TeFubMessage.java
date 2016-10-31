@@ -8,10 +8,11 @@
 package tefub.serialization;
 
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+
+
 
 import java.io.*;
+import java.lang.*;
 import java.util.Arrays;
 
 /**
@@ -80,7 +81,7 @@ public abstract class TeFubMessage {
      * @return serialized message bytes
      */
     public byte[] encode() {
-        ByteOutputStream byteStream = new ByteOutputStream();
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(byteStream);
         byte versionAndCode = (byte) currentVersion;
         byte byteCode = (byte)getCode();
@@ -101,7 +102,7 @@ public abstract class TeFubMessage {
         }catch(IOException e){
             // it will not happen
         }
-        return Arrays.copyOfRange(byteStream.getBytes(), 0, count);
+        return Arrays.copyOfRange(byteStream.toByteArray(), 0, count);
     }
 
     /**

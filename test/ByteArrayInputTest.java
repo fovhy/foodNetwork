@@ -1,8 +1,5 @@
 import tefub.serialization.EndianCoder;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 public class ByteArrayInputTest {
     public static void main(String args[]) {
         byte[] test = new byte[]{1, 12};

@@ -78,7 +78,7 @@ public class RegisterTest extends TeFubMessageTest{
      * @param port port to test
      */
     public void verifyExpectedMessage(TeFubMessage teFubMessage, Inet4Address address, int port){
-        TeFubMessageTest.verifyBaseMessage(teFubMessage, this.expMsgId, expCode, TeFubMessage.class);
+        verifyBaseMessage(teFubMessage, this.expMsgId, expCode, TeFubMessage.class);
         assertEquals(expAddress, address);
         assertEquals(expPort, port);
     }
