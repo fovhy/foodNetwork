@@ -13,9 +13,11 @@ import foodnetwork.serialization.MealType;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 public class Addition extends TeFubMessage{
     private FoodItem myFoodItem;             // the food item for addition methods
+    private final long unsignedIntLimit = 4294967295L;
     /**
      * Construct an Addition TeFubMessage
      * @param msgId message ID of the message
@@ -30,18 +32,50 @@ public class Addition extends TeFubMessage{
                     long calories)
             throws IllegalArgumentException{
         super(msgId);
+        myFoodItem = new FoodItem();
         try {
-            myFoodItem = new FoodItem(name, mealType, calories, "0");
+            myFoodItem.setFat("0");
         } catch (FoodNetworkException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            // won't happen
         }
+        setName(name);
+        setMealType(mealType);
+        setCalories(calories);
         code = 1;
     }
     public Addition(int msgId, DataInputStream in) throws IOException {
         super(msgId);
         code = 1;
         int length = in.readUnsignedByte();
-
+        myFoodItem = new FoodItem();
+        String name = ""; // init a name place holder
+        for(int i = 0; i < length; i++){
+            if(in.available() > 0){
+                name += (char)in.readByte();
+            }else{
+                throw new IOException("Not enough bytes for name");
+            }
+        }
+        setName(name);
+        byte mealTypeCode = in.readByte();
+        try {
+            setMealType(MealType.getMealType((char) mealTypeCode));
+        } catch (FoodNetworkException e) {
+            throw new IllegalArgumentException("Wrong MealType code");
+        }
+        if(in.readByte() != 0){
+            throw new IllegalArgumentException("No padding 0");
+        }
+        int ISIZE = Integer.SIZE/Byte.SIZE;
+        byte[] caloriesByteArray = new byte[ISIZE];    // 4 bytes of raw data
+        if(in.read(caloriesByteArray, 0, ISIZE) < ISIZE){
+            throw new IOException("Insufficient bytes for calories");
+        }
+        long calories = EndianCoder.decodeUnsignedInt(caloriesByteArray, 0);
+        setCalories(calories);
+        if(in.available() > 0){
+            throw new IOException("More bytes than expected");
+        }
     }
     /**
      * Return the Addition in a human readable form
@@ -66,10 +100,18 @@ public class Addition extends TeFubMessage{
      * @throws IllegalArgumentException if validation fails
      */
     public void setName(String name) throws IllegalArgumentException{
-        try {
-            myFoodItem.setName(name);
-        } catch (FoodNetworkException e) {
-            throw new IllegalArgumentException(e.getMessage());
+        if(name != null) {
+            try {
+                if (EndianCoder.checkForAscii(name)) {
+                    myFoodItem.setName(name);
+                } else {
+                    throw new IllegalArgumentException("Name not in ASCII format");
+                }
+            } catch (FoodNetworkException e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
+        }else{
+            throw new IllegalArgumentException("Null name");
         }
     }
 
@@ -78,7 +120,7 @@ public class Addition extends TeFubMessage{
      * @return meal type
      */
     public final MealType getMealType(){
-        return null;
+        return myFoodItem.getMealType();
     }
 
     /**
@@ -98,7 +140,7 @@ public class Addition extends TeFubMessage{
      * Get the calories of the foodItem
      * @return calories
      */
-    public final long getCaloires(){
+    public final long getCalories(){
         return myFoodItem.getCalories();
     }
 
@@ -108,6 +150,9 @@ public class Addition extends TeFubMessage{
      * @throws IllegalArgumentException if validation fails
      */
     public final void setCalories(long calories) throws IllegalArgumentException{
+        if(calories > unsignedIntLimit){
+            throw new IllegalArgumentException("Too big of calories");
+        }
         try {
             myFoodItem.setCalories(calories);
         } catch (FoodNetworkException e) {
@@ -120,7 +165,7 @@ public class Addition extends TeFubMessage{
      */
     @Override
     public int hashCode(){
-        return super.hashCode() * 7 + myFoodItem.hashCode() * 127;
+        return super.hashCode() * 7 + myFoodItem.hashCode() * 117;
     }
 
     /**
@@ -155,8 +200,25 @@ public class Addition extends TeFubMessage{
      * @return the data of the TeFub Message
      */
     @Override
-    public byte[] getData(){
-        return null;
+    public byte[] getData() throws IOException {
+        int length = getName().length();
+        byte[] lengthArray = new byte[1]; // one byte for length
+        lengthArray[0] = (byte)length;
+        byte[] NameArray = new byte[length];
+        try {
+            NameArray = getName().getBytes("ASCII");
+        } catch (UnsupportedEncodingException e) {
+            // won't happen
+        }
+        byte[] mealTypeArray = new byte[1];
+        mealTypeArray[0] = (byte)getMealType().getMealTypeCode();
+        byte[] paddingZeros = new byte[]{0};
+        byte[] caloriesBytes = new byte[4];
+        EndianCoder.encode4Bytes(caloriesBytes, (int)this.getCalories(), 0);
+        byte[] lengthAndName = EndianCoder.concat(lengthArray, NameArray);
+        byte[] mealTypeAndPaddingZero = EndianCoder.concat(mealTypeArray, paddingZeros);
+        return EndianCoder.concat(EndianCoder.concat(lengthAndName, mealTypeAndPaddingZero),
+                caloriesBytes);
     }
 
 }

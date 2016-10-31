@@ -55,6 +55,12 @@ public class FoodItem {
     }
 
     /**
+     * Default foodItem constructor that simply allocate memory for a foodItem
+     */
+    public FoodItem(){
+    }
+
+    /**
      * Construct a food item from an MessageInput object.
      *
      *

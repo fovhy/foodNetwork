@@ -10,7 +10,6 @@ package tefub.serialization;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 /**
@@ -23,8 +22,9 @@ public class EndianCoder {
 
     public static int encodeBytes(byte[] dst, int val, int offset, int size){
         for(int i = 0; i < size; i++){
-            dst[offset++] = (byte) (val << (size - i - 1) * Byte.SIZE);
+            dst[offset++] = (byte) (val >> (size - i - 1) * Byte.SIZE);
         }
+        EndianCoder.reverse(dst);
         return offset;
     }
     public static long decodeBytes(byte[] val, int offset, int size){
@@ -33,9 +33,6 @@ public class EndianCoder {
             toReturn = (toReturn << Byte.SIZE) | ((long)val[offset + i] & BYTEMASK);
         }
         return toReturn;
-    }
-    public static int encode2Bytes(byte[] dst, short val, int offset){
-        return encodeBytes(dst, val, offset, SSIZE);
     }
     public static int encode4Bytes(byte[] dst, int val, int offset){
         return encodeBytes(dst, val, offset, ISIZE);
@@ -61,22 +58,11 @@ public class EndianCoder {
     }
 
     /**
-     * Decode Inet4Address in little endian format. Since it is an internet address, unsigned does not really
-     * mean anything. Just store it in a 32 bit int.
-     * @param val the byte array to decode
-     * @param offset the offset
-     * @return the 32 bit value that contains a Inet4Address
-     */
-    public static int decodeAddress(byte[] val, int offset){
-        return (int)decodeBytes(val, offset, ISIZE);
-    }
-
-    /**
      * @param val decode an unsigned int
      * @param offset offset of the array
      * @return unsigned int in long form
      */
-    public long decodeUnsignedInt(byte[] val, int offset){
+    public static long decodeUnsignedInt(byte[] val, int offset){
         return decodeBytes(val, offset, ISIZE);
     }
 
@@ -112,15 +98,4 @@ public class EndianCoder {
         outputStream.write(second);
         return outputStream.toByteArray( );
     }
-    public static byte[] intToBytesBigEndian(int i){
-        ByteBuffer bb = ByteBuffer.allocate(Integer.SIZE);
-        bb.putInt(i);
-        return bb.array();
-    }
-    public static byte[] shortToBytesBigEndian(short i){
-        ByteBuffer bb = ByteBuffer.allocate(Short.SIZE);
-        bb.putShort(i);
-        return bb.array();
-    }
-
 }
