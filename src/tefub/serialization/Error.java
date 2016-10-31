@@ -28,7 +28,7 @@ public class Error extends TeFubMessage {
      */
     public Error(int msgId, String errorMessage) throws IllegalArgumentException {
         super(msgId);
-        code = 3;
+        code = ERROR;
         setErrorMessage(errorMessage);
     }
 
@@ -41,7 +41,7 @@ public class Error extends TeFubMessage {
      */
     public Error(int msgId, DataInputStream in) throws IOException {
         super(msgId);
-        code = 3;
+        code = DEREGISTER;
         byte temp;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int count = 0;
@@ -94,5 +94,14 @@ public class Error extends TeFubMessage {
         else {
             return errorMessage.getBytes("ASCII");
         }
+    }
+
+    /**
+     * Return error message
+     * @return error message
+     */
+    @Override
+    public String toString(){
+        return errorMessage;
     }
 }

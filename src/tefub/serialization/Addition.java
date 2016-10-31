@@ -41,11 +41,11 @@ public class Addition extends TeFubMessage{
         setName(name);
         setMealType(mealType);
         setCalories(calories);
-        code = 1;
+        code = ADDITION;
     }
     public Addition(int msgId, DataInputStream in) throws IOException {
         super(msgId);
-        code = 1;
+        code = ADDITION;
         int length = in.readUnsignedByte();
         myFoodItem = new FoodItem();
         String name = ""; // init a name place holder
@@ -76,14 +76,6 @@ public class Addition extends TeFubMessage{
         if(in.available() > 0){
             throw new IOException("More bytes than expected");
         }
-    }
-    /**
-     * Return the Addition in a human readable form
-     * @return human readable String
-     */
-    @Override
-    public String toString(){
-        return super.toString() + myFoodItem.toString();
     }
 
     /**
@@ -219,6 +211,19 @@ public class Addition extends TeFubMessage{
         byte[] mealTypeAndPaddingZero = EndianCoder.concat(mealTypeArray, paddingZeros);
         return EndianCoder.concat(EndianCoder.concat(lengthAndName, mealTypeAndPaddingZero),
                 caloriesBytes);
+    }
+
+    /**
+     * Addition message in a human readable form
+     * @return message in human readable form
+     */
+    @Override
+    public String toString(){
+        String temp = super.toString();
+        temp = "Name: " + temp + getName() + "\n";
+        temp = "MealType: " + temp + getMealType().getMealTypeCode() + "\n";
+        temp = "Calories: " + temp + getCalories() + "\n";
+        return temp;
     }
 
 }

@@ -32,6 +32,11 @@ public abstract class TeFubMessage {
     private static final int CODE_SHIFT = 8;
 
     private static final int ID_MASK = 0xFF;
+    public static final int REGISTER = 0;
+    public static final int ADDITION = 1;
+    public static final int DEREGISTER = 2;
+    public static final int ERROR = 3;
+    public static final int ACK = 4;
     /**
      * Construct a TeFubMessage given a TeFubMessage ID
      * @param msgID the message ID to set
@@ -61,15 +66,15 @@ public abstract class TeFubMessage {
         int readCode = (header & CODE_MASK) >> CODE_SHIFT;
         int messageID = (header & ID_MASK);
         switch(readCode){
-            case 0:
+            case REGISTER:
                 return new Register(messageID, in);
-            case 1:
+            case ADDITION:
                 return new Addition(messageID, in);
-            case 2:
+            case DEREGISTER:
                 return new Deregister(messageID, in);
-            case 3:
+            case ERROR:
                 return new Error(messageID, in);
-            case 4:
+            case ACK:
                 return new ACK(messageID, in);
             default:
                 throw new IllegalArgumentException("Code: " + readCode+ " does not exist.");

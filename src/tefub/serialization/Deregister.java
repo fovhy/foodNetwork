@@ -26,14 +26,14 @@ public class Deregister extends TeFubMessage {
      */
     public Deregister(int msgId, Inet4Address address, int port) throws IllegalArgumentException, IOException {
         super(msgId);
-        code = 2;
+        code = DEREGISTER;
         addressHelper = new AddressHelper();
         setAddress(address);
         setPort(port);
     }
     public Deregister(int msgId, DataInputStream in) throws IOException {
         super(msgId);
-        code = 2;
+        code = DEREGISTER;
         addressHelper = new AddressHelper(in);
     }
 

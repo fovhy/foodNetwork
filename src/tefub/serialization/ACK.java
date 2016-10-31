@@ -24,7 +24,7 @@ public class ACK extends TeFubMessage {
      */
     public ACK(int msgID, DataInputStream in) throws IllegalArgumentException, IOException {
         super(msgID);
-        code = 4;
+        code = ACK;
         try {
             in.readByte();
             throw new IOException("More bytes than expected");

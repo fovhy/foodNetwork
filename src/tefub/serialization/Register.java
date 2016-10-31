@@ -27,14 +27,14 @@ public class Register extends TeFubMessage{
      */
     public Register(int msgId, Inet4Address address, int port) throws IllegalArgumentException, IOException {
         super(msgId);
-        code = 0;
+        code = REGISTER;
         addressHelper = new AddressHelper();
         setAddress(address);
         setPort(port);
     }
     public Register(int msgId, DataInputStream in) throws IOException {
         super(msgId);
-        code = 0;
+        code = REGISTER;
         addressHelper = new AddressHelper(in);
     }
 
