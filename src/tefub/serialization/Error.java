@@ -39,7 +39,7 @@ public class Error extends TeFubMessage {
      */
     public Error(int msgId, DataInputStream in) throws IOException {
         super(msgId);
-        code = DEREGISTER;
+        code = ERROR;
         byte temp;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int count = 0;

@@ -8,13 +8,15 @@
 package tefub.server;
 
 import tefub.serialization.ACK;
+import tefub.serialization.Register;
 import tefub.serialization.TeFubMessage;
 import tefub.serialization.Error;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.net.*;
 import java.util.Arrays;
+
+import static java.lang.Thread.sleep;
 
 /**
  * For now it is just an echo server sort of
@@ -31,24 +33,40 @@ public class TeFubServer {
         while(true){
             byte[] buffer = new byte[1024];
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-            System.out.println("locked");
-            sock.receive(packet);
-            System.out.println("got something");
+            try {
+                sock.receive(packet);
+            }catch(SocketTimeoutException e){
+                continue;
+            }
             TeFubMessage message = TeFubMessage.decode(Arrays.copyOfRange(buffer, 0, packet.getLength()));
             TeFubMessage response;
-            DatagramPacket responsePacket;
             switch(message.getCode()){
                 case TeFubMessage.REGISTER:
                     response = new ACK(message.getMsgId());
-                    responsePacket = new DatagramPacket(response.encode(), response.encode().length);
-                    sock.send(responsePacket);
+                    System.out.println(response.encode());
+                    System.out.println(response.encode().length);
+                    packet.setData(response.encode());
+                    sock.send(packet);
                     break;
                 default:
                     response = new Error(message.getMsgId(), "Hola Hola");
-                    responsePacket = new DatagramPacket(response.encode(), response.encode().length);
-                    sock.send(responsePacket);
+                    packet.setData(response.encode());
+                    sock.send(packet);
             }
+            try {
+                sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            response = new Error(message.getMsgId(), "Hola");
+            packet.setData(response.encode());
+            sock.send(packet);
+
         }
+
+
+
+
 
     }
 }
