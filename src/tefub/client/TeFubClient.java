@@ -122,7 +122,8 @@ public class TeFubClient {
      */
     public static void shutDown() throws IOException {
         handShake(SHUTDOWN_FAIL, TeFubMessage.DEREGISTER);
-        terminate(""); // terminate without print anything to console
+        quit = true;
+        sock.close();
     }
     private final static String STARTUP_FAIL = "Unable to register"; // console prompt if register fails
     /**
@@ -234,6 +235,7 @@ public class TeFubClient {
         if(terminateMessage.length() > 0){
             System.err.println(terminateMessage);
         }
+        System.exit(1);
     }
 
     /**
@@ -251,19 +253,24 @@ public class TeFubClient {
         }
         destAddress = InetAddress.getByName(args[0]);
         desPort = Integer.parseInt(args[1]);
-        sock = new DatagramSocket();  // construct UDP socket
-        sock.connect(destAddress, desPort);
-        localAddress = InetAddress.getByName(args[2]);
-        localPort = sock.getLocalPort();
-        new InputWatcher().start();
-        startup();
-        while(!quit){
-            DatagramPacket messageReceived = new DatagramPacket(new byte[MAX_MESSAGE_SIZE], MAX_MESSAGE_SIZE);
-            sock.receive(messageReceived);
-            processTeFubMessage(getMessage(messageReceived));
-        }
-        if(!sock.isClosed()) {
-            shutDown();
+        try {
+            sock = new DatagramSocket();  // construct UDP socket
+            sock.connect(destAddress, desPort);
+            localAddress = InetAddress.getByName(args[2]);
+            localPort = sock.getLocalPort();
+            new InputWatcher().start();
+            startup();
+            while (!quit) {
+                DatagramPacket messageReceived = new DatagramPacket(new byte[MAX_MESSAGE_SIZE], MAX_MESSAGE_SIZE);
+                sock.receive(messageReceived);
+                processTeFubMessage(getMessage(messageReceived));
+            }
+            if (!sock.isClosed()) {
+                shutDown();
+            }
+        }catch (Exception e){
+            System.err.println("Unexpected Exception " + e.getMessage());
+            System.exit(1);
         }
     }
 
