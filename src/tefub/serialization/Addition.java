@@ -43,6 +43,13 @@ public class Addition extends TeFubMessage{
         setCalories(calories);
         code = ADDITION;
     }
+
+    /**
+     * Constructor with DataInputStream
+     * @param msgId message ID
+     * @param in DataInpuStream
+     * @throws IOException if the stream closes unexpectedly
+     */
     public Addition(int msgId, DataInputStream in) throws IOException {
         super(msgId);
         code = ADDITION;

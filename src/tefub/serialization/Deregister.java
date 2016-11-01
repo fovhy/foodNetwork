@@ -31,6 +31,13 @@ public class Deregister extends TeFubMessage {
         setAddress(address);
         setPort(port);
     }
+
+    /**
+     * Construct a Deregister using a DataInputStream
+     * @param msgId message ID
+     * @param in DataInputStream to be used
+     * @throws IOException if the stream closes unexpected
+     */
     public Deregister(int msgId, DataInputStream in) throws IOException {
         super(msgId);
         code = DEREGISTER;

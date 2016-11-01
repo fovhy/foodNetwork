@@ -23,6 +23,11 @@ public class AddressHelper {
     private final static int ADDRESS_SIZE = 4;
     private final static int PORT_SIZE = 2;
 
+    /**
+     * Construct an address helper with a DataInputStream
+     * @param in the stream to be used
+     * @throws IOException if the stream closes unexpectedly
+     */
     public AddressHelper(DataInputStream in) throws IOException {
         byte[] rawAddressBytes = new byte[ADDRESS_SIZE];
         if(in.read(rawAddressBytes, 0, ADDRESS_SIZE) < ADDRESS_SIZE){
@@ -50,6 +55,11 @@ public class AddressHelper {
     public AddressHelper() {
     }
 
+    /**
+     * Set the Address in the helper
+     * @param address address to be set
+     * @throws IllegalArgumentException if the address is null or multicast address
+     */
     public void setAddress(Inet4Address address) throws IllegalArgumentException{
         if(address == null){
             throw new IllegalArgumentException("Null address");
@@ -59,6 +69,12 @@ public class AddressHelper {
         }
         this.adress = address;
     }
+
+    /**
+     * Set the port
+     * @param port the port to be set
+     * @throws IllegalArgumentException if the port is out of range
+     */
     public void setPort(int port) throws IllegalArgumentException{
         if(port >= 0 && port <= MAX_PORT){
             this.port = port;
@@ -66,9 +82,19 @@ public class AddressHelper {
             throw new IllegalArgumentException("Port " + port + " out of range.");
         }
     }
+
+    /**
+     * Get the port
+     * @return port
+     */
     public int getPort(){
         return port;
     }
+
+    /**
+     * Get the IPv4 address
+     * @return IPv4 address
+     */
     public Inet4Address getAddress(){
         return adress;
     }

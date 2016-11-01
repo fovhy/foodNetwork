@@ -21,7 +21,6 @@ public class Error extends TeFubMessage {
 
     /**
      * Construct an Error Message
-     *
      * @param msgId        message ID
      * @param errorMessage error message
      * @throws IllegalArgumentException if validation fails
@@ -34,7 +33,6 @@ public class Error extends TeFubMessage {
 
     /**
      * Constructor that uses a DataInputStream
-     *
      * @param msgId message ID
      * @param in    DataInputStream to construct the error message
      * @throws IOException if DataInputStream closes prematurely
@@ -56,7 +54,6 @@ public class Error extends TeFubMessage {
 
     /**
      * Set the error message
-     *
      * @param errorMesage error message
      * @throws IllegalArgumentException if validation fails (e.g. null or non-ASCII)
      */
@@ -74,7 +71,6 @@ public class Error extends TeFubMessage {
 
     /**
      * Get error message
-     *
      * @return error message
      */
     public String getErrorMessage() {
@@ -83,7 +79,6 @@ public class Error extends TeFubMessage {
 
     /**
      * Get the data of message
-     *
      * @return the data of the TeFub Message
      */
     @Override

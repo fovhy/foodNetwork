@@ -21,6 +21,7 @@ public class ACK extends TeFubMessage {
      * @param msgID the message ID to set
      * @param in used to check if it is the end of the stream
      * @throws IllegalArgumentException if messageID is out of range
+     * @throws IOException if the stream closes unexpectedly
      */
     public ACK(int msgID, DataInputStream in) throws IllegalArgumentException, IOException {
         super(msgID);

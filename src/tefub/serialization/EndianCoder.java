@@ -20,6 +20,14 @@ public class EndianCoder {
     private final static int ISIZE = Integer.SIZE / Byte.SIZE; // 32 bit
     private final static int BYTEMASK = 0xFF;
 
+    /**
+     * Encode the data in small endian
+     * @param dst where to store the data
+     * @param val the value you want to transform
+     * @param offset how much you are into the array
+     * @param size size of the array
+     * @return new offset
+     */
     public static int encodeBytes(byte[] dst, int val, int offset, int size){
         for(int i = 0; i < size; i++){
             dst[offset++] = (byte) (val >> (size - i - 1) * Byte.SIZE);
@@ -27,6 +35,14 @@ public class EndianCoder {
         EndianCoder.reverse(dst);
         return offset;
     }
+
+    /**
+     * Decode the array in small endian
+     * @param val array to decode
+     * @param offset offset
+     * @param size how much you want to decode
+     * @return a long that holds the data
+     */
     public static long decodeBytes(byte[] val, int offset, int size){
         long toReturn = 0;
         for(int i = size - 1; i >= 0; i--){
@@ -34,6 +50,14 @@ public class EndianCoder {
         }
         return toReturn;
     }
+
+    /**
+     * Encode things in 4 bytes
+     * @param dst destination array
+     * @param val value to transform
+     * @param offset how deep you are in the array
+     * @return new offset
+     */
     public static int encode4Bytes(byte[] dst, int val, int offset){
         return encodeBytes(dst, val, offset, ISIZE);
     }

@@ -30,7 +30,8 @@ public class TeFubClient {
     private static int MAX_MSGID = 255;
 
     /**
-     * @return
+     * Get and random unsigned ID from 0 to 255
+     * @return messageID
      */
     public static int genRandomMessageID(){
         return (new Random().nextInt() % MAX_MSGID + MAX_MSGID) % MAX_MSGID;
@@ -39,7 +40,7 @@ public class TeFubClient {
     /**
      * Arbitrary UDP packet size from reading the server protocol. It should be big enough.
      */
-    private static final int MAX_MESSAGE_SIZE = 4098;
+    private static final int MAX_MESSAGE_SIZE = 65355;
     private static final int TIMER = 3000; // 3s timeout
 
     /**
@@ -53,17 +54,14 @@ public class TeFubClient {
                                     int expectedMsgID) throws IOException {
         DatagramPacket messageSent = new DatagramPacket(data, data.length);
         sock.send(messageSent);
-
         DatagramPacket messageReceived = new DatagramPacket(new byte[MAX_MESSAGE_SIZE], MAX_MESSAGE_SIZE);
         sock.setSoTimeout(TIMER);
-        while(true){
-            try{
-                sock.receive(messageReceived);
-                return Arrays.copyOfRange(messageReceived.getData(), 0, messageReceived.getLength());
-            }catch(SocketTimeoutException e) {
-                resendMessage(expectedMsgID, terminateMessage, data);
-                return null;         // time out twice leave the program
-            }
+        try{
+            sock.receive(messageReceived);
+            return Arrays.copyOfRange(messageReceived.getData(), 0, messageReceived.getLength());
+        }catch(SocketTimeoutException e) {
+            resendMessage(expectedMsgID, terminateMessage, data);
+            return null;         // time out twice leave the program
         }
     }
 
@@ -85,6 +83,12 @@ public class TeFubClient {
         }
     }
 
+    /**
+     * Handshake when startup and shutdown
+     * @param terminateMessage the message you want to print if handshake fails
+     * @param messageCode what kind of message you want to send to server
+     * @throws IOException if the socket closes unexpectedly
+     */
     public static void handShake(String terminateMessage, int messageCode) throws IOException {
         int MsgId = genRandomMessageID();
         TeFubMessage generalMessage = null;
@@ -113,7 +117,8 @@ public class TeFubClient {
     }
     private static String SHUTDOWN_FAIL = "Unable to deregister";
     /**
-     *
+     * Shut down the client. Will conduct handshake in the process
+     * @throws IOException if the socket closes unexpectedly
      */
     public static void shutDown() throws IOException {
         handShake(SHUTDOWN_FAIL, TeFubMessage.DEREGISTER);
@@ -128,9 +133,11 @@ public class TeFubClient {
         handShake(STARTUP_FAIL, TeFubMessage.REGISTER);
     }
     /**
-     * @param expectedMsgID
-     * @param terminate
-     * @param data
+     * Resend the message to the server
+     * @param expectedMsgID expected message ID
+     * @param terminate the message to console when it did not receive anything from server
+     * @param data the data you want to send to server
+     * @throws IOException if socket closes unexpectedly
      */
     public static void resendMessage(int expectedMsgID, String terminate, byte[] data) throws IOException {
         DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -140,19 +147,29 @@ public class TeFubClient {
         packet = new DatagramPacket(receivedData, MAX_MESSAGE_SIZE); // assign a new one to receive
         try {
             sock.receive(packet);
-            processACKTeFubMessage(TeFubMessage.decode(receivedData), expectedMsgID, terminate, false);
+            processACKTeFubMessage(TeFubMessage.decode(Arrays.copyOfRange(receivedData, 0, packet.getLength())),
+                    expectedMsgID, terminate, false);
         }catch (SocketTimeoutException e){
             terminate(terminate);
         }
     }
+
+    /**
+     * Simply wait for another time out period, not resending anything back to server
+     * @param expectedMsgID expected message ID
+     * @param terminate the terminate message from the server
+     * @throws IOException if socket closes unexpectedly
+     */
     public static void receiveAndTerminate(int expectedMsgID, String terminate) throws IOException {
         sock.setSoTimeout(TIMER);
         byte[] receivedData = new byte[MAX_MESSAGE_SIZE];
         DatagramPacket packet = new DatagramPacket(receivedData, MAX_MESSAGE_SIZE); // assign a new one to receive
         try{
             sock.receive(packet);
-            processACKTeFubMessage(TeFubMessage.decode(receivedData), expectedMsgID,
-                    terminate, false);
+            processACKTeFubMessage(TeFubMessage.decode(Arrays.copyOfRange(receivedData, 0, packet.getLength())),
+                    expectedMsgID,
+                    terminate,
+                    false);
         }catch(SocketTimeoutException e){
             terminate(terminate);
         }
@@ -181,6 +198,9 @@ public class TeFubClient {
      * Process the ACK message in the startup and shutdown process
      * @param message the message you want to check
      * @param expectedID the expected messageID for the ACK message
+     * @param terminate the error message you want to print to the console
+     * @param resend whether you want to resend the TeFubMessage
+     * @throws IOException if socket closes unexpectedly
      */
     public static void processACKTeFubMessage(TeFubMessage message, int expectedID,
                                               String terminate, boolean resend) throws IOException {
@@ -219,7 +239,7 @@ public class TeFubClient {
     /**
      * THe main method for the client
      * @param args destination address, local IP, local port
-     * @throws IOException
+     * @throws IOException if socket closes unexpectedly
      */
     public static void main(String[] args) throws IOException {
         if(args.length != 3){
@@ -246,7 +266,14 @@ public class TeFubClient {
             shutDown();
         }
     }
+
+    /**
+     * A simple class that monitors user input
+     */
     public static class InputWatcher extends Thread{
+        /**
+         * Simple run interface for the thread
+         */
         public void run(){
             Scanner scanner = new Scanner(System.in) ;
             String temp;
