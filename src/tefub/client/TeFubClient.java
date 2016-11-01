@@ -7,10 +7,7 @@
  ************************************************/
 package tefub.client;
 
-import tefub.serialization.ACK;
-import tefub.serialization.Addition;
-import tefub.serialization.Register;
-import tefub.serialization.TeFubMessage;
+import tefub.serialization.*;
 
 import java.io.IOException;
 import java.net.*;
@@ -31,12 +28,13 @@ public class TeFubClient {
 
 
     private static int MAX_MSGID = 255;
-    public static int genRandomMessageID(){
-        return new Random().nextInt() % MAX_MSGID;
-    }
 
-    private static void sendMessage(byte[] data) throws IOException {
-   }
+    /**
+     * @return
+     */
+    public static int genRandomMessageID(){
+        return (new Random().nextInt() % MAX_MSGID + MAX_MSGID) % MAX_MSGID;
+    }
 
     /**
      * Arbitrary UDP packet size from reading the server protocol. It should be big enough.
@@ -51,8 +49,8 @@ public class TeFubClient {
      * @return the data received from the server
      * @throws IOException if the data communication channel closes unexpectedly
      */
-    private static byte[] handShake(byte[] data, String terminateMessage) throws IOException {
-        int failCounter = 0;
+    private static byte[] firstStep(byte[] data, String terminateMessage,
+                                    int expectedMsgID) throws IOException {
         DatagramPacket messageSent = new DatagramPacket(data, data.length);
         sock.send(messageSent);
 
@@ -63,15 +61,8 @@ public class TeFubClient {
                 sock.receive(messageReceived);
                 return Arrays.copyOfRange(messageReceived.getData(), 0, messageReceived.getLength());
             }catch(SocketTimeoutException e) {
-                failCounter++;
-                switch (failCounter) {
-                    case 1:
-                        sock.send(messageSent); // resend message
-                        break;
-                    case 2:
-                        terminate(terminateMessage);
-                        return null;         // time out twice leave the program
-                }
+                resendMessage(expectedMsgID, terminateMessage, data);
+                return null;         // time out twice leave the program
             }
         }
     }
@@ -94,28 +85,77 @@ public class TeFubClient {
         }
     }
 
+    public static void handShake(String terminateMessage, int messageCode) throws IOException {
+        int MsgId = genRandomMessageID();
+        TeFubMessage generalMessage = null;
+        if(messageCode == TeFubMessage.REGISTER) {
+            generalMessage = new Register(MsgId, (Inet4Address) localAddress, localPort);
+        }else if(messageCode == TeFubMessage.DEREGISTER){
+            generalMessage = new Deregister(MsgId, (Inet4Address) localAddress, localPort);
+        }
+        if(generalMessage == null){
+            throw new IOException("Fail to generate TeFubMessage.");
+        }
+        byte[] data = generalMessage.encode();
+        byte[] receivedData = firstStep(data, terminateMessage, MsgId);
+        if(receivedData == null){
+            return;
+        }
+        TeFubMessage receivedMessage;
+        try {
+            receivedMessage = getMessage(receivedData);
+        }catch(IOException | IllegalArgumentException e){
+            System.err.println("Unable to parse message: " + new String(receivedData, "ASCII"));
+            resendMessage(MsgId, terminateMessage, data);
+            return;
+        }
+        processACKTeFubMessage(receivedMessage, MsgId, terminateMessage, true);
+    }
+    private static String SHUTDOWN_FAIL = "Unable to deregister";
     /**
      *
      */
-    //TODO: implement shutdown
-    public static void shutDown(){
-
+    public static void shutDown() throws IOException {
+        handShake(SHUTDOWN_FAIL, TeFubMessage.DEREGISTER);
+        terminate(""); // terminate without print anything to console
     }
-
+    private final static String STARTUP_FAIL = "Unable to register"; // console prompt if register fails
     /**
      * Start up the connection between client and server
      * @throws IOException if the communication channel closes unexpectedly
      */
     public static void startup() throws IOException {
-        int MsgId = genRandomMessageID();
-        Register registerMessage = new Register(MsgId, (Inet4Address) localAddress, localPort);
-        byte[] data = registerMessage.encode();
-        byte[] receivedData = handShake(data, "Unable to register");
-        TeFubMessage receivedMessage;
-        //TODO: here it might throw an expcetion
-        receivedMessage = getMessage(receivedData);
-        processACKTeFubMessage(receivedMessage, MsgId);
-        //TODO: might want loop back to processACKTeFubMessage again
+        handShake(STARTUP_FAIL, TeFubMessage.REGISTER);
+    }
+    /**
+     * @param expectedMsgID
+     * @param terminate
+     * @param data
+     */
+    public static void resendMessage(int expectedMsgID, String terminate, byte[] data) throws IOException {
+        DatagramPacket packet = new DatagramPacket(data, data.length);
+        sock.send(packet);
+        sock.setSoTimeout(TIMER);
+        byte[] receivedData = new byte[MAX_MESSAGE_SIZE];
+        packet = new DatagramPacket(receivedData, MAX_MESSAGE_SIZE); // assign a new one to receive
+        try {
+            sock.receive(packet);
+            processACKTeFubMessage(TeFubMessage.decode(receivedData), expectedMsgID, terminate, false);
+        }catch (SocketTimeoutException e){
+            terminate(terminate);
+        }
+    }
+    public static void receiveAndTerminate(int expectedMsgID, String terminate) throws IOException {
+        sock.setSoTimeout(TIMER);
+        byte[] receivedData = new byte[MAX_MESSAGE_SIZE];
+        DatagramPacket packet = new DatagramPacket(receivedData, MAX_MESSAGE_SIZE); // assign a new one to receive
+        try{
+            sock.receive(packet);
+            processACKTeFubMessage(TeFubMessage.decode(receivedData), expectedMsgID,
+                    terminate, false);
+        }catch(SocketTimeoutException e){
+            terminate(terminate);
+        }
     }
 
     /**
@@ -142,13 +182,24 @@ public class TeFubClient {
      * @param message the message you want to check
      * @param expectedID the expected messageID for the ACK message
      */
-    public static void processACKTeFubMessage(TeFubMessage message, int expectedID){
+    public static void processACKTeFubMessage(TeFubMessage message, int expectedID,
+                                              String terminate, boolean resend) throws IOException {
+        boolean correctACK = false;
         if(message.getCode() != TeFubMessage.ACK){
             processTeFubMessage(message);
         }else{
             if(message.getMsgId() != expectedID){
                 System.err.println("Unexpected MSG ID");
-                //TODO: do something
+            }else{
+                correctACK = true;
+                sock.setSoTimeout(0);
+            }
+        }
+        if(!correctACK){
+            if(resend){
+                resendMessage(expectedID, terminate, message.encode());
+            }else{
+                receiveAndTerminate(expectedID, terminate);
             }
         }
     }
@@ -171,28 +222,29 @@ public class TeFubClient {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-        if(args.length != 2){
+        if(args.length != 3){
             throw new IllegalArgumentException(
                     "Parameters(s) : <Destination> " +
-                    "<Client local IP>" +
-                    "<Port>"
+                            "<Client local IP>" +
+                            "<Port>"
             );
         }
         destAddress = InetAddress.getByName(args[0]);
         desPort = Integer.parseInt(args[1]);
         sock = new DatagramSocket();  // construct UDP socket
         sock.connect(destAddress, desPort);
-
         localAddress = InetAddress.getByName(args[2]);
         localPort = sock.getLocalPort();
-        new InputWatcher().run();
+        new InputWatcher().start();
         startup();
         while(!quit){
             DatagramPacket messageReceived = new DatagramPacket(new byte[MAX_MESSAGE_SIZE], MAX_MESSAGE_SIZE);
             sock.receive(messageReceived);
             processTeFubMessage(getMessage(messageReceived));
         }
-        shutDown();
+        if(!sock.isClosed()) {
+            shutDown();
+        }
     }
     public static class InputWatcher extends Thread{
         public void run(){
@@ -203,6 +255,7 @@ public class TeFubClient {
                 if("quit".equals(temp)){
                     TeFubClient.quit = true;
                 }else{
+                    // I don't know if I should print this out to the console, I think it makes senses to print it
                     System.out.println("Enter quit to end the connection");
                 }
             }
