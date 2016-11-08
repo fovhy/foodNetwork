@@ -15,7 +15,7 @@ import java.io.IOException;
  * encode and decode. The only abstract method is getFullRequest here.
  *
  */
-abstract public class FoodMessage {
+public abstract class FoodMessage {
     /**
      * when the message is being created
      */
@@ -82,7 +82,7 @@ abstract public class FoodMessage {
      */
     public final void setMessageTimestamp(long messageTimestamp) throws FoodNetworkException{
         if(messageTimestamp < 0){
-            throw new FoodNetworkException("negative messageTimestamp");
+            throw new FoodNetworkException("negative messageTimestamp: " + messageTimestamp);
         }
         timestamp = messageTimestamp;
     }

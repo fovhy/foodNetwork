@@ -34,6 +34,7 @@ public class Server {
         int threadPoolSize = Integer.parseInt(args[1]); // how big the thread pool is
         // create a socket to accept client connection requests
         ServerSocket servSock = new ServerSocket(echoServPort);
+        servSock.setReuseAddress(true);
         final Logger logger = Logger.getLogger("connections");
         Handler handler = new FileHandler("connection.log");  // store a local log file
         logger.addHandler(handler);                          // log to the log file
@@ -46,7 +47,7 @@ public class Server {
         teFubServer.start();
         try {
             // for some reason it cannot find the path
-            manager = new GFitFoodManager("foodnetwork-146101", "./cred.json");
+            manager = new GFitFoodManager("628103645757", "./cred.json");
         } catch (FoodNetworkException e) {
             logger.log(SEVERE, e.getMessage());
             System.exit(-1);

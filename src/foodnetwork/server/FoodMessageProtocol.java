@@ -11,10 +11,8 @@ import edu.baylor.googlefit.FoodManager;
 import foodnetwork.serialization.*;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
-import java.util.Collections;
+import java.net.SocketException;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -30,11 +28,12 @@ import static java.util.logging.Level.WARNING;
  *  To comply TeFubMessage server, this class now extends from Observable to form an observer pattern
  */
 public class FoodMessageProtocol extends Observable implements Runnable{
-    private static final String TIMELIMIT = "10000"; // Default time out time (ms)
+    private static final String TIMELIMIT = "50000"; // Default time out time (ms)
     private static final String TIMELIMITPROP = "Timelimit"; // property
     private static final String addFoodRequest = "ADD";
     private static final String getFoodRequest = "GET";
     private static final String intervalRequest = "INTERVAL";
+    private boolean proceed = true;
 
     private static int timelimit;
     private Socket clntSock;
@@ -68,46 +67,55 @@ public class FoodMessageProtocol extends Observable implements Runnable{
      * Now it sends notification to TeFubServer if the is a addFood event
      */
     public void  handleFoodNetworkClient(){
-        try{
-            logNewConnection();
-            int timeBoundMillis = timelimit;
-            clntSock.setSoTimeout(timeBoundMillis); // set up time out time
-            FoodMessage message = null;
+        logNewConnection();
+        int timeBoundMillis = timelimit;
+        FoodMessage message = null;
+        while(proceed) {
             try {
-                message = FoodMessage.decode(in);
-            }catch (FoodNetworkException e){
-                if(e.getMessage().contains("Version")){
-                    sendErrorMessage("Unexpected version: " + e.getMessage(), System.currentTimeMillis());
-                }else if(e.getMessage().contains("Unknown operation:")){
-                    sendErrorMessage(e.getMessage(), System.currentTimeMillis());
-                }else {
-                    sendErrorMessage("Unable to parse message", System.currentTimeMillis());
+                clntSock.setSoTimeout(timeBoundMillis); // set up time out time
+                try {
+                    while (message == null) {
+                        message = FoodMessage.decode(in);
+                    }
+                } catch (FoodNetworkException e) {
+                    if (e.getMessage().contains("Version")) {
+                        sendErrorMessage("Unexpected version: " + e.getMessage(), System.currentTimeMillis());
+                    } else if (e.getMessage().contains("Unknown operation:")) {
+                        sendErrorMessage(e.getMessage(), System.currentTimeMillis());
+                    } else {
+                        sendErrorMessage("Unable to parse message", System.currentTimeMillis());
+                        proceed = false;
+                    }
                 }
-            }
-            if(message != null) {
-                switch (message.getRequest()) {
-                    case addFoodRequest:
-                        addFoodToServer((AddFood) message);
-                        logReceiveMessage(message);
-                        setChanged();
-                        notifyObservers(message);
-                        break;
-                    case getFoodRequest:
-                        getListFromServer();
-                        logReceiveMessage(message);
-                        break;
-                    case intervalRequest:
-                        getIntervalListFromServer((Interval) message);
-                        logReceiveMessage(message);
-                        break;
-                    default:
-                        sendErrorMessage("Unexpected messageType: " + message.getRequest(),
-                                message.getMessageTimestamp());
-                        break;
+                if (message != null) {
+                    switch (message.getRequest()) {
+                        case addFoodRequest:
+                            addFoodToServer((AddFood) message);
+                            logReceiveMessage(message);
+                            setChanged();
+                            notifyObservers(message);
+                            break;
+                        case getFoodRequest:
+                            getListFromServer();
+                            logReceiveMessage(message);
+                            break;
+                        case intervalRequest:
+                            getIntervalListFromServer((Interval) message);
+                            logReceiveMessage(message);
+                            break;
+                        default:
+                            sendErrorMessage("Unexpected messageType: " + message.getRequest(),
+                                    message.getMessageTimestamp());
+                            break;
+                    }
+                    message = null;
                 }
+            } catch (SocketException e) {
+                proceed = false;
+            } catch (IOException | FoodNetworkException e) {
+                logger.log(WARNING, "Cannot process the message correctly :" + e.getMessage());
+                proceed = false;
             }
-        } catch (IOException | FoodNetworkException e) {
-            logger.log(WARNING, "Cannot process the message correctly :" + e.getMessage());
         }
     }
 
@@ -147,7 +155,14 @@ public class FoodMessageProtocol extends Observable implements Runnable{
      * @throws FoodNetworkException illegal list
      */
     public void getListFromServer() throws FoodNetworkException {
-        FoodList temp = new FoodList(System.currentTimeMillis(), foodManager.getLastModified());
+
+        System.out.println(System.currentTimeMillis());
+        FoodList temp;
+        if(foodManager.getLastModified() < 0){
+            temp = new FoodList(System.currentTimeMillis(), 0);
+        }else {
+            temp = new FoodList(System.currentTimeMillis(), foodManager.getLastModified());
+        }
         List<FoodItem> tempList = foodManager.getFoodItems();
         for(FoodItem i : tempList){
             temp.addFoodItem(i);

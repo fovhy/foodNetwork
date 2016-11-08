@@ -40,7 +40,7 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/test/foodnetwork/serialization/Prog1ResubTest.jar!/" />
+          <root url="jar://$MODULE_DIR$/test/Prog4Test.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -49,7 +49,7 @@
     <orderEntry type="module-library" scope="TEST">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/test/Prog4Test.jar!/" />
+          <root url="jar://$MODULE_DIR$/test/Prog1ResubTest.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -82,7 +82,7 @@ public class FoodList extends FoodMessage{
      */
     public final void setModifiedTimestamp(long modifiedTimestamp) throws FoodNetworkException{
         if(modifiedTimestamp < 0){
-            throw new FoodNetworkException("Negative modifiedTimestamp");
+            throw new FoodNetworkException("Negative modifiedTimestamp " + modifiedTimestamp);
         }
         this.modifiedTimestamp = modifiedTimestamp;
     }
