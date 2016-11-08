@@ -2,8 +2,8 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2016-10-18T18:09:02</date>
-  <millis>1476832142047</millis>
+  <date>2016-11-08T04:02:46</date>
+  <millis>1478599366469</millis>
   <sequence>0</sequence>
   <logger>connections</logger>
   <level>SEVERE</level>

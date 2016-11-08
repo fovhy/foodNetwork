@@ -39,9 +39,9 @@ public class TeFubClient {
     }
 
     /**
-     * Arbitrary UDP packet size from reading the server protocol. It should be big enough.
+     * Absolute biggest datagram size could be without minus the header
      */
-    private static final int MAX_MESSAGE_SIZE = 65355;
+    public static final int MAX_MESSAGE_SIZE = 65355;
     private static final int TIMER = 3000; // 3s timeout
 
     /**

@@ -16,16 +16,20 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
+import static java.util.logging.Level.WARNING;
 
 
 /**
  *  The protocol for Server to communicate with client. It has a 10 second timeout time for each
  *  established connections.
+ *  To comply TeFubMessage server, this class now extends from Observable to form an observer pattern
  */
-public class FoodMessageProtocol implements Runnable{
+public class FoodMessageProtocol extends Observable implements Runnable{
     private static final String TIMELIMIT = "10000"; // Default time out time (ms)
     private static final String TIMELIMITPROP = "Timelimit"; // property
     private static final String addFoodRequest = "ADD";
@@ -44,9 +48,11 @@ public class FoodMessageProtocol implements Runnable{
      * @param aClntSock the client socket
      * @param logger the logger used to log
      * @param foodManager the food manager used to connect with google
+     * @param observer the observer that will added to this protocol
      * @throws IOException if the server disconnected with client, or the IOStream simply fails
      */
-    public FoodMessageProtocol(Socket aClntSock, Logger logger, FoodManager foodManager) throws IOException {
+    public FoodMessageProtocol(Socket aClntSock, Logger logger,
+                               FoodManager foodManager, Observer observer) throws IOException {
         this.clntSock = aClntSock;
         timelimit = Integer.parseInt(System.getProperty(TIMELIMITPROP, TIMELIMIT));
         this.logger = logger;
@@ -54,17 +60,16 @@ public class FoodMessageProtocol implements Runnable{
         // hook the input and output to socket io
         this.in = new MessageInput(this.clntSock.getInputStream());
         this.out = new MessageOutput(this.clntSock.getOutputStream());
-        int recvMsgSize;    // size of received message
+        this.addObserver(observer);
    }
 
     /**
-     * The execute or run function for sending and receiving FoodMessage over a single thread
+     * The interface for runnable. Establish a unicast between client and server
+     * Now it sends notification to TeFubServer if the is a addFood event
      */
     public void  handleFoodNetworkClient(){
         try{
             logNewConnection();
-            int totalBytes = 0; // bytes received from client
-            long endTime = System.currentTimeMillis() + timelimit;  // when it shall end
             int timeBoundMillis = timelimit;
             clntSock.setSoTimeout(timeBoundMillis); // set up time out time
             FoodMessage message = null;
@@ -84,6 +89,8 @@ public class FoodMessageProtocol implements Runnable{
                     case addFoodRequest:
                         addFoodToServer((AddFood) message);
                         logReceiveMessage(message);
+                        setChanged();
+                        notifyObservers(message);
                         break;
                     case getFoodRequest:
                         getListFromServer();
@@ -99,15 +106,13 @@ public class FoodMessageProtocol implements Runnable{
                         break;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (FoodNetworkException e) {
-            e.printStackTrace();
+        } catch (IOException | FoodNetworkException e) {
+            logger.log(WARNING, "Cannot process the message correctly :" + e.getMessage());
         }
     }
 
     /**
-     * The interface for runnable. Establish a unicast between client and server
+     * The execute or run function for sending and receiving FoodMessage over a single thread
      */
     @Override
     public void run() {

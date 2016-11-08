@@ -18,6 +18,7 @@ import java.util.logging.Handler;
 import java.util.logging.Logger;
 import edu.baylor.googlefit.FoodManager;
 import edu.baylor.googlefit.GFitFoodManager;
+import tefub.server.TeFubServer;
 
 import static java.util.logging.Level.SEVERE;
 
@@ -39,6 +40,10 @@ public class Server {
 
         Executor service = Executors.newFixedThreadPool(threadPoolSize); // Dispatch service
         FoodManager manager = null;                          // create a manager that connects to google server
+        // run forever, accepting and spawning a thread for each connection and log them as well
+        TeFubServer teFubServer = new TeFubServer(echoServPort, logger);
+        // start the TeFubServer
+        teFubServer.start();
         try {
             // for some reason it cannot find the path
             manager = new GFitFoodManager("foodnetwork-146101", "./cred.json");
@@ -46,10 +51,9 @@ public class Server {
             logger.log(SEVERE, e.getMessage());
             System.exit(-1);
         }
-        // run forever, accepting and spawning a thread for each connection and log them as well
         while (true){
             Socket clntSock = servSock.accept();   // block waiting for connection
-            service.execute(new FoodMessageProtocol(clntSock, logger, manager)); // run threads on clients
+            service.execute(new FoodMessageProtocol(clntSock, logger, manager, teFubServer)); // run threads on clients
         }
     }
 }

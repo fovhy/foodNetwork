@@ -77,7 +77,7 @@ public abstract class TeFubMessage {
             case ACK:
                 return new ACK(messageID, in);
             default:
-                throw new IllegalArgumentException("Code: " + readCode+ " does not exist.");
+                throw new IllegalArgumentException("Unknown code: " + readCode);
         }
     }
 
