@@ -63,7 +63,8 @@ public class TeFubServer extends Thread implements Observer {
      * The process of waiting to receive, and respond to the recevied message
      */
     private void receiveAndRespond(){
-        TeFubMessage receviedMessage = receiveData();
+        TeFubMessage receivedMessage = receiveData();
+        respond(receivedMessage);
     }
 
     /**
@@ -160,6 +161,7 @@ public class TeFubServer extends Thread implements Observer {
         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
         try {
             sock.receive(packet);
+            sock.connect(packet.getSocketAddress());
         }catch(IOException e){
             logger.log(Level.WARNING, e.getMessage());
             return null;
@@ -192,7 +194,9 @@ public class TeFubServer extends Thread implements Observer {
             logger.log(Level.SEVERE, e.getMessage());
             System.exit(1);
         }
-        receiveAndRespond();
+        while(true) {
+            receiveAndRespond();
+        }
     }
 
     /**

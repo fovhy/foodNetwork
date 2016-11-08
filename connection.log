@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2016-11-08T07:20:28</date>
+  <millis>1478611228579</millis>
+  <sequence>0</sequence>
+  <logger>connections</logger>
+  <level>INFO</level>
+  <class>foodnetwork.server.FoodMessageProtocol</class>
+  <method>logNewConnection</method>
+  <thread>19</thread>
+  <message>Handling client: /127.0.0.1:14665-14665 with thread id pool-1-thread-1
+</message>
+</record>
+<record>
+  <date>2016-11-08T07:20:36</date>
+  <millis>1478611236242</millis>
+  <sequence>1</sequence>
+  <logger>connections</logger>
+  <level>INFO</level>
+  <class>foodnetwork.server.FoodMessageProtocol</class>
+  <method>logReceiveMessage</method>
+  <thread>19</thread>
+  <message>Receive from: /127.0.0.1:14665-14665 Version: +FN1.0
+MessageTime: 5
+Type: ADD
+Name: K
+MealType: D
+Calories: 3
+Fat: 4.7
+
+</message>
+</record>

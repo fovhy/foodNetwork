@@ -124,7 +124,9 @@ public class FoodMessageProtocol extends Observable implements Runnable{
      */
     @Override
     public void run() {
-        handleFoodNetworkClient();
+        while(proceed) {
+            handleFoodNetworkClient();
+        }
     }
 
     /**
