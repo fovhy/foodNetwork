@@ -19,6 +19,11 @@ import static java.lang.Thread.sleep;
 public class TeFubServer extends Thread{
     private int portNumber; // the port number for UDP socket, should be the same as the foodNetwork one
     private static DatagramSocket sock; // the server data socket
+
+    /**
+     * Construct a teFub Server with a port
+     * @param portNumber
+     */
     TeFubServer(int portNumber){
         this.portNumber = portNumber;
     }

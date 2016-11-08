@@ -268,6 +268,7 @@ public class TeFubClient {
         sock = new DatagramSocket();  // construct UDP socket
         sock.connect(destAddress, desPort);
         localAddress = InetAddress.getByName(args[2]);
+        System.out.println(destAddress);
         localPort = sock.getLocalPort();
         new InputWatcher().start();
         startup();
