@@ -66,10 +66,10 @@ public class TCPEchoServerAIO {
 
 	/**
 	 * Create completion handler for accept
-	 * 
+	 *
 	 * @param listenChannel channel listening for new clients
 	 * @param logger server logger
-	 * 
+	 *
 	 * @return completion handler
 	 */
 	public static CompletionHandler<AsynchronousSocketChannel, Void> makeAcceptCompletionHandler(
@@ -85,7 +85,7 @@ public class TCPEchoServerAIO {
 			public void completed(AsynchronousSocketChannel clntChan, Void v) {
 				logger.info("Handling accept for " + clntChan);
 				listenChannel.accept(null, this);
-				TCPAIODispatcher aioDispatcher = new TCPAIODispatcher(new EchoAIOHandler(), logger);
+				TCPAIODispatcher aioDispatcher = new TCPAIODispatcher(new FoodNetworkAIOHandler(), logger);
 				aioDispatcher.handleAccept(clntChan);
 			}
 
