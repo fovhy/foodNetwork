@@ -7,6 +7,10 @@
  ************************************************/
 
 package foodnetwork.server;
+import edu.baylor.googlefit.FoodManager;
+import edu.baylor.googlefit.GFitFoodManager;
+import foodnetwork.serialization.FoodNetworkException;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -21,12 +25,14 @@ import java.util.logging.SimpleFormatter;
 /**
  * Non blocking TCP foodNetwork server
  */
+@SuppressWarnings("Duplicates")
 public class ServerAIO {
 
     /**
      * Logger for server
      */
-    protected static final Logger logger = Logger.getLogger("TCPEchoServerAIO");
+    protected static final Logger logger = Logger.getLogger("AIOServer");
+    private static FoodManager manager;
 
     // Configure logger handler (connections.log) and format (simple)
     static {
@@ -43,11 +49,19 @@ public class ServerAIO {
 
     public static void main(final String[] args) {
         // Test for args correctness and process
-        if (args.length != 1) {
+       if (args.length != 1) {
             throw new IllegalArgumentException("Parameter(s): <Port>");
         }
         // Local server port
         int port = Integer.parseInt(args[0]);
+        // try conencting to Google api
+        try {
+            manager = new GFitFoodManager("628103645757", "./cred.json");
+        } catch (FoodNetworkException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+            System.exit(-1);
+        }
+
 
         // Create listening socket channel
         AsynchronousServerSocketChannel listenChannel = null;

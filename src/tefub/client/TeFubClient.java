@@ -1,6 +1,6 @@
 /************************************************
  *
- * Author: Nicholas Hopper
+ * Author: Dean He
  * Assignment: Program 4
  * Class: CSI 4321
  *
@@ -15,6 +15,7 @@ import java.net.*;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+import tefub.utility.AddressUtility;
 
 /**
  * The simple TeFubMessage UDP client. It simply serve as a reminder
@@ -256,18 +257,17 @@ public class TeFubClient {
      * @throws IOException if socket closes unexpectedly
      */
     public static void main(String[] args) throws IOException {
-        if (args.length != 3) {
+        if (args.length != 2) {
             throw new IllegalArgumentException(
                     "Parameters(s) : <Destination> " +
-                            "<Port>" +
-                            "<Client local IP>"
+                            "<Port>"
             );
         }
         destAddress = InetAddress.getByName(args[0]);
         desPort = Integer.parseInt(args[1]);
         sock = new DatagramSocket();  // construct UDP socket
         sock.connect(destAddress, desPort);
-        localAddress = InetAddress.getByName(args[2]);
+        localAddress = AddressUtility.getAddress();
         System.out.println(destAddress);
         localPort = sock.getLocalPort();
         new InputWatcher().start();

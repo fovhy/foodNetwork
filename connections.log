@@ -1,0 +1,54 @@
+Nov 28, 2016 12:35:41 AM foodnetwork.server.TCPEchoServerAIO$1 completed
+INFO: Handling accept for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:41 AM foodnetwork.server.TCPAIODispatcher processWriteBuffer
+INFO: Preparing to read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:47 AM foodnetwork.server.TCPAIODispatcher$1 completed
+INFO: Handling read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:47 AM foodnetwork.server.TCPAIODispatcher handleRead
+INFO: Read 43 bytes for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:47 AM foodnetwork.server.TCPAIODispatcher processWriteBuffer
+INFO: Preparing to write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:47 AM foodnetwork.server.TCPAIODispatcher$2 completed
+INFO: Handling write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:47 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Wrote buffer for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:47 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Preparing to read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:57 AM foodnetwork.server.TCPAIODispatcher$1 completed
+INFO: Handling read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:57 AM foodnetwork.server.TCPAIODispatcher handleRead
+INFO: Read 46 bytes for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:57 AM foodnetwork.server.TCPAIODispatcher processWriteBuffer
+INFO: Preparing to write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:57 AM foodnetwork.server.TCPAIODispatcher$2 completed
+INFO: Handling write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:57 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Wrote buffer for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:35:57 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Preparing to read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:10 AM foodnetwork.server.TCPAIODispatcher$1 completed
+INFO: Handling read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:10 AM foodnetwork.server.TCPAIODispatcher handleRead
+INFO: Read 71 bytes for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:10 AM foodnetwork.server.TCPAIODispatcher processWriteBuffer
+INFO: Preparing to write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:10 AM foodnetwork.server.TCPAIODispatcher$2 completed
+INFO: Handling write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:10 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Wrote buffer for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:10 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Preparing to read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher$1 completed
+INFO: Handling read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher handleRead
+INFO: Read 5 bytes for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher processWriteBuffer
+INFO: Preparing to write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher$2 completed
+INFO: Handling write for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Wrote buffer for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher handleWrite
+INFO: Preparing to read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]
+Nov 28, 2016 12:36:12 AM foodnetwork.server.TCPAIODispatcher$1 completed
+INFO: Handling read for sun.nio.ch.WindowsAsynchronousSocketChannelImpl[connected local=/127.0.0.1:12345 remote=/127.0.0.1:7039]

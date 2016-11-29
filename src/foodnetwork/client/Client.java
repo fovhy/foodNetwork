@@ -255,7 +255,6 @@ public class Client {
         FoodMessage message = null;
         try {
             message = FoodMessage.decode(in);
-            //TODO: check whether this print stack trace when server is up
         } catch (FoodNetworkException | EOFException e) {
             System.err.println(invalidMessage + e.getMessage());
             System.exit(2);
