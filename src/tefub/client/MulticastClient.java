@@ -26,7 +26,7 @@ public class MulticastClient {
     /**
      * Absolute biggest datagram size could be without minus the header
      */
-    public static final int MAX_MESSAGE_SIZE = 65355;
+    private static final int MAX_MESSAGE_SIZE = 1024;
     private static final int TIMER = 1000; // 1s timeout
 
 
@@ -66,6 +66,7 @@ public class MulticastClient {
      */
     public static void shutDown() throws IOException {
         quit = true;
+        sock.leaveGroup(destAddress);
         sock.close();
     }
 
@@ -121,7 +122,6 @@ public class MulticastClient {
                             "<Port>"
             );
         }
-        System.out.println(destAddress);
         new InputWatcher().start(); // start a thread that watches the thing
         startup();
         while (!quit) {
